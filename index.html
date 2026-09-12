@@ -5,10 +5,27 @@
 	<title>FoodStanDB</title>
 	
 	<style>
-           .search-box {
+        .database-title {
+            font-family: sans-serif;
+            text-align: center; 
+        }
+
+        .database-title .vi-text {
+            color: #333333;        
+            font-weight: 700;       
+            font-size: 28px;
+        }
+
+        .database-title .en-text {
+            color: #8ADDC6;         
+            font-weight: 600;       
+            font-size: 26px;
+        }
+
+        .search-box {
             padding: 10px 15px;
             font-size: 16px;
-            border: 1px solid #BFEFE3;
+            border: 1.5px solid #BFEFE3;   
             border-radius: 24px;
             width: 350px;
             max-width: 100%;
@@ -17,21 +34,20 @@
             transition: all 0.2s ease;
         }
 
-        /* Hiệu ứng viền xanh dương khi bấm chuột vào */
+        /* Hiệu ứng viền khi bấm chuột vào ô nhập */
         .search-box:focus {
-            border-color: #8ADDC6;
-            box-shadow: 0 0 0 3px rgba(75, 162, 243, 0.2); 
+            border-color: #52C4A5;        
+            box-shadow: 0 0 0 3px rgba(191, 239, 227, 0.6); 
         }
 
-        /* Nút bấm chữ Search */
         .search-btn {
             background-color: #D2F4EA;
-            border: 1px solid #dfe1e5;
-            border-radius: 20px;
-            padding: 10px 20px;
+            border: none;                  
+            border-radius: 24px;           
+            padding: 11px 20px;           
             font-size: 15px;
             color: #121A16; 
-            font-weight: bold; /* Giữ chữ in đậm */
+            font-weight: bold; 
             cursor: pointer;
             margin-left: 6px;
             vertical-align: middle;
@@ -40,21 +56,25 @@
 
         /* Hiệu ứng khi rê chuột vào nút bấm */
         .search-btn:hover {
-            background-color: #BFEFE3;
+            background-color: #BFEFE3;    
         }
 	</style>
 </head>
 <body style="background-color: #f8f9f9; color: #333333; font-family: sans-serif; padding: 20px;">
-	<h1 style="text-align: center;">Tra Cứu Phụ Gia Thực Phẩm Việt Nam<br> Vietnam Food Additives Database</h1>
-		<p style="text-align: center;">Dùng để tra cứu phụ gia được phép sử dụng trong thực phẩm ở Việt Nam.</p>
-	<p style="text-align: center;">Use this tool to find the food additives permitted for use in food products sold in Vietnam.</p>
-	<hr>
-	<p style="margin-top: 1cm;">Nhập số INS hoặc tên phụ gia:</p>
-		
-    <!-- Ô nhập liệu có hiệu ứng viền xanh -->
-    <input type="text" class="search-box">
     
-    <!-- Nút bấm chữ Search in đậm màu xanh -->
+    <!-- Tiêu đề áp dụng Cặp 1 -->
+	<h1 class="database-title">
+        <span class="vi-text">Tra Cứu Phụ Gia Thực Phẩm Việt Nam</span><br>
+        <span class="en-text">Vietnam Food Additives Database</span>
+    </h1>
+    
+	<p style="text-align: center;">Dùng để tra cứu phụ gia được phép sử dụng trong thực phẩm ở Việt Nam.</p>
+	<p style="text-align: center;">Use this tool to find the food additives permitted for use in food products sold in Vietnam.</p>
+	<hr style="border: 0; border-top: 1px solid #dfe1e5; margin: 20px 0;">
+	<p style="text-align: left;">Nhập số INS hoặc tên phụ gia:</p> 
+		
+    <input type="text" class="search-box">
     <button class="search-btn">Search</button>
+    
 </body>
 </html>
