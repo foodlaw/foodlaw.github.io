@@ -3,10 +3,58 @@
 <head>
 	<meta charset="UTF-8">
 	<title>FoodStanDB</title>
+	
+	<style>
+	   .search-box {
+            padding: 10px 15px;
+            font-size: 16px;
+            border: 1px solid #4ba2f3;
+            border-radius: 24px;
+            width: 350px;
+            max-width: 100%;
+            outline: none;
+            vertical-align: middle;
+            transition: all 0.2s ease;
+        }
+
+        /* Hiệu ứng viền xanh dương khi bấm chuột vào */
+        .search-box:focus {
+            border-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(75, 162, 243, 0.2); 
+        }
+
+        /* Nút bấm chữ Search */
+        .search-btn {
+            background-color: #f1f3f4;
+            border: 1px solid #dfe1e5;
+            border-radius: 20px;
+            padding: 10px 20px;
+            font-size: 15px;
+            color: #000000; 
+            font-weight: bold; /* Giữ chữ in đậm */
+            cursor: pointer;
+            margin-left: 6px;
+            vertical-align: middle;
+            transition: all 0.2s ease;
+        }
+
+        /* Hiệu ứng khi rê chuột vào nút bấm */
+        .search-btn:hover {
+            background-color: #e8eaed;
+        }
+	
+	</style>
 </head>
-<body style="background-color: #f9f9f9; color: #333333; font-family: sans-serif; padding: 20px;">
+<body style="background-color: #f8f9f9; color: #333333; font-family: sans-serif; padding: 20px;">
 	<h1 style="text-align: center;">Vietnam Food Additives Database - Tra Cứu Phụ Gia Thực Phẩm Việt Nam </h1>
 	<p style="text-align: center;">Use this tool to find the food additives permitted for use in food products sold in Vietnam.</p>
 	<p style="text-align: center;">Dùng để tra cứu phụ gia được phép sử dụng trong thực phẩm ở Việt Nam.</p>
 	<hr>
+	
+	<p style="margin-top: 1cm;">Nhập số INS hoặc tên phụ gia:</p>
+	
+
+    <input type="text" class="search-box" placeholder="INS 621, Natri benzoat...">
+    <button class="search-btn">Search</button>
 </body>
+</html>
