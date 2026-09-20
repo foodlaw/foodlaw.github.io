@@ -140,12 +140,12 @@
             margin-top: 15px;
         }
 
-        /* Tạo flexbox để ô nhập và nút luôn cùng dòng hoặc co giãn đẹp mắt */
+        /* Tạo flexbox cố định dòng nhập liệu */
         .search-form-group {
             display: flex;
             align-items: center;
             gap: 8px;
-            max-width: 500px; /* Giới hạn chiều rộng tối đa */
+            max-width: 500px;
         }
 
         .search-box {
@@ -153,8 +153,8 @@
             font-size: 16px;
             border: 1.5px solid #BFEFE3;   
             border-radius: 24px;
-            flex: 1; /* Tự động co giãn chiếm không gian trống */
-            min-width: 0; /* Ngăn ô input bị phình to vỡ khung */
+            flex: 1; 
+            min-width: 0; 
             outline: none;
             transition: all 0.2s ease;
         }
@@ -173,7 +173,7 @@
             color: #121A16; 
             font-weight: bold; 
             cursor: pointer;
-            white-space: nowrap; /* Ngăn chữ "Tra cứu" bị xuống hàng bên trong nút */
+            white-space: nowrap; 
             transition: all 0.2s ease;
         }
 
@@ -181,46 +181,60 @@
             background-color: #BFEFE3;    
         }
 
-        /* ======================== TỰ ĐỘNG THU NHỎ TRÊN ĐIỆN THOẠI ======================== */
+        /* ======================== TỰ ĐỘNG THU NHỎ & CÂN ĐỐI TRÊN ĐIỆN THOẠI ======================== */
         @media (max-width: 768px) {
             body {
-                padding: 15px; /* Giảm padding viền ngoài trên mobile */
+                padding: 15px; 
             }
 
-            /* Đổi vị trí chọn ngôn ngữ xuống dưới cùng hoặc đặt góc phải nhưng dịch lên */
+            /* Đưa thanh chọn ngôn ngữ vào luồng nội dung và căn giữa */
             .language-switcher {
-                top: 15px;
-                right: 15px;
-                font-size: 13px;
+                position: static; 
+                justify-content: center;
+                margin-bottom: 25px;
+                margin-top: 5px;
             }
 
+            /* Chuyển đổi toàn bộ Header sang dạng căn giữa dọc */
             .header-container {
                 flex-direction: column; 
-                align-items: flex-start;
+                align-items: center;
+                text-align: center;
                 gap: 15px;
-                margin-top: 50px; /* Tạo khoảng cách tránh đè lên nút chọn ngôn ngữ */
+                margin-top: 10px;
+                margin-bottom: 20px;
+            }
+
+            .title-link {
+                transform-origin: center center; /* Đổi tâm thu phóng về giữa */
+            }
+
+            .database-title {
+                text-align: center; 
             }
 
             .logo-box img {
-                height: 70px; 
+                height: 75px; /* Giảm nhẹ kích thước logo để nhường chỗ cho text */
             }
 
+            /* Ép chữ chạy trên một dòng duy nhất và tự động co giãn theo màn hình */
             .database-title .vi-text {
-                font-size: 24px; /* Thu nhỏ thêm một chút để vừa vặn màn hình dọc */
+                font-size: 5.6vw; 
+                white-space: nowrap; 
             }
 
             .database-title .en-text {
-                font-size: 20px;
+                font-size: 4.5vw;
+                white-space: nowrap;
             }
         }
 	</style>
 </head>
 <body>
     
-    <!-- Thanh chọn ngôn ngữ góc phải -->
+    <!-- Thanh chọn ngôn ngữ -->
     <div class="language-switcher">
         <span class="lang-icon">
-            <!-- Sửa lại xmlns chuẩn chuẩn của hệ thống W3C để hiển thị mượt mà trên mobile -->
             <svg xmlns="http://w3.org" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="10"></circle>
                 <line x1="2" y1="12" x2="22" y2="12"></line>
@@ -232,16 +246,14 @@
         <a href="?lang=en">English</a>
     </div>
     
-    <!-- Phần Header -->
+    <!-- Phần Header hoàn toàn mới tối ưu căn chỉnh -->
     <div class="header-container">
-        <!-- Click vào Logo -->
         <div class="logo-box">
             <a href="/">
                 <img src="logo.png" alt="FoodStanDB Logo">
             </a>
         </div>
         
-        <!-- Click vào Tiêu đề -->
         <a href="/" class="title-link">
             <h1 class="database-title">
                 <span class="vi-text">Tra Cứu Phụ Gia Thực Phẩm Việt Nam</span>
@@ -252,7 +264,7 @@
 
 	<hr style="border: 0; border-top: 1px solid #dfe1e5; margin: 20px 0;">
 	
-    <!-- Vùng tìm kiếm đã được tối ưu lại cấu trúc -->
+    <!-- Vùng tìm kiếm -->
     <div class="search-container">
         <p style="margin-top: 0; margin-bottom: 10px;">Nhập số INS hoặc tên phụ gia:</p> 
         <div class="search-form-group">
