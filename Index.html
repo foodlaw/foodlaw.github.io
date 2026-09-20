@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Food Standards Database</title>
+    <!-- Nhúng font chữ Inter cao cấp, hiện đại -->
+    <link href="https://googleapis.com" rel="stylesheet">
+	
+	<style>
+        /* Khung bao quanh trang */
+        body {
+            background-color: #fcfdfd; 
+            color: #2D3748; 
+            font-family: 'Inter', sans-serif; 
+            padding: 24px;
+            margin: 0;
+            position: relative;
+        }
+
+        /* Thanh chọn ngôn ngữ */
+        .language-switcher {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            color: #718096;
+            z-index: 10;
+        }
+
+        .lang-icon {
+            margin-right: 6px;
+            display: inline-flex;
+            align-items: center;
+            color: #38A169;
+        }
+
+        .language-switcher a {
+            color: #718096;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .language-switcher a:hover {
+            color: #38A169;
+        }
+
+        .language-switcher .active {
+            font-weight: 600;
+            color: #1A202C;
+            pointer-events: none;
+        }
+
+        .lang-divider {
+            margin: 0 8px;
+            color: #E2E8F0;
+        }
+
+        /* Khung Header chuẩn tỉ lệ vàng */
+        .header-container {
+            display: flex;
+            align-items: center;        
+            justify-content: flex-start; 
+            gap: 24px;                  
+            margin-top: 48px;           
+            margin-bottom: 32px;
+        }
+
+        /* Định dạng link cho Logo */
+        .logo-box a {
+            display: block;
+            transition: transform 0.2s ease;
+        }
+        
+        .logo-box a:hover {
+            transform: scale(1.03); 
+        }
+
+        .logo-box img {
+            height: 90px; 
+            width: auto;  
+            display: block;
+        }
+
+        .title-link {
+            text-decoration: none; 
+            color: inherit;        
+            display: block;
+            transition: opacity 0.2s ease;
+        }
+        
+        .title-link:hover {
+            opacity: 0.9;
+        }
+
+        .database-title {
+            margin: 0;
+            display: flex;
+            flex-direction: column;   
+            justify-content: center;  
+            gap: 6px;                 
+        }
+
+        .database-title .vi-text {
+            color: #1A202C;        
+            font-weight: 700;       
+            font-size: 34px;          
+            line-height: 1.2;         
+        }
+
+        .database-title .en-text {
+            color: #38A169;       
+            font-weight: 600;       
+            font-size: 28px;          
+            line-height: 1.2;         
+        }
+
+        /* Khung bao quanh ô tìm kiếm và nút bấm */
+        .search-container {
+            text-align: left;
+            margin-top: 24px;
+        }
+
+        .search-container p {
+            margin-top: 0; 
+            margin-bottom: 10px;
+        }
+
+        /* Tạo flexbox cố định dòng nhập liệu */
+        .search-form-group {
+            display: flex;
+            align-items: center;
+            gap: 10px; 
+            max-width: 540px;
+        }
+
+        /* Ô tìm kiếm bo góc vừa vặn hiện đại */
+        .search-box {
+            height: 46px; 
+            box-sizing: border-box;
+            padding: 0 18px;
+            font-family: inherit;
+            font-size: 16.5px;
+            color: #1A202C;
+            border: 1.5px solid #E2E8F0; 
+            border-radius: 8px; 
+            flex: 1; 
+            min-width: 0; 
+            outline: none;
+            background-color: #FFFFFF;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Hiệu ứng Focus phát sáng nhẹ nhàng */
+        .search-box:focus {
+            border-color: #800020; 
+            box-shadow: 0 0 0 3px rgba(128, 0, 32, 0.12); 
+        }
+        
+        .search-box::placeholder {
+            color: #A0AEC0;
+        }
+
+        /* Nút bấm Đỏ Đô Gradient sang trọng, căn giữa và KHÔNG CÓ ICON */
+        .search-btn {
+            height: 46px; 
+            box-sizing: border-box;
+            /* Gradient dọc siêu mịn tạo độ nổi khối nhẹ cho nút */
+            background: linear-gradient(180deg, #940025 0%, #800020 100%);
+            border: 1px solid #70001B;                  
+            border-radius: 8px; 
+            padding: 0 28px;           
+            font-family: inherit;
+            font-size: 16.5px;
+            color: #FFFFFF;            
+            font-weight: 600; 
+            cursor: pointer;
+            white-space: nowrap; 
+            display: inline-flex;
+            align-items: center; 
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(128, 0, 32, 0.16); 
+            transition: all 0.2s ease;
+        }
+
+        /* Hiệu ứng hover mềm mại khi rê chuột */
+        .search-btn:hover {
+            background: linear-gradient(180deg, #800020 0%, #66001A 100%);
+            transform: translateY(-1px); 
+            box-shadow: 0 6px 16px rgba(128, 0, 32, 0.28); 
+        }
+
+        /* Hiệu ứng tương tác khi nhấn giữ */
+        .search-btn:active {
+            background: #4D0013; 
+            transform: translateY(0);    
+            box-shadow: 0 2px 6px rgba(128, 0, 32, 0.15);
+        }
+
+        /* Đường phân cách thanh lịch */
+        hr {
+            border: 0; 
+            border-top: 1px solid #E2E8F0; 
+            margin: 24px 0;
+        }
+
+        /* ======================== RESPONSIVE CHO ĐIỆN THOẠI ======================== */
+        @media (max-width: 768px) {
+            body {
+                padding: 16px; 
+            }
+
+            .language-switcher {
+                position: static; 
+                justify-content: center;
+                margin-bottom: 24px;
+            }
+
+            .header-container {
+                flex-direction: column; 
+                align-items: center;
+                text-align: center;
+                gap: 16px;
+                margin-top: 8px;
+                margin-bottom: 24px;
+            }
+
+            .database-title {
+                text-align: center; 
+            }
+
+            .logo-box img {
+                height: 72px; 
+            }
+
+            .database-title .vi-text {
+                font-size: 5.8vw; 
+                white-space: nowrap; 
+            }
+
+            .database-title .en-text {
+                font-size: 4.6vw;
+                white-space: nowrap;
+            }
+            
+            .search-form-group {
+                max-width: 100%;
+            }
+        }
+	</style>
+</head>
+<body>
+    
+    <!-- Thanh chọn ngôn ngữ -->
+    <div class="language-switcher">
+        <span class="lang-icon">
+            <svg xmlns="http://w3.org" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="2" y1="12" x2="22" y2="12"></line>
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            </svg>
+        </span>
+        <a href="?lang=vi" class="active">Tiếng Việt</a>
+        <span class="lang-divider">|</span>
+        <a href="?lang=en">English</a>
+    </div>
+    
+    <!-- Phần Header hoàn thiện kèm hiệu ứng màu sắc mới -->
+    <div class="header-container">
+        <div class="logo-box">
+            <a href="/">
+                <img src="logo.png" alt="FoodStanDB Logo">
+            </a>
+        </div>
+        
+        <a href="/" class="title-link">
+            <h1 class="database-title">
+                <span class="vi-text">Tra Cứu Phụ Gia Thực Phẩm Việt Nam</span>
+                <span class="en-text">Vietnam Food Additives Database</span>
+            </h1>
+        </a>
+    </div>
+
+	<hr>
+	
+    <!-- Vùng tìm kiếm -->
+    <div class="search-container">
+        <p>Nhập số INS hoặc tên phụ gia:</p> 
+        <div class="search-form-group">
+            <input type="text" class="search-box">
+            <button class="search-btn">Tra cứu</button>
+        </div>
+    </div>
+    
+</body>
+</html>
