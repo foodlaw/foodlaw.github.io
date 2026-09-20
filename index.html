@@ -55,7 +55,7 @@
             color: #ccc;
         }
 
-        /* Khung Header chuẩn tỉ lệ vàng của bạn */
+        /* Khung Header chuẩn tỉ lệ vàng */
         .header-container {
             display: flex;
             align-items: center;        
@@ -65,20 +65,48 @@
             margin-bottom: 25px;
         }
 
-        /* Hiệu ứng mượt mà khi rê chuột vào logo */
+        /* Định dạng link cho Logo */
         .logo-box a {
             display: block;
-            transition: transform 0.2s ease, opacity 0.2s ease;
+            transition: transform 0.1s ease, opacity 0.1s ease;
         }
+        
+        /* Hiệu ứng rê chuột vào Logo */
         .logo-box a:hover {
-            transform: scale(1.02); /* Phóng to nhẹ 2% khi di chuột vào */
+            transform: scale(1.02); 
             opacity: 0.9;
+        }
+
+        /* HIỆU ỨNG KHI CLICK VÀO LOGO (Thu nhỏ nhẹ tạo cảm giác nút bấm) */
+        .logo-box a:active {
+            transform: scale(0.97);
+            opacity: 0.8;
         }
 
         .logo-box img {
             height: 93px; 
             width: auto;  
             display: block;
+        }
+
+        /* Định dạng link cho Tiêu đề */
+        .title-link {
+            text-decoration: none; 
+            color: inherit;        
+            display: block;
+            transition: transform 0.1s ease, opacity 0.1s ease;
+            transform-origin: left center; /* Giữ tâm thu phóng ở bên lề trái */
+        }
+        
+        /* Hiệu ứng rê chuột vào Tiêu đề */
+        .title-link:hover {
+            opacity: 0.85;
+        }
+
+        /* HIỆU ỨNG KHI CLICK VÀO TIÊU ĐỀ (Co nhẹ lại để báo hiệu phản hồi bấm chuột) */
+        .title-link:active {
+            transform: scale(0.99); /* Thu nhỏ cực nhẹ 1% để chữ không bị nhòe */
+            opacity: 0.7;           /* Làm mờ rõ hơn một chút lúc nhấn giữ */
         }
 
         .database-title {
@@ -146,24 +174,24 @@
             background-color: #BFEFE3;    
         }
 
-        /* TỰ ĐỘNG THU NHỎ KHI XEM TRÊN ĐIỆN THOẠI */
+        /* Tự động thu nhỏ trên điện thoại */
         @media (max-width: 768px) {
             .header-container {
-                flex-direction: column; /* Xếp dọc logo và chữ trên điện thoại */
+                flex-direction: column; 
                 align-items: flex-start;
                 gap: 15px;
             }
             .logo-box img {
-                height: 70px; /* Thu nhỏ logo một chút */
+                height: 70px; 
             }
             .database-title .vi-text {
-                font-size: 26px; /* Thu nhỏ chữ */
+                font-size: 26px; 
             }
             .database-title .en-text {
                 font-size: 22px;
             }
             .language-switcher {
-                position: static; /* Đẩy nút ngôn ngữ xuống dưới, không bị đè chữ */
+                position: static; 
                 margin-bottom: 20px;
             }
         }
@@ -185,18 +213,22 @@
         <a href="?lang=en">English</a>
     </div>
     
-    <!-- Phần Header hoàn thiện -->
+    <!-- Phần Header hoàn thiện kèm hiệu ứng chuột nâng cao -->
     <div class="header-container">
+        <!-- Click vào Logo -->
         <div class="logo-box">
             <a href="/">
                 <img src="logo.png" alt="FoodStanDB Logo">
             </a>
         </div>
         
-        <h1 class="database-title">
-            <span class="vi-text">Tra Cứu Phụ Gia Thực Phẩm Việt Nam</span>
-            <span class="en-text">Vietnam Food Additives Database</span>
-        </h1>
+        <!-- Click vào Tiêu đề -->
+        <a href="/" class="title-link">
+            <h1 class="database-title">
+                <span class="vi-text">Tra Cứu Phụ Gia Thực Phẩm Việt Nam</span>
+                <span class="en-text">Vietnam Food Additives Database</span>
+            </h1>
+        </a>
     </div>
 
 	<hr style="border: 0; border-top: 1px solid #dfe1e5; margin: 20px 0;">
