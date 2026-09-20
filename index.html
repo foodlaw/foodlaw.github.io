@@ -305,6 +305,71 @@
             <button class="search-btn">Tra cứu</button>
         </div>
     </div>
-    
+    <!-- Hộp Disclaimer  nằm ngay dưới thanh tìm kiếm -->
+    <div class="disclaimer-box">
+        <div class="disclaimer-title">
+            <!-- Icon info (i) chuẩn nét mảnh tinh tế -->
+            <svg xmlns="http://w3.org" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+            <span>Miễn Trừ Trách Nhiệm</span>
+        </div>
+        <div class="disclaimer-content">
+            <p>Cơ sở dữ liệu này được xây dựng cho mục đích tra cứu thông tin dựa trên Thông tư 24/2019/TT-BYT Quy định về quản lý và sử dụng phụ gia thực phẩm và Thông tư 17/2023/TT-BYT sửa đổi, bổ sung và bãi bỏ một số văn bản quy phạm pháp luật về an toàn thực phẩm do Bộ trưởng Bộ Y tế ban hành, và không thay thế hoặc đóng vai trò như lời khuyên pháp lý chính thức.</p>
+            <p>Vui lòng tham khảo các văn bản pháp luật của Bộ Y tế để có thông tin chuẩn xác nhất.</p>
+        </div>
+    </div>
+
+    <style>
+        /* Định dạng hộp Disclaimer nổi khối tràn viền e */
+        .disclaimer-box {
+            background-color: #FFF1F2; /* Nền hồng phấn siêu nhạt */
+            border: none;              /* Xóa bỏ hoàn toàn viền cứng để hết bẹt phẳng */
+            border-radius: 6px;        
+            padding: 16px 20px;
+            margin-top: 20px;         /* Khoảng cách vừa vặn với thanh tìm kiếm phía trên */
+            margin-bottom: 24px;
+            max-width: 540px;          /* Chiều rộng bằng khít với ô tìm kiếm */
+            box-sizing: border-box;
+            
+            /* ĐÃ CẬP NHẬT: Đổ bóng mờ diện rộng giúp hộp tự nổi khối lên khỏi nền web cực sang */
+            box-shadow: 0 6px 16px 0 rgba(225, 117, 153, 0.12), 0 1px 3px 0 rgba(0, 0, 0, 0.04);
+            
+            /* Tạo hiệu ứng chuyển động mượt mà khi di chuột */
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        /* Mẹo UI: Hiệu ứng nhích nhẹ nịnh mắt khi di chuột qua */
+        .disclaimer-box:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 20px 0 rgba(225, 117, 153, 0.16), 0 2px 6px 0 rgba(0, 0, 0, 0.06);
+        }
+
+        .disclaimer-title {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #4A5568;            /* Tiêu đề màu Xanh lá cây đậm uých tín */
+            font-weight: 700;
+            font-size: 14px;           
+            margin-bottom: 12px;       
+        }
+
+        .disclaimer-content {
+            color: #4A5568;            /* Nội dung màu chữ xanh lá đậm */
+            font-size: 13.5px;
+            line-height: 1.6;          
+        }
+
+        .disclaimer-content p {
+            margin: 0 0 10px 0;
+        }
+        
+        .disclaimer-content p:last-child {
+            margin-bottom: 0;
+        }
+</style>
 </body>
 </html>
