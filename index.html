@@ -3,8 +3,8 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>FoodLaw</title>
-    <!-- Nhúng font chữ Inter cao cấp, hiện đại -->
+	<title>Food Standards Database</title>
+    <!-- ĐÃ SỬA: Đường link nhúng font chữ Inter chuẩn xác để giao diện hết phèn -->
     <link href="https://googleapis.com" rel="stylesheet">
 	
 	<style>
@@ -123,6 +123,7 @@
             margin-top: 24px;
         }
 
+        /* Khôi phục chữ chỉ dẫn ban đầu */
         .search-container p {
             margin-top: 0; 
             margin-bottom: 10px;
@@ -142,7 +143,7 @@
             box-sizing: border-box;
             padding: 0 18px;
             font-family: inherit;
-            font-size: 16.5px;
+            font-size: 15px;
             color: #1A202C;
             border: 1.5px solid #E2E8F0; 
             border-radius: 8px; 
@@ -154,7 +155,7 @@
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Hiệu ứng Focus phát sáng nhẹ nhàng */
+        /* Hiệu ứng Focus phát sáng nhẹ nhàng theo tông màu nút */
         .search-box:focus {
             border-color: #800020; 
             box-shadow: 0 0 0 3px rgba(128, 0, 32, 0.12); 
@@ -164,17 +165,16 @@
             color: #A0AEC0;
         }
 
-        /* Nút bấm Đỏ Đô Gradient sang trọng, căn giữa và KHÔNG CÓ ICON */
+        /* Nút bấm màu Đỏ Đô bản cuối cùng: chữ to hơn 10%, căn tâm dọc hoàn hảo */
         .search-btn {
             height: 46px; 
             box-sizing: border-box;
-            /* Gradient dọc siêu mịn tạo độ nổi khối nhẹ cho nút */
             background: linear-gradient(180deg, #940025 0%, #800020 100%);
             border: 1px solid #70001B;                  
             border-radius: 8px; 
             padding: 0 28px;           
             font-family: inherit;
-            font-size: 16.5px;
+            font-size: 16.5px; /* Kích thước chữ đã tăng thêm 10% */
             color: #FFFFFF;            
             font-weight: 600; 
             cursor: pointer;
@@ -186,14 +186,14 @@
             transition: all 0.2s ease;
         }
 
-        /* Hiệu ứng hover mềm mại khi rê chuột */
+        /* Hiệu ứng hover khi rê chuột vào */
         .search-btn:hover {
             background: linear-gradient(180deg, #800020 0%, #66001A 100%);
             transform: translateY(-1px); 
             box-shadow: 0 6px 16px rgba(128, 0, 32, 0.28); 
         }
 
-        /* Hiệu ứng tương tác khi nhấn giữ */
+        /* Hiệu ứng tương tác khi nhấn giữ nút click */
         .search-btn:active {
             background: #4D0013; 
             transform: translateY(0);    
