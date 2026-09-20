@@ -4,7 +4,8 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Food Standards Database</title>
-    <!-- Đường link nhúng font chữ Inter chuẩn xác -->
+	<link rel="icon" type="image/png" href="favicon.png">
+    <!-- ĐÃ SỬA: Đường link nhúng font chữ Inter chuẩn xác từ Google Fonts -->
     <link href="https://googleapis.com" rel="stylesheet">
 	
 	<style>
@@ -157,22 +158,20 @@
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Hiệu ứng Focus phát sáng nhẹ nhàng theo tông hồng trầm mới */
+        /* Hiệu ứng Focus phát sáng nhẹ nhàng theo tông hồng trầm */
         .search-box:focus {
-            border-color: #C2410C; 
-            box-shadow: 0 0 0 3px rgba(194, 65, 12, 0.1); 
+            border-color: #CE4A7E; 
+            box-shadow: 0 0 0 3px rgba(206, 74, 126, 0.15); 
         }
         
         .search-box::placeholder {
             color: #A0AEC0;
         }
 
-        /* ĐỔI MỚI: Tông màu hồng đỏ trầm (Muted Berry/Rose) sang trọng, giảm độ tươi gắt */
+        /* Tông màu hồng đỏ trầm (Muted Berry/Rose) sang trọng, không gắt mắt */
         .search-btn {
             height: 46px; 
             box-sizing: border-box;
-            /* Gradient đi từ hồng tro sang đỏ berry trầm uých tín */
-            background: linear-gradient(180deg, #D946EF 0%, #C026D3 100%); /* Mã màu này đã được hạ độ tươi, cho cảm giác đầm và sâu hơn */
             background: linear-gradient(180deg, #CE4A7E 0%, #B33665 100%); /* Hồng đỏ vỏ đỗ siêu sang */
             border: none;                   
             border-radius: 8px; 
@@ -190,7 +189,7 @@
             transition: all 0.2s ease;
         }
 
-        /* Hiệu ứng hover mềm mại */
+        /* Hiệu ứng hover mềm mại tinh tế */
         .search-btn:hover {
             background: linear-gradient(180deg, #B33665 0%, #942650 100%);
             transform: translateY(-1px); 
@@ -209,6 +208,58 @@
             border: 0; 
             border-top: 1px solid #E2E8F0; 
             margin: 24px 0;
+        }
+
+        /* ======================== TỰ ĐỘNG THU NHỎ & CÂN ĐỐI TRÊN ĐIỆN THOẠI ======================== */
+        @media (max-width: 768px) {
+            body {
+                padding: 16px; 
+            }
+
+            /* Đưa thanh chọn ngôn ngữ vào luồng nội dung và căn giữa */
+            .language-switcher {
+                position: static; 
+                justify-content: center;
+                margin-bottom: 24px;
+                margin-top: 5px;
+            }
+
+            /* Chuyển đổi toàn bộ Header sang dạng căn giữa dọc */
+            .header-container {
+                flex-direction: column; 
+                align-items: center;
+                text-align: center;
+                gap: 15px;
+                margin-top: 10px;
+                margin-bottom: 20px;
+            }
+
+            .title-link {
+                transform-origin: center center; 
+            }
+
+            .database-title {
+                text-align: center; 
+            }
+
+            .logo-box img {
+                height: 75px; 
+            }
+
+            /* Ép chữ chạy trên một dòng duy nhất và tự động co giãn theo màn hình */
+            .database-title .vi-text {
+                font-size: 5.6vw; 
+                white-space: nowrap; 
+            }
+
+            .database-title .en-text {
+                font-size: 4.5vw;
+                white-space: nowrap;
+            }
+            
+            .search-form-group {
+                max-width: 100%;
+            }
         }
 	</style>
 </head>
@@ -250,7 +301,7 @@
     <div class="search-container">
         <p>Nhập số INS hoặc tên phụ gia:</p> 
         <div class="search-form-group">
-            <input type="text" class="search-box" placeholder="Ví dụ: 100(i), Curcumin">
+            <input type="text" class="search-box">
             <button class="search-btn">Tra cứu</button>
         </div>
     </div>
