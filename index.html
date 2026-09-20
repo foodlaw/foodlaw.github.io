@@ -5,21 +5,107 @@
 	<title>FoodStanDB</title>
 	
 	<style>
-        .database-title {
-            font-family: sans-serif;
-            text-align: center; 
+        /* Toàn bộ khung bao quanh trang để định vị nút ngôn ngữ tuyệt đối */
+        body {
+            background-color: #f8f9f9; 
+            color: #333333; 
+            font-family: sans-serif; 
+            padding: 20px;
+            margin: 0;
+            position: relative;
         }
 
+        /* Thanh chọn ngôn ngữ ở góc trên bên phải */
+        .language-switcher {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            color: #666666;
+        }
+
+        /* Icon quả cầu nhỏ - Xanh lá đậm */
+        .lang-icon {
+            margin-right: 6px;
+            display: inline-flex;
+            align-items: center;
+            color: #15803d;
+        }
+
+        /* Định dạng các đường link ngôn ngữ */
+        .language-switcher a {
+            color: #666666;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .language-switcher a:hover {
+            color: #15803d;
+        }
+
+        /* Ngôn ngữ đang hoạt động (in đậm) */
+        .language-switcher .active {
+            font-weight: bold;
+            color: #121A16;
+            pointer-events: none;
+        }
+
+        /* Dấu gạch đứng phân cách */
+        .lang-divider {
+            margin: 0 8px;
+            color: #ccc;
+        }
+
+        /* KHUNG HEADER ĐÃ PHÓNG TO GẤP 1.2 LẦN */
+        .header-container {
+            display: flex;
+            align-items: center;        /* Căn logo chính giữa khối chữ theo chiều dọc */
+            justify-content: flex-start; /* Canh trái toàn bộ header */
+            gap: 28px;                  /* Tăng từ 20px lên 28px (~x1.2) */
+            margin-top: 40px;           
+            margin-bottom: 25px;
+        }
+
+        /* Khung định dạng logo bông sen (To gấp 1.2 lần) */
+        .logo-box img {
+            height: 86px; /* Tăng từ 72px lên 86px (gấp 1.2 lần) */
+            width: auto;  
+            display: block;
+        }
+
+        /* Khối chữ tiêu đề đã phóng to */
+        .database-title {
+            font-family: sans-serif;
+            text-align: left; 
+            margin: 0;
+            display: flex;
+            flex-direction: column;   
+            justify-content: center;  
+            gap: 5px;                 
+        }
+
+        /* Dòng chữ Tiếng Việt (To gấp 1.2 lần) */
         .database-title .vi-text {
             color: #333333;        
             font-weight: 700;       
-            font-size: 28px;
+            font-size: 34px;          /* Tăng từ 28px lên 34px (gấp 1.2 lần) */
+            line-height: 1.1;         
         }
 
+        /* Dòng chữ Tiếng Anh (To gấp 1.2 lần) */
         .database-title .en-text {
             color: #8ADDC6;         
             font-weight: 600;       
-            font-size: 26px;
+            font-size: 30px;          /* Tăng từ 25px lên 30px (gấp 1.2 lần) */
+            line-height: 1.1;         
+        }
+
+        /* Khung bao quanh ô tìm kiếm để đảm bảo canh trái đồng bộ */
+        .search-container {
+            text-align: left;
+            margin-top: 15px;
         }
 
         .search-box {
@@ -60,19 +146,46 @@
         }
 	</style>
 </head>
-<body style="background-color: #f8f9f9; color: #333333; font-family: sans-serif; padding: 20px;">
+<body>
     
-    <!-- Tiêu đề áp dụng Cặp 1 -->
-	<h1 class="database-title">
-        <span class="vi-text">Tra Cứu Phụ Gia Thực Phẩm Việt Nam</span><br>
-        <span class="en-text">Vietnam Food Additives Database</span>
-    </h1>
+    <!-- Thanh chọn ngôn ngữ góc phải -->
+    <div class="language-switcher">
+        <span class="lang-icon">
+            <svg xmlns="http://w3.org" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="2" y1="12" x2="22" y2="12"></line>
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            </svg>
+        </span>
+        <a href="?lang=vi" class="active">Tiếng Việt</a>
+        <span class="lang-divider">|</span>
+        <a href="?lang=en">English</a>
+    </div>
+    
+    <!-- Phần Header chèn Logo và Tiêu đề kích thước lớn -->
+    <div class="header-container">
+        <!-- Vùng chèn logo -->
+        <div class="logo-box">
+            <a href="/">
+                <img src="logo.png" alt="FoodStanDB Logo">
+            </a>
+        </div>
+        
+        <!-- Tiêu đề website -->
+        <h1 class="database-title">
+            <span class="vi-text">Tra Cứu Phụ Gia Thực Phẩm Việt Nam</span>
+            <span class="en-text">Vietnam Food Additives Database</span>
+        </h1>
+    </div>
 
 	<hr style="border: 0; border-top: 1px solid #dfe1e5; margin: 20px 0;">
-	<p style="text-align: left;">Nhập số INS hoặc tên phụ gia:</p> 
-		
-    <input type="text" class="search-box">
-    <button class="search-btn">Tra cứu</button>
+	
+    <!-- Vùng tìm kiếm canh trái -->
+    <div class="search-container">
+        <p style="margin-top: 0; margin-bottom: 10px;">Nhập số INS hoặc tên phụ gia:</p> 
+        <input type="text" class="search-box">
+        <button class="search-btn">Tra cứu</button>
+    </div>
     
 </body>
 </html>
