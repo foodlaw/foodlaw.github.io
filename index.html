@@ -10,7 +10,7 @@
 	<style>
         /* Khung bao quanh trang */
         body {
-            background-color: #fcfdfd; /* Màu nền trắng xám nhẹ sang trọng giúp nổi bật đổ bóng */
+            background-color: #fcfdfd; 
             color: #2D3748; 
             font-family: 'Inter', sans-serif; 
             padding: 24px;
@@ -123,53 +123,55 @@
             margin-top: 24px;
         }
 
-        .search-label {
-            font-size: 14px;
-            font-weight: 500;
-            color: #4A5568;
-            margin-top: 0;
-            margin-bottom: 12px;
+        .search-container p {
+            margin-top: 0; 
+            margin-bottom: 10px;
         }
 
         /* Tạo flexbox cố định dòng nhập liệu */
         .search-form-group {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px; 
             max-width: 540px;
         }
 
-        /* ĐỔI MỚI: Ô tìm kiếm đổ bóng mờ mịn mượt theo phong cách Google */
+        /* Ô tìm kiếm bo góc vừa vặn hiện đại */
         .search-box {
             height: 46px; 
             box-sizing: border-box;
-            padding: 0 20px;
+            padding: 0 18px;
             font-family: inherit;
             font-size: 15px;
             color: #1A202C;
-            border: none; /* Xóa viền cứng để tạo độ liền mạch với nền */
-            border-radius: 24px; /* Dạng capsule bo tròn hoàn toàn giống Google */
+            border: 1.5px solid #E2E8F0; 
+            border-radius: 8px; 
             flex: 1; 
             min-width: 0; 
             outline: none;
             background-color: #FFFFFF;
-            /* Đổ bóng Google: Rìa bóng lan tỏa rộng, cực kỳ mềm và nhẹ */
-            box-shadow: 0 1px 6px 0 rgba(32, 33, 36, 0.28); 
-            transition: box-shadow 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Hiệu ứng bóng đổ đậm rõ nét hơn khi click gõ chữ */
+        /* Hiệu ứng Focus phát sáng nhẹ nhàng */
         .search-box:focus {
-            box-shadow: 0 4px 12px 0 rgba(32, 33, 36, 0.35); 
+            border-color: #800020; 
+            box-shadow: 0 0 0 3px rgba(128, 0, 32, 0.12); 
+        }
+        
+        .search-box::placeholder {
+            color: #A0AEC0;
         }
 
-        /* ĐỔI MỚI: Nút bấm đồng bộ bo tròn với ô tìm kiếm mới */
+        /* Nút bấm Đỏ Đô Gradient sang trọng, căn giữa và KHÔNG CÓ ICON */
         .search-btn {
             height: 46px; 
             box-sizing: border-box;
-            background-color: #C1456B; /* Màu hồng sen lấy cảm hứng từ logo */
-            border: none;                  
-            border-radius: 24px; /* Bo tròn hoàn toàn đồng bộ */
+            /* Gradient dọc siêu mịn tạo độ nổi khối nhẹ cho nút */
+            background: linear-gradient(180deg, #940025 0%, #800020 100%);
+            border: 1px solid #70001B;                  
+            border-radius: 8px; 
             padding: 0 28px;           
             font-family: inherit;
             font-size: 15px;
@@ -177,22 +179,25 @@
             font-weight: 600; 
             cursor: pointer;
             white-space: nowrap; 
-            box-shadow: 0 2px 6px rgba(193, 69, 107, 0.3);
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center; 
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(128, 0, 32, 0.16); 
+            transition: all 0.2s ease;
         }
 
-        /* Hiệu ứng hover nhích nhẹ cao cấp */
+        /* Hiệu ứng hover mềm mại khi rê chuột */
         .search-btn:hover {
-            background-color: #A03253; 
+            background: linear-gradient(180deg, #800020 0%, #66001A 100%);
             transform: translateY(-1px); 
-            box-shadow: 0 4px 12px rgba(193, 69, 107, 0.45); 
+            box-shadow: 0 6px 16px rgba(128, 0, 32, 0.28); 
         }
 
-        /* Hiệu ứng khi nhấn giữ nút click */
+        /* Hiệu ứng tương tác khi nhấn giữ */
         .search-btn:active {
-            background-color: #8C2B47; 
+            background: #4D0013; 
             transform: translateY(0);    
-            box-shadow: 0 2px 6px rgba(193, 69, 107, 0.2);
+            box-shadow: 0 2px 6px rgba(128, 0, 32, 0.15);
         }
 
         /* Đường phân cách thanh lịch */
@@ -283,7 +288,7 @@
 	
     <!-- Vùng tìm kiếm -->
     <div class="search-container">
-        <p class="search-label">Nhập số INS hoặc tên phụ gia:</p> 
+        <p>Nhập số INS hoặc tên phụ gia:</p> 
         <div class="search-form-group">
             <input type="text" class="search-box">
             <button class="search-btn">Tra cứu</button>
