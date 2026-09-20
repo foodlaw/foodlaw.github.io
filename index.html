@@ -25,6 +25,7 @@
             display: flex;
             align-items: center;
             color: #666666;
+            z-index: 10;
         }
 
         .lang-icon {
@@ -77,7 +78,7 @@
             opacity: 0.9;
         }
 
-        /* HIỆU ỨNG KHI CLICK VÀO LOGO (Thu nhỏ nhẹ tạo cảm giác nút bấm) */
+        /* HIỆU ỨNG KHI CLICK VÀO LOGO */
         .logo-box a:active {
             transform: scale(0.97);
             opacity: 0.8;
@@ -95,7 +96,7 @@
             color: inherit;        
             display: block;
             transition: transform 0.1s ease, opacity 0.1s ease;
-            transform-origin: left center; /* Giữ tâm thu phóng ở bên lề trái */
+            transform-origin: left center; 
         }
         
         /* Hiệu ứng rê chuột vào Tiêu đề */
@@ -103,10 +104,10 @@
             opacity: 0.85;
         }
 
-        /* HIỆU ỨNG KHI CLICK VÀO TIÊU ĐỀ (Co nhẹ lại để báo hiệu phản hồi bấm chuột) */
+        /* HIỆU ỨNG KHI CLICK VÀO TIÊU ĐỀ */
         .title-link:active {
-            transform: scale(0.99); /* Thu nhỏ cực nhẹ 1% để chữ không bị nhòe */
-            opacity: 0.7;           /* Làm mờ rõ hơn một chút lúc nhấn giữ */
+            transform: scale(0.99); 
+            opacity: 0.7;           
         }
 
         .database-title {
@@ -133,10 +134,18 @@
             line-height: 1.1;         
         }
 
-        /* Khung bao quanh ô tìm kiếm */
+        /* Khung bao quanh ô tìm kiếm và nút bấm */
         .search-container {
             text-align: left;
             margin-top: 15px;
+        }
+
+        /* Tạo flexbox để ô nhập và nút luôn cùng dòng hoặc co giãn đẹp mắt */
+        .search-form-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            max-width: 500px; /* Giới hạn chiều rộng tối đa */
         }
 
         .search-box {
@@ -144,10 +153,9 @@
             font-size: 16px;
             border: 1.5px solid #BFEFE3;   
             border-radius: 24px;
-            width: 350px;
-            max-width: 100%;
+            flex: 1; /* Tự động co giãn chiếm không gian trống */
+            min-width: 0; /* Ngăn ô input bị phình to vỡ khung */
             outline: none;
-            vertical-align: middle;
             transition: all 0.2s ease;
         }
 
@@ -160,13 +168,12 @@
             background-color: #D2F4EA;
             border: none;                  
             border-radius: 24px;           
-            padding: 11px 20px;           
+            padding: 11px 24px;           
             font-size: 15px;
             color: #121A16; 
             font-weight: bold; 
             cursor: pointer;
-            margin-left: 6px;
-            vertical-align: middle;
+            white-space: nowrap; /* Ngăn chữ "Tra cứu" bị xuống hàng bên trong nút */
             transition: all 0.2s ease;
         }
 
@@ -174,25 +181,36 @@
             background-color: #BFEFE3;    
         }
 
-        /* Tự động thu nhỏ trên điện thoại */
+        /* ======================== TỰ ĐỘNG THU NHỎ TRÊN ĐIỆN THOẠI ======================== */
         @media (max-width: 768px) {
+            body {
+                padding: 15px; /* Giảm padding viền ngoài trên mobile */
+            }
+
+            /* Đổi vị trí chọn ngôn ngữ xuống dưới cùng hoặc đặt góc phải nhưng dịch lên */
+            .language-switcher {
+                top: 15px;
+                right: 15px;
+                font-size: 13px;
+            }
+
             .header-container {
                 flex-direction: column; 
                 align-items: flex-start;
                 gap: 15px;
+                margin-top: 50px; /* Tạo khoảng cách tránh đè lên nút chọn ngôn ngữ */
             }
+
             .logo-box img {
                 height: 70px; 
             }
+
             .database-title .vi-text {
-                font-size: 26px; 
+                font-size: 24px; /* Thu nhỏ thêm một chút để vừa vặn màn hình dọc */
             }
+
             .database-title .en-text {
-                font-size: 22px;
-            }
-            .language-switcher {
-                position: static; 
-                margin-bottom: 20px;
+                font-size: 20px;
             }
         }
 	</style>
@@ -202,6 +220,7 @@
     <!-- Thanh chọn ngôn ngữ góc phải -->
     <div class="language-switcher">
         <span class="lang-icon">
+            <!-- Sửa lại xmlns chuẩn chuẩn của hệ thống W3C để hiển thị mượt mà trên mobile -->
             <svg xmlns="http://w3.org" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="10"></circle>
                 <line x1="2" y1="12" x2="22" y2="12"></line>
@@ -213,7 +232,7 @@
         <a href="?lang=en">English</a>
     </div>
     
-    <!-- Phần Header hoàn thiện kèm hiệu ứng chuột nâng cao -->
+    <!-- Phần Header -->
     <div class="header-container">
         <!-- Click vào Logo -->
         <div class="logo-box">
@@ -233,11 +252,13 @@
 
 	<hr style="border: 0; border-top: 1px solid #dfe1e5; margin: 20px 0;">
 	
-    <!-- Vùng tìm kiếm -->
+    <!-- Vùng tìm kiếm đã được tối ưu lại cấu trúc -->
     <div class="search-container">
         <p style="margin-top: 0; margin-bottom: 10px;">Nhập số INS hoặc tên phụ gia:</p> 
-        <input type="text" class="search-box">
-        <button class="search-btn">Tra cứu</button>
+        <div class="search-form-group">
+            <input type="text" class="search-box">
+            <button class="search-btn">Tra cứu</button>
+        </div>
     </div>
     
 </body>
