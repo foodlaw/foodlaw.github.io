@@ -157,50 +157,51 @@
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Hiệu ứng Focus phát sáng nhẹ nhàng theo tông hồng cánh sen đậm */
+        /* Hiệu ứng Focus phát sáng nhẹ nhàng theo tông hồng trầm mới */
         .search-box:focus {
-            border-color: #DB2777; 
-            box-shadow: 0 0 0 3px rgba(219, 39, 119, 0.15); 
+            border-color: #C2410C; 
+            box-shadow: 0 0 0 3px rgba(194, 65, 12, 0.1); 
         }
         
         .search-box::placeholder {
             color: #A0AEC0;
         }
 
-        /* CẬP NHẬT: Nút bấm màu Hồng Cánh Sen Đậm (Deep Rose) phối chữ Trắng sang trọng */
+        /* ĐỔI MỚI: Tông màu hồng đỏ trầm (Muted Berry/Rose) sang trọng, giảm độ tươi gắt */
         .search-btn {
             height: 46px; 
             box-sizing: border-box;
-            /* Gradient mượt mà đi từ tông hồng dâu sáng xuống hồng sen đậm đà */
-            background: linear-gradient(180deg, #EC4899 0%, #DB2777 100%);
+            /* Gradient đi từ hồng tro sang đỏ berry trầm uých tín */
+            background: linear-gradient(180deg, #D946EF 0%, #C026D3 100%); /* Mã màu này đã được hạ độ tươi, cho cảm giác đầm và sâu hơn */
+            background: linear-gradient(180deg, #CE4A7E 0%, #B33665 100%); /* Hồng đỏ vỏ đỗ siêu sang */
             border: none;                   
             border-radius: 8px; 
             padding: 0 28px;           
             font-family: inherit;
             font-size: 16.5px; 
-            color: #FFFFFF;            /* BẮT BUỘC: Chữ trắng trên nền đậm nhìn sẽ cực sang và rõ nét */
+            color: #FFFFFF;            
             font-weight: 600;          
             cursor: pointer;
             white-space: nowrap; 
             display: inline-flex;
             align-items: center; 
             justify-content: center;
-            box-shadow: 0 4px 10px rgba(219, 39, 119, 0.2); /* Đổ bóng mờ mịn tông hồng đậm */
+            box-shadow: 0 4px 10px rgba(179, 54, 101, 0.15); 
             transition: all 0.2s ease;
         }
 
-        /* Hiệu ứng hover khi rê chuột vào */
+        /* Hiệu ứng hover mềm mại */
         .search-btn:hover {
-            background: linear-gradient(180deg, #DB2777 0%, #BE185D 100%);
+            background: linear-gradient(180deg, #B33665 0%, #942650 100%);
             transform: translateY(-1px); 
-            box-shadow: 0 6px 14px rgba(219, 39, 119, 0.3); 
+            box-shadow: 0 6px 14px rgba(179, 54, 101, 0.25); 
         }
 
         /* Hiệu ứng tương tác khi nhấn giữ nút click */
         .search-btn:active {
-            background: #9D174D; 
+            background: #7A1D40; 
             transform: translateY(0);    
-            box-shadow: 0 2px 6px rgba(219, 39, 119, 0.15);
+            box-shadow: 0 2px 6px rgba(179, 54, 101, 0.15);
         }
 
         /* Đường phân cách thanh lịch */
@@ -249,7 +250,7 @@
     <div class="search-container">
         <p>Nhập số INS hoặc tên phụ gia:</p> 
         <div class="search-form-group">
-            <input type="text" class="search-box">
+            <input type="text" class="search-box" placeholder="Ví dụ: 100(i), Curcumin">
             <button class="search-btn">Tra cứu</button>
         </div>
     </div>
