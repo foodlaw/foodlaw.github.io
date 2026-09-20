@@ -4,7 +4,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Food Standards Database</title>
-    <!-- ĐÃ SỬA: Đường link nhúng font chữ Inter chuẩn xác để giao diện hết phèn -->
+    <!-- Đường link nhúng font chữ Inter chuẩn xác -->
     <link href="https://googleapis.com" rel="stylesheet">
 	
 	<style>
@@ -103,6 +103,7 @@
             gap: 6px;                 
         }
 
+        /* Tiêu đề tiếng Việt màu đen hiện đại */
         .database-title .vi-text {
             color: #1A202C;        
             font-weight: 700;       
@@ -110,6 +111,7 @@
             line-height: 1.2;         
         }
 
+        /* Tiêu đề tiếng Anh màu xanh lá cây */
         .database-title .en-text {
             color: #38A169;       
             font-weight: 600;       
@@ -123,7 +125,7 @@
             margin-top: 24px;
         }
 
-        /* Khôi phục chữ chỉ dẫn ban đầu */
+        /* Chữ chỉ dẫn ban đầu */
         .search-container p {
             margin-top: 0; 
             margin-bottom: 10px;
@@ -155,49 +157,50 @@
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Hiệu ứng Focus phát sáng nhẹ nhàng theo tông màu nút */
+        /* Hiệu ứng Focus phát sáng nhẹ nhàng theo tông hồng cánh sen đậm */
         .search-box:focus {
-            border-color: #800020; 
-            box-shadow: 0 0 0 3px rgba(128, 0, 32, 0.12); 
+            border-color: #DB2777; 
+            box-shadow: 0 0 0 3px rgba(219, 39, 119, 0.15); 
         }
         
         .search-box::placeholder {
             color: #A0AEC0;
         }
 
-        /* Nút bấm màu Đỏ Đô bản cuối cùng: chữ to hơn 10%, căn tâm dọc hoàn hảo */
+        /* CẬP NHẬT: Nút bấm màu Hồng Cánh Sen Đậm (Deep Rose) phối chữ Trắng sang trọng */
         .search-btn {
             height: 46px; 
             box-sizing: border-box;
-            background: linear-gradient(180deg, #940025 0%, #800020 100%);
-            border: 1px solid #70001B;                  
+            /* Gradient mượt mà đi từ tông hồng dâu sáng xuống hồng sen đậm đà */
+            background: linear-gradient(180deg, #EC4899 0%, #DB2777 100%);
+            border: none;                   
             border-radius: 8px; 
             padding: 0 28px;           
             font-family: inherit;
-            font-size: 16.5px; /* Kích thước chữ đã tăng thêm 10% */
-            color: #FFFFFF;            
-            font-weight: 600; 
+            font-size: 16.5px; 
+            color: #FFFFFF;            /* BẮT BUỘC: Chữ trắng trên nền đậm nhìn sẽ cực sang và rõ nét */
+            font-weight: 600;          
             cursor: pointer;
             white-space: nowrap; 
             display: inline-flex;
             align-items: center; 
             justify-content: center;
-            box-shadow: 0 4px 12px rgba(128, 0, 32, 0.16); 
+            box-shadow: 0 4px 10px rgba(219, 39, 119, 0.2); /* Đổ bóng mờ mịn tông hồng đậm */
             transition: all 0.2s ease;
         }
 
         /* Hiệu ứng hover khi rê chuột vào */
         .search-btn:hover {
-            background: linear-gradient(180deg, #800020 0%, #66001A 100%);
+            background: linear-gradient(180deg, #DB2777 0%, #BE185D 100%);
             transform: translateY(-1px); 
-            box-shadow: 0 6px 16px rgba(128, 0, 32, 0.28); 
+            box-shadow: 0 6px 14px rgba(219, 39, 119, 0.3); 
         }
 
         /* Hiệu ứng tương tác khi nhấn giữ nút click */
         .search-btn:active {
-            background: #4D0013; 
+            background: #9D174D; 
             transform: translateY(0);    
-            box-shadow: 0 2px 6px rgba(128, 0, 32, 0.15);
+            box-shadow: 0 2px 6px rgba(219, 39, 119, 0.15);
         }
 
         /* Đường phân cách thanh lịch */
@@ -205,50 +208,6 @@
             border: 0; 
             border-top: 1px solid #E2E8F0; 
             margin: 24px 0;
-        }
-
-        /* ======================== RESPONSIVE CHO ĐIỆN THOẠI ======================== */
-        @media (max-width: 768px) {
-            body {
-                padding: 16px; 
-            }
-
-            .language-switcher {
-                position: static; 
-                justify-content: center;
-                margin-bottom: 24px;
-            }
-
-            .header-container {
-                flex-direction: column; 
-                align-items: center;
-                text-align: center;
-                gap: 16px;
-                margin-top: 8px;
-                margin-bottom: 24px;
-            }
-
-            .database-title {
-                text-align: center; 
-            }
-
-            .logo-box img {
-                height: 72px; 
-            }
-
-            .database-title .vi-text {
-                font-size: 5.8vw; 
-                white-space: nowrap; 
-            }
-
-            .database-title .en-text {
-                font-size: 4.6vw;
-                white-space: nowrap;
-            }
-            
-            .search-form-group {
-                max-width: 100%;
-            }
         }
 	</style>
 </head>
@@ -268,7 +227,7 @@
         <a href="?lang=en">English</a>
     </div>
     
-    <!-- Phần Header hoàn thiện kèm hiệu ứng màu sắc mới -->
+    <!-- Phần Header hoàn thiện -->
     <div class="header-container">
         <div class="logo-box">
             <a href="/">
