@@ -2,10 +2,11 @@
 <html lang="vi">
 <head>
 	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>FoodStanDB</title>
 	
 	<style>
-        /* Toàn bộ khung bao quanh trang để định vị nút ngôn ngữ tuyệt đối */
+        /* Khung bao quanh trang */
         body {
             background-color: #f8f9f9; 
             color: #333333; 
@@ -15,7 +16,7 @@
             position: relative;
         }
 
-        /* Thanh chọn ngôn ngữ ở góc trên bên phải */
+        /* Thanh chọn ngôn ngữ */
         .language-switcher {
             position: absolute;
             top: 20px;
@@ -26,7 +27,6 @@
             color: #666666;
         }
 
-        /* Icon quả cầu nhỏ - Xanh lá đậm */
         .lang-icon {
             margin-right: 6px;
             display: inline-flex;
@@ -34,7 +34,6 @@
             color: #15803d;
         }
 
-        /* Định dạng các đường link ngôn ngữ */
         .language-switcher a {
             color: #666666;
             text-decoration: none;
@@ -45,37 +44,43 @@
             color: #15803d;
         }
 
-        /* Ngôn ngữ đang hoạt động (in đậm) */
         .language-switcher .active {
             font-weight: bold;
             color: #121A16;
             pointer-events: none;
         }
 
-        /* Dấu gạch đứng phân cách */
         .lang-divider {
             margin: 0 8px;
             color: #ccc;
         }
 
-        /* KHUNG HEADER ĐÃ PHÓNG TO GẤP 1.2 LẦN */
+        /* Khung Header chuẩn tỉ lệ vàng của bạn */
         .header-container {
             display: flex;
-            align-items: center;        /* Căn logo chính giữa khối chữ theo chiều dọc */
-            justify-content: flex-start; /* Canh trái toàn bộ header */
-            gap: 28px;                  /* Tăng từ 20px lên 28px (~x1.2) */
+            align-items: center;        
+            justify-content: flex-start; 
+            gap: 30px;                  
             margin-top: 40px;           
             margin-bottom: 25px;
         }
 
-        /* Khung định dạng logo bông sen (To gấp 1.2 lần) */
+        /* Hiệu ứng mượt mà khi rê chuột vào logo */
+        .logo-box a {
+            display: block;
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+        .logo-box a:hover {
+            transform: scale(1.02); /* Phóng to nhẹ 2% khi di chuột vào */
+            opacity: 0.9;
+        }
+
         .logo-box img {
-            height: 86px; /* Tăng từ 72px lên 86px (gấp 1.2 lần) */
+            height: 93px; 
             width: auto;  
             display: block;
         }
 
-        /* Khối chữ tiêu đề đã phóng to */
         .database-title {
             font-family: sans-serif;
             text-align: left; 
@@ -86,23 +91,21 @@
             gap: 5px;                 
         }
 
-        /* Dòng chữ Tiếng Việt (To gấp 1.2 lần) */
         .database-title .vi-text {
             color: #333333;        
             font-weight: 700;       
-            font-size: 34px;          /* Tăng từ 28px lên 34px (gấp 1.2 lần) */
+            font-size: 37px;          
             line-height: 1.1;         
         }
 
-        /* Dòng chữ Tiếng Anh (To gấp 1.2 lần) */
         .database-title .en-text {
             color: #8ADDC6;         
             font-weight: 600;       
-            font-size: 30px;          /* Tăng từ 25px lên 30px (gấp 1.2 lần) */
+            font-size: 32px;          
             line-height: 1.1;         
         }
 
-        /* Khung bao quanh ô tìm kiếm để đảm bảo canh trái đồng bộ */
+        /* Khung bao quanh ô tìm kiếm */
         .search-container {
             text-align: left;
             margin-top: 15px;
@@ -120,7 +123,6 @@
             transition: all 0.2s ease;
         }
 
-        /* Hiệu ứng viền khi bấm chuột vào ô nhập */
         .search-box:focus {
             border-color: #52C4A5;        
             box-shadow: 0 0 0 3px rgba(191, 239, 227, 0.6); 
@@ -140,9 +142,30 @@
             transition: all 0.2s ease;
         }
 
-        /* Hiệu ứng khi rê chuột vào nút bấm */
         .search-btn:hover {
             background-color: #BFEFE3;    
+        }
+
+        /* TỰ ĐỘNG THU NHỎ KHI XEM TRÊN ĐIỆN THOẠI */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column; /* Xếp dọc logo và chữ trên điện thoại */
+                align-items: flex-start;
+                gap: 15px;
+            }
+            .logo-box img {
+                height: 70px; /* Thu nhỏ logo một chút */
+            }
+            .database-title .vi-text {
+                font-size: 26px; /* Thu nhỏ chữ */
+            }
+            .database-title .en-text {
+                font-size: 22px;
+            }
+            .language-switcher {
+                position: static; /* Đẩy nút ngôn ngữ xuống dưới, không bị đè chữ */
+                margin-bottom: 20px;
+            }
         }
 	</style>
 </head>
@@ -162,16 +185,14 @@
         <a href="?lang=en">English</a>
     </div>
     
-    <!-- Phần Header chèn Logo và Tiêu đề kích thước lớn -->
+    <!-- Phần Header hoàn thiện -->
     <div class="header-container">
-        <!-- Vùng chèn logo -->
         <div class="logo-box">
             <a href="/">
                 <img src="logo.png" alt="FoodStanDB Logo">
             </a>
         </div>
         
-        <!-- Tiêu đề website -->
         <h1 class="database-title">
             <span class="vi-text">Tra Cứu Phụ Gia Thực Phẩm Việt Nam</span>
             <span class="en-text">Vietnam Food Additives Database</span>
@@ -180,7 +201,7 @@
 
 	<hr style="border: 0; border-top: 1px solid #dfe1e5; margin: 20px 0;">
 	
-    <!-- Vùng tìm kiếm canh trái -->
+    <!-- Vùng tìm kiếm -->
     <div class="search-container">
         <p style="margin-top: 0; margin-bottom: 10px;">Nhập số INS hoặc tên phụ gia:</p> 
         <input type="text" class="search-box">
