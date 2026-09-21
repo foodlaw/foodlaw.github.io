@@ -749,26 +749,37 @@
             }
         });
     }
-// --- TÍNH NĂNG TỰ ĐỘNG ĐẾM VÀ HIỂN THỊ SỐ LƯỢT XEM TỐI GIẢN ---
-    function initPageCounter() {
-        const viewCountEl = document.getElementById('viewCount');
-        if (!viewCountEl) return;
+// --- ĐÃ NÂNG CẤP: ĐẾM LƯỢT XEM ĐỒNG BỘ TOÀN CẦU QUA SATELLITE API ---
+function initPageCounter() {
+    const viewCountEl = document.getElementById('viewCount');
+    if (!viewCountEl) return;
 
-        // Lưu và tự động tăng lượt truy cập local trong bộ nhớ trình duyệt
-        let localViews = localStorage.getItem('page_views') || 0;
-        localViews = parseInt(localViews) + 1;
-        localStorage.setItem('page_views', localViews);
-        
-        // Đặt số lượt xem cơ sở về 0 để bắt đầu đếm chuẩn xác từ đầu
-        let baseViews = 0; 
-        let totalViews = baseViews + localViews;
-        
-        // Định dạng dấu phẩy phân tách hàng nghìn tự động (Ví dụ: 1,241)
-        viewCountEl.textContent = totalViews.toLocaleString();
-    }
+    // ĐẶT TÊN ĐỘC QUYỀN CỦA BẠN: Hãy thay chữ 'my_unique_additive_db_2026' 
+    // bằng một chuỗi viết liền không dấu, không khoảng trắng tùy ý bạn (để tránh trùng với người khác)
+    const siteId = 'my_unique_additive_db_2026';
 
-    // Chạy bộ đếm ngay khi trang web tải xong cấu trúc giao diện
-    document.addEventListener('DOMContentLoaded', initPageCounter);
+    // Sử dụng dịch vụ đếm lượt truy cập trực tuyến miễn phí công khai
+    fetch(`https://counterapi.dev{siteId}/homepage/up`)
+        .then(res => {
+            if (!res.ok) throw new Error('Mạng chập chờn');
+            return res.json();
+        })
+        .then(data => {
+            // Lấy con số tổng từ internet về và định dạng dấu phẩy hàng nghìn
+            viewCountEl.textContent = Number(data.value).toLocaleString();
+        })
+        .catch(err => {
+            console.warn('API trực tuyến bận, đang dùng bộ đếm thiết bị dự phòng...');
+            // CƠ CHẾ DỰ PHÒNG: Nếu mất mạng hoặc API bận, tự động dùng bộ nhớ máy để không bị lỗi chữ '...'
+            let localViews = localStorage.getItem('page_views') || 0;
+            localViews = parseInt(localViews) + 1;
+            localStorage.setItem('page_views', localViews);
+            viewCountEl.textContent = localViews.toLocaleString();
+        });
+}
+
+// Chạy bộ đếm ngay khi trang web tải xong
+document.addEventListener('DOMContentLoaded', initPageCounter);
 </script>
 </body>
 </html>
