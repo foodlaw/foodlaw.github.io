@@ -569,31 +569,53 @@
 </style>
 <div id="result-container"></div>
 <script>
-    // 1. Khai báo biến hứng dữ liệu (sẽ nhận dữ liệu tự động từ file Excel khi tải trang)
+    // 1. Khai báo biến dữ liệu tổng (nhận dữ liệu tự động từ file Excel khi tải trang)
     let dataDatabase = [];
 
-    // Tự động tải ngầm và đọc dữ liệu file Excel ngay khi trang web mở ra
+    // Tự động tải ngầm và ĐỒNG BỘ ĐIỀN ĐẦY file Excel ngay khi mở trang web
     window.addEventListener('DOMContentLoaded', () => {
-        const fileName = "vnadditivedb.xlsx"; // Tên file Excel chính xác của bạn
+        const fileName = "vnadditivedb.xlsx"; 
 
         fetch(fileName)
             .then(response => {
-                if (!response.ok) {
-                    throw new Error("Không thể tải file Excel. Hãy chắc chắn file nằm chung thư mục với HTML!");
-                }
+                if (!response.ok) throw new Error("Không thể tải file Excel!");
                 return response.arrayBuffer();
             })
             .then(buffer => {
-                // Giải mã tệp Excel bằng thư viện SheetJS đã nhúng ở head
                 const data = new Uint8Array(buffer);
                 const workbook = XLSX.read(data, { type: 'array' });
-                
-                // Đọc dữ liệu từ Sheet đầu tiên
                 const firstSheetName = workbook.SheetNames[0];
                 const worksheet = workbook.Sheets[firstSheetName];
                 
-                // Đổ toàn bộ dữ liệu Excel dạng JSON vào mảng dataDatabase
-                dataDatabase = XLSX.utils.sheet_to_json(worksheet);
+                var rawData = XLSX.utils.sheet_to_json(worksheet);
+                let lastIns = "", lastVi = "", lastEn = "", lastFunc = "", lastSource = "";
+                
+                dataDatabase = rawData.map(item => {
+                    let ins = item.ins !== undefined ? String(item.ins).trim() : "";
+                    let vi = item.vietnamese_name !== undefined ? String(item.vietnamese_name).trim() : "";
+                    let en = item.english_name !== undefined ? String(item.english_name).trim() : "";
+                    let func = item.function !== undefined ? String(item.function).trim() : "";
+                    let source = item.source !== undefined ? String(item.source).trim() : "";
+
+                    if (ins !== "") lastIns = ins; else ins = lastIns;
+                    if (vi !== "") lastVi = vi; else vi = lastVi;
+                    if (en !== "") lastEn = en; else en = lastEn;
+                    if (func !== "") lastFunc = func; else func = lastFunc;
+                    if (source !== "") lastSource = source; else source = lastSource;
+
+                    return {
+                        ins: ins,
+                        vietnamese_name: vi,
+                        english_name: en,
+                        function: func,
+                        cat_no: item.cat_no !== undefined ? String(item.cat_no).trim() : "",
+                        cat_name: item.cat_name !== undefined ? String(item.cat_name).trim() : "",
+                        ml: item.ml !== undefined ? String(item.ml).trim() : "",
+                        note: item.note !== undefined ? String(item.note).trim() : "",
+                        note_explanation: item.note_explanation !== undefined ? String(item.note_explanation).trim() : "",
+                        source: source
+                    };
+                });
                 console.log("Đã nạp dữ liệu Excel thành công! Tổng số dòng:", dataDatabase.length);
             })
             .catch(error => {
@@ -606,7 +628,7 @@
     const searchBtn = document.querySelector('.search-btn');
     const resultContainer = document.getElementById('result-container');
 
-    // 3. Hàm xử lý tìm kiếm và tạo bảng kết quả (Đã tối ưu thuật toán tìm kiếm tràn dòng cho Excel trống ô)
+    // 3. Hàm xử lý tìm kiếm và tạo bảng kết quả
     function performSearch() {
         if (!insInput || !resultContainer) {
             console.error("Lỗi: Không tìm thấy ô nhập liệu hoặc khung chứa kết quả!");
@@ -615,71 +637,33 @@
 
         const keyword = insInput.value.trim().toLowerCase();
         
-        // Kiểm tra nếu ô tìm kiếm trống
         if (keyword === "") {
             resultContainer.innerHTML = `<div class="message-error" style="color: #8B0032; font-size: 20px; font-weight: bold; margin-top: 40px;">💬 Vui lòng nhập số INS hoặc tên phụ gia, ví dụ 100(i), Curcumin...</div>`;
             return;
         }
         
-        // THUẬT TOÁN GHI NHỚ: Tự động ghi nhớ thông tin điền đầy từ dòng trên xuống dòng dưới khi lọc dữ liệu
-        let currentIns = "";
-        let currentViName = "";
-        let currentEnName = "";
-        let currentFunc = "";
-        let currentSource = "";
-
         const filteredResults = dataDatabase.filter(item => {
-            // Nếu dòng hiện tại có chứa thông tin thì cập nhật vào biến ghi nhớ
-            if (item.ins !== undefined) currentIns = String(item.ins).trim().toLowerCase();
-            if (item.vietnamese_name !== undefined) currentViName = String(item.vietnamese_name).trim().toLowerCase();
-            if (item.english_name !== undefined) currentEnName = String(item.english_name).trim().toLowerCase();
+            const insStr = item.ins ? String(item.ins).toLowerCase() : "";
+            const viNameStr = item.vietnamese_name ? String(item.vietnamese_name).toLowerCase() : "";
+            const enNameStr = item.english_name ? String(item.english_name).toLowerCase() : "";
             
-            // Tiến hành đối chiếu từ khóa với dữ liệu đã được điền đầy ngầm
-            return currentIns.includes(keyword) || currentViName.includes(keyword) || currentEnName.includes(keyword);
+            return insStr.includes(keyword) || viNameStr.startsWith(keyword) || enNameStr.startsWith(keyword);
         });
         
-        // Nếu không tìm thấy kết quả phù hợp
         if (filteredResults.length === 0) {
             resultContainer.innerHTML = `<div class="message-error" style="color: #8B0032; font-size: 20px; font-weight: bold; margin-top: 40px;">💬 Không tìm thấy kết quả phù hợp.</div>`;
             return;
         }
         
-        // Dựng chuỗi HTML các dòng (Tự động bù thông tin chung vào các ô trống để khi lên giao diện không bị trắng tinh)
         let tableRows = "";
-        currentIns = ""; currentViName = ""; currentEnName = ""; currentFunc = ""; currentSource = "";
-
         filteredResults.forEach(item => {
-            if (item.ins !== undefined) currentIns = String(item.ins);
-            if (item.vietnamese_name !== undefined) currentViName = String(item.vietnamese_name);
-            if (item.english_name !== undefined) currentEnName = String(item.english_name);
-            if (item.function !== undefined) currentFunc = String(item.function);
-            if (item.source !== undefined) currentSource = String(item.source);
-
-            tableRows += `
-                <tr>
-                    <td class="col-ins"><b>${currentIns}</b></td>
-                    <td class="col-viName">${currentViName}</td>
-                    <td class="col-enName">${currentEnName}</td>
-                    
-                    <!-- ĐÃ SỬA: Thêm class="col-func" để phục vụ thuật toán gộp dòng chữ Phẩm màu -->
-                    <td class="col-func">${currentFunc}</td>
-                    
-                    <td>${item.cat_no !== undefined ? String(item.cat_no) : ''}</td>
-                    <td>${item.cat_name !== undefined ? String(item.cat_name) : ''}</td>
-                    <td class="ml-highlight">${item.ml !== undefined ? String(item.ml) : ''}</td>
-                    <td>${item.note !== undefined ? String(item.note) : ''}</td>
-                    <td>${item.note_explanation !== undefined ? String(item.note_explanation) : ''}</td>
-                    <td><small style="color: #718096;">${currentSource}</small></td>
-                </tr>
-            `;
+            tableRows += `<tr><td class="col-ins"><b>${item.ins}</b></td><td class="col-viName">${item.vietnamese_name}</td><td class="col-enName">${item.english_name}</td><td class="col-func">${item.function}</td><td>${item.cat_no}</td><td>${item.cat_name}</td><td class="ml-highlight">${item.ml}</td><td>${item.note}</td><td>${item.note_explanation}</td><td><small style="color: #718096;">${item.source}</small></td></tr>`;
         });
 
-        // Đổ toàn bộ cấu trúc giao diện mới vào vùng chứa
         resultContainer.innerHTML = `
             <div class="results-wrapper">
                 <h2 class="results-title">Kết quả</h2>
                 <p class="showing-text" style="margin-top: 10px;">Có ${filteredResults.length} kết quả tìm kiếm</p>
-                
                 <div class="table-responsive">
                     <table class="result-table">
                         <thead>
@@ -700,8 +684,6 @@
                             ${tableRows}
                         </tbody>
                     </table>
-                    
-                    <!-- THANH CHỨC NĂNG DƯỚI ĐÁY BẢNG -->
                     <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px; background: #ffffff; border-top: 1px solid #EDF2F7; font-size: 13px; color: #4A5568; gap: 15px; flex-wrap: wrap;">
                         <div style="display: flex; gap: 10px;">
                             <button class="btn-export" onclick="exportTableToExcel()" style="margin: 0;">📄 Xuất file Excel</button>
@@ -711,11 +693,10 @@
             </div>
         `;
 
-        // Kích hoạt thuật toán gộp ô tự động chạy ngay sau khi bảng vừa hiển thị
         mergeTableCells();
     }
 
-    // 4. Thuật toán chạy ngầm tự động gộp ô trùng nhau (ĐÃ SỬA: Bổ sung thêm '.col-func' để gộp cả cột Chức năng)
+    // 4. Thuật toán chạy ngầm tự động gộp ô trùng nhau cho 4 cột đầu tiên
     function mergeTableCells() {
         const columnsToMerge = ['.col-ins', '.col-viName', '.col-enName', '.col-func'];
         
@@ -729,11 +710,9 @@
                     mainCell = cell;
                     mainCell.rowSpan = 1;
                 } else if (cellText === mainCell.textContent.trim() && cellText !== "") {
-                    // Nếu dữ liệu ô dưới trùng ô trên thì tăng độ rộng gộp và ẩn ô dưới đi
                     mainCell.rowSpan += 1;
                     cell.style.display = 'none';
                 } else {
-                    // Khi gặp một chất phụ gia mới khác tên
                     mainCell = cell;
                     mainCell.rowSpan = 1;
                 }
@@ -741,7 +720,7 @@
         });
     }
 
-    // 5. Hàm xử lý xuất ngược bảng dữ liệu hiển thị thành file Excel (.xlsx) chuẩn (ĐÃ HOÀN THIỆN ĐỦ NGOẶC)
+    // 5. Hàm xử lý xuất ngược bảng dữ liệu hiển thị thành file Excel (.xlsx) chuẩn
     function exportTableToExcel() {
         const table = document.querySelector(".result-table");
         if (!table) {
@@ -752,7 +731,7 @@
         XLSX.writeFile(wb, "Ket_Qua_Tra_Cuu_Phu_Gia.xlsx");
     }
 
-    // 6. Gắn các sự kiện lắng nghe tương tác chuột và bàn phím (ĐÃ BỔ SUNG ĐẦY ĐỦ)
+    // 6. Gắn các sự kiện lắng nghe tương tác chuột và phím Enter từ người dùng
     if (searchBtn) searchBtn.addEventListener('click', performSearch);
     if (insInput) {
         insInput.addEventListener('keypress', function(event) {
