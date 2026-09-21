@@ -324,29 +324,30 @@
 
     <style>
         /* Định dạng hộp Disclaimer nổi khối tràn viền e */
-        .disclaimer-box {
-            background-color: #FFF1F2; /* Nền hồng phấn siêu nhạt */
-            border: none;              /* Xóa bỏ hoàn toàn viền cứng để hết bẹt phẳng */
-            border-radius: 6px;        
-            padding: 16px 20px;
-            margin-top: 40px;         /* Khoảng cách vừa vặn với thanh tìm kiếm phía trên */
-            margin-bottom: 24px;
-            width: 100%;
-		max-width: 100%;          /* Chiều rộng bằng khít với ô tìm kiếm */
-            box-sizing: border-box;
-            
-            /* ĐÃ CẬP NHẬT: Đổ bóng mờ diện rộng giúp hộp tự nổi khối lên khỏi nền web cực sang */
-            box-shadow: 0 6px 16px 0 rgba(225, 117, 153, 0.12), 0 1px 3px 0 rgba(0, 0, 0, 0.04);
-            
-            /* Tạo hiệu ứng chuyển động mượt mà khi di chuột */
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
+.disclaimer-box {
+    background-color: #EDFDE0; /* Nền xanh lá cốm sữa nhạt cực dịu */
+    border: none;              /* Xóa bỏ hoàn toàn viền cứng để hết bẹt phẳng */
+    border-radius: 6px;        
+    padding: 16px 20px;
+    margin-top: 40px;         /* Khoảng cách vừa vặn với thanh tìm kiếm phía trên */
+    margin-bottom: 24px;
+    width: 100%;
+    max-width: 100%;          /* Chiều rộng bằng khít với ô tìm kiếm */
+    box-sizing: border-box;
+    
+    /* ĐÃ SỬA: Thay bóng mờ màu hồng sang bóng mờ màu XANH LÁ siêu mịn */
+    box-shadow: 0 6px 16px 0 rgba(56, 161, 105, 0.08), 0 1px 3px 0 rgba(0, 0, 0, 0.03);
+    
+    /* Tạo hiệu ứng chuyển động mượt mà khi di chuột */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
 
-        /* Mẹo UI: Hiệu ứng nhích nhẹ nịnh mắt khi di chuột qua */
-        .disclaimer-box:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 10px 20px 0 rgba(225, 117, 153, 0.16), 0 2px 6px 0 rgba(0, 0, 0, 0.06);
-        }
+/* Mẹo UI: Hiệu ứng nhích nhẹ nịnh mắt khi di chuột qua */
+.disclaimer-box:hover {
+    transform: translateY(-1px);
+    /* ĐÃ SỬA: Đổi bóng hồng đậm khi hover sang bóng XANH LÁ đậm hơn chút để tạo độ sâu */
+    box-shadow: 0 10px 20px 0 rgba(56, 161, 105, 0.12), 0 2px 6px 0 rgba(0, 0, 0, 0.04);
+}
 
         .disclaimer-title {
             display: flex;
