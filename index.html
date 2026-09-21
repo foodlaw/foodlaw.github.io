@@ -617,7 +617,7 @@ function performSearch() {
     
     // Kiểm tra nếu ô tìm kiếm trống
     if (keyword === "") {
-        resultContainer.innerHTML = `<div class="message-error" style="color: #8B0032; font-size: 15px; font-weight: bold;">💡 Vui lòng nhập số INS hoặc tên phụ gia, ví dụ 100(i), Curcumin...</div>`;
+        resultContainer.innerHTML = `<div class="message-error" style="color: #8B0032; font-size: 20px; font-weight: bold;">💬 Vui lòng nhập số INS hoặc tên phụ gia, ví dụ 100(i), Curcumin...</div>`;
         return;
     }
     
@@ -640,7 +640,7 @@ function performSearch() {
     
     // Nếu không tìm thấy kết quả phù hợp
     if (filteredResults.length === 0) {
-        resultContainer.innerHTML = `<div class="message-error" style="color: #8B0032; font-size: 15px; font-weight: bold;">🔍 Không tìm thấy phụ gia nào khớp với từ khóa "${insInput.value}".</div>`;
+        resultContainer.innerHTML = `<div class="message-error" style="color: #8B0032; font-size: 20px; font-weight: bold;">🕵️‍♂️ Không tìm thấy kết quả phù hợp</div>`;
         return;
     }
     
@@ -702,16 +702,6 @@ function performSearch() {
                 <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px; background: #ffffff; border-top: 1px solid #EDF2F7; font-size: 13px; color: #4A5568; gap: 15px; flex-wrap: wrap;">
                     <div style="display: flex; gap: 10px;">
                         <button class="btn-export" onclick="exportTableToExcel()" style="margin: 0;">📄 Xuất file Excel</button>
-                    </div>
-                    <div class="pagination-bar" style="padding: 0; border: none; display: flex; align-items: center;">
-                        <span>Số dòng hiển thị trong mỗi trang: 
-                            <select><option>10</option></select>
-                        </span>
-                        <span style="margin-left: 16px; margin-right: 16px;">1 - ${filteredResults.length} trong tổng số ${filteredResults.length} trang</span>
-                        <button title="Trang đầu">|&lt;</button>
-                        <button title="Trang trước">&lt;</button>
-                        <button title="Trang sau">&gt;</button>
-                        <button title="Trang cuối">&gt;|</button>
                     </div>
                 </div>
             </div>
