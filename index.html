@@ -217,27 +217,22 @@
             }
 
             /* Đưa thanh chọn ngôn ngữ vào luồng nội dung và căn giữa */
-            /* ĐÃ SỬA: Ép toàn bộ khối chọn ngôn ngữ và lượt xem căn giữa tuyệt đối trên mobile */
-    .language-switcher {
-        position: static; 
-        display: flex;
-        flex-direction: column;   
-        align-items: center;      
-        justify-content: center;
-        margin-bottom: 24px;
-        margin-top: 5px;
-        gap: 6px;                 
-        width: 100%;
-    }
+            .language-switcher {
+                position: static; 
+                justify-content: center;
+                margin-bottom: 24px;
+                margin-top: 5px;
+            }
 
-    /* ĐÃ THÊM: Đảm bảo ô con mắt cũng được căn giữa hoàn hảo, không bị lệch */
-    .page-counter {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        margin-top: 0 !important; 
-        text-align: center;
-    }
+            /* Chuyển đổi toàn bộ Header sang dạng căn giữa dọc */
+            .header-container {
+                flex-direction: column; 
+                align-items: center;
+                text-align: center;
+                gap: 15px;
+                margin-top: 10px;
+                margin-bottom: 20px;
+            }
 
             .title-link {
                 transform-origin: center center; 
@@ -279,28 +274,20 @@
 </head>
 <body>
     
-   <!-- Cụm chọn ngôn ngữ kết hợp đếm lượt xem tối giản (ĐÃ SỬA: Biểu tượng quả địa cầu hiển thị chuẩn) -->
-<div class="language-switcher" style="position: absolute; top: 24px; right: 24px; display: flex; flex-direction: column; align-items: flex-end; font-size: 13px; color: #718096; z-index: 10;">
-    <!-- Hàng trên: Thanh lựa chọn ngôn ngữ -->
-    <div>
-        <span class="lang-icon" style="margin-right: 6px; display: inline-flex; align-items: center; color: #38A169;">
-            <!-- ĐÃ SỬA: Cập nhật lại thuộc tính xmlns chuẩn quốc tế của W3C để hiện icon quả địa cầu -->
+    <!-- Thanh chọn ngôn ngữ -->
+    <div class="language-switcher">
+        <span class="lang-icon">
             <svg xmlns="http://w3.org" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="10"></circle>
                 <line x1="2" y1="12" x2="22" y2="12"></line>
                 <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
             </svg>
         </span>
-        <span id="lang-vi" class="active" style="cursor:pointer;">Tiếng Việt</span>
-        <span class="lang-divider" style="margin: 0 8px; color: #E2E8F0;">|</span>
-        <span id="lang-en" style="cursor:pointer;">English</span>
+        <a href="?lang=vi" class="active">Tiếng Việt</a>
+        <span class="lang-divider">|</span>
+        <a href="?lang=en">English</a>
     </div>
     
-    <!-- Hàng dưới: Biểu tượng con mắt và chữ đếm số lượt xem rút từ Google Analytics -->
-    <div class="page-counter" style="margin-top: 6px; display: inline-flex; align-items: center; gap: 4px; font-weight: 500;">
-        👁️ <strong id="viewCount" style="color: #4A5568;">...</strong>
-    </div>
-</div>
     <!-- Phần Header hoàn thiện -->
     <div class="header-container">
         <div class="logo-box">
@@ -749,32 +736,6 @@
             }
         });
     }
-// --- ĐÃ NÂNG CẤP: RÚT SỐ LƯỢT XEM ĐỒNG BỘ CHÍNH XÁC TỪ GOOGLE ANALYTICS (GA4) ---
-function fetchGoogleAnalyticsViews() {
-    const viewCountEl = document.getElementById('viewCount');
-    if (!viewCountEl) return;
-
-    // Mã đo lường Google Analytics độc quyền của bạn đã thiết lập
-    const measurementId = 'G-RJLBDDW0Z2';
-
-    // Đường dẫn API v2 chuẩn xác, đồng bộ 100% trên internet và không bị chặn mạng
-    fetch(`https://counterapi.dev{measurementId}/up`)
-        .then(res => {
-            if (!res.ok) throw new Error('API Google bận hoặc bị chặn');
-            return res.json();
-        })
-        .then(data => {
-            // Lấy con số tổng từ Google Analytics về và tự động phân tách dấu phẩy hàng nghìn
-            viewCountEl.textContent = Number(data.count).toLocaleString();
-        })
-        .catch(err => {
-            console.error('Lỗi kết nối bộ đếm GA4:', err);
-            // Quyết định không tự đếm trên máy nữa, lỗi mạng sẽ hiện dấu ba chấm
-            viewCountEl.textContent = '...';
-        });
-}
-
-// Kích hoạt chạy rút số từ Google Analytics ngay khi trang web tải xong giao diện
-document.addEventListener('DOMContentLoaded', fetchGoogleAnalyticsViews);
+</script>
 </body>
 </html>
