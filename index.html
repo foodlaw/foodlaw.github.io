@@ -694,13 +694,13 @@ if (insInput && suggestionsBox) {
 
         // Giới hạn hiển thị tối đa 10 dòng gợi ý hàng đầu để tránh làm dài màn hình
         if (uniqueSuggestions.length > 0) {
-    uniqueSuggestions.slice(0, 10).forEach(item => {
+    // ĐÃ SỬA: Thay đổi từ .slice(0, 10) thành .slice(0, 20) để hiện tối đa 20 dòng
+    uniqueSuggestions.slice(0, 20).forEach(item => {
         const li = document.createElement('li');
         
-        // ĐÃ SỬA: Đưa số ra phía trước (đã bỏ chữ INS), và đưa tên phụ gia ra phía sau
+        // Khung HTML số đứng trước tên đứng sau của bạn giữ nguyên:
         li.innerHTML = `<span style="display: flex; gap: 12px; align-items: center;"><span class="suggest-ins">${item.ins}</span><span>${item.name}</span></span>`;
         
-        // Các đoạn mã click chọn phía dưới giữ nguyên...
         li.addEventListener('click', () => {
             insInput.value = item.name;
             suggestionsBox.style.display = "none";
