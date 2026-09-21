@@ -212,41 +212,42 @@
 
         /* ======================== TỰ ĐỘNG THU NHỎ & CÂN ĐỐI TRÊN ĐIỆN THOẠI ======================== */
         @media (max-width: 768px) {
-            body {
-                padding: 16px; 
-            }
+    body {
+        padding: 16px; 
+    }
 
-            /* ĐÃ SỬA: Ép toàn bộ khối chọn ngôn ngữ và lượt xem căn giữa tuyệt đối trên mobile */
+    /* ĐÃ KHẮC PHỤC LỖI: Thêm !important để ép trình duyệt bỏ thuộc tính viết tay trên HTML */
     .language-switcher {
-        position: static; 
-        display: flex;
-        flex-direction: column;   
-        align-items: center;      
-        justify-content: center;
+        position: static !important; /* Bắt buộc hủy bỏ nép góc phải trên điện thoại */
+        display: flex !important;    /* Bắt buộc bật flexbox */
+        flex-direction: column !important;   /* Xếp dòng ngôn ngữ ở trên, con mắt ở dưới */
+        align-items: center !important;      /* Căn giữa tăm tắp theo chiều ngang */
+        justify-content: center !important;
         margin-bottom: 24px;
         margin-top: 5px;
         gap: 6px;                 
-        width: 100%;
+        width: 100% !important;
     }
 
-    /* ĐÃ THÊM: Đảm bảo ô con mắt cũng được căn giữa hoàn hảo, không bị lệch */
+    /* Đảm bảo ô con mắt cũng được căn giữa hoàn hảo trên điện thoại */
     .page-counter {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
         margin-top: 0 !important; 
         text-align: center;
     }
 
-            /* Chuyển đổi toàn bộ Header sang dạng căn giữa dọc */
-            .header-container {
-                flex-direction: column; 
-                align-items: center;
-                text-align: center;
-                gap: 15px;
-                margin-top: 10px;
-                margin-bottom: 20px;
-            }
+    /* Chuyển đổi toàn bộ Header sang dạng căn giữa dọc */
+    .header-container {
+        flex-direction: column; 
+        align-items: center;
+        text-align: center;
+        gap: 15px;
+        margin-top: 10px;
+        margin-bottom: 20px;
+    }
+    
 
             .title-link {
                 transform-origin: center center; 
