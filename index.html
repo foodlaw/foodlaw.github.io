@@ -274,19 +274,27 @@
 </head>
 <body>
     
-    <!-- Thanh chọn ngôn ngữ -->
-    <div class="language-switcher">
-        <span class="lang-icon">
+<!-- Cụm chọn ngôn ngữ kết hợp đếm lượt xem đèn LED Retro hoàn chỉnh -->
+<div class="language-switcher" style="position: absolute; top: 24px; right: 24px; display: flex; flex-direction: column; align-items: flex-end; font-size: 13px; color: #718096; z-index: 10;">
+    <!-- Hàng trên: Thanh chọn ngôn ngữ Việt | Anh -->
+    <div>
+        <span class="lang-icon" style="margin-right: 6px; display: inline-flex; align-items: center; color: #38A169;">
             <svg xmlns="http://w3.org" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="10"></circle>
                 <line x1="2" y1="12" x2="22" y2="12"></line>
                 <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
             </svg>
         </span>
-        <a href="?lang=vi" class="active">Tiếng Việt</a>
-        <span class="lang-divider">|</span>
-        <a href="?lang=en">English</a>
+        <span id="lang-vi" class="active" style="cursor:pointer;">Tiếng Việt</span>
+        <span class="lang-divider" style="margin: 0 8px; color: #E2E8F0;">|</span>
+        <span id="lang-en" style="cursor:pointer;">English</span>
     </div>
+    
+    <!-- Hàng dưới: Bộ đếm đèn LED Retro đã được cấu hình đúng địa chỉ web -->
+    <div class="page-counter" style="margin-top: 6px; display: inline-flex; align-items: center; gap: 6px; font-weight: 500;">
+        👁️ <img src="https://hits.seamile.dev/foodstandards.github.io?style=odometer" alt="Views" style="height: 20px; vertical-align: middle;">
+    </div>
+</div>
     
     <!-- Phần Header hoàn thiện -->
     <div class="header-container">
