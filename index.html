@@ -749,37 +749,32 @@
             }
         });
     }
-// --- ĐÃ SỬA LỖI TRIỆT ĐỂ: ĐỒNG BỘ TOÀN CẦU QUA MẠNG LƯỚI MOE-COUNTER ---
+// --- BỘ ĐẾM ĐỒNG BỘ TOÀN CẦU THUẦN TÚY (ĐÃ XÓA SẠCH LOCALSTORAGE) ---
 function initPageCounter() {
     const viewCountEl = document.getElementById('viewCount');
     if (!viewCountEl) return;
 
-    // ĐẶT TÊN ĐỘC QUYỀN CỦA BẠN: Hãy thay chữ 'database_phu_gia_thuc_pham_2026'
-    // bằng một chuỗi viết liền không dấu tùy ý để sở hữu kho đếm độc quyền trực tuyến
-    const nameSpace = 'database_phu_gia_thuc_pham_2026';
-    const key = 'main_page';
+    // Định danh độc quyền cho trang web của bạn trên internet
+    const siteId = 'foodstandards_database_2026';
 
-    // Sử dụng lưới đếm mở không bị chặn CORS toàn cầu
-    fetch(`https://getloli.com{nameSpace}-${key}`)
+    // Gọi thẳng lên máy chủ đếm toàn cầu. Không dùng bộ nhớ máy để dự phòng nữa!
+    fetch(`https://counterapi.dev{siteId}/up`)
         .then(res => {
-            if (!res.ok) throw new Error('Không thể kết nối máy chủ đếm');
+            if (!res.ok) throw new Error('API bận');
             return res.json();
         })
         .then(data => {
-            // Lấy con số tổng từ internet về và định dạng dấu phẩy hàng nghìn
+            // Đổ con số tổng duy nhất từ internet về và tự động thêm dấu phẩy hàng nghìn
             viewCountEl.textContent = Number(data.count).toLocaleString();
         })
         .catch(err => {
-            console.warn('Trình duyệt hoặc mạng chặn API, chuyển sang đếm dự phòng nội bộ:', err);
-            // CƠ CHẾ DỰ PHÒNG THÔNG MINH: Nếu mạng của bạn chặn hoàn toàn, tự động dùng bộ nhớ máy
-            let localViews = localStorage.getItem('page_views') || 0;
-            localViews = parseInt(localViews) + 1;
-            localStorage.setItem('page_views', localViews);
-            viewCountEl.textContent = localViews.toLocaleString();
+            console.error('Lỗi kết nối bộ đếm trực tuyến:', err);
+            // Nếu lỗi mạng, giữ nguyên dấu '...' hoặc hiện chữ 'Offline' chứ quyết không tự đếm riêng trên máy
+            viewCountEl.textContent = '---';
         });
 }
 
-// Kích hoạt chạy đếm lượt xem ngay khi tải xong trang web
+// Kích hoạt chạy đếm lượt xem ngay khi trang web tải xong giao diện
 document.addEventListener('DOMContentLoaded', initPageCounter);
 </script>
 </body>
