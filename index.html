@@ -749,28 +749,29 @@
             }
         });
     }
-// --- ĐÃ SỬA LỖI ĐỒNG BỘ: CẬP NHẬT ĐƯỜNG LINK MỚI CHO BỘ ĐẾM TOÀN CẦU ---
+// --- ĐÃ KHẮC PHỤC TRIỆT ĐỂ: ĐỒNG BỘ TOÀN CẦU KHÔNG CẦN TOKEN ---
 function initPageCounter() {
     const viewCountEl = document.getElementById('viewCount');
     if (!viewCountEl) return;
 
-    // ĐẶT TÊN ĐỘC QUYỀN CỦA BẠN: Hãy thay chữ 'tra_cuu_phu_gia_thuc_pham_2026'
-    // bằng một chuỗi viết liền không dấu, không khoảng trắng tùy ý bạn (để không bị trùng số với người khác)
-    const siteId = 'tra_cuu_phu_gia_thuc_pham_2026';
+    // ĐẶT TÊN ĐỘC QUYỀN CỦA BẠN: Hãy đổi chuỗi 'tra_cuu_phu_gia_doc_quyen_2026'
+    // thành một chuỗi viết liền, không dấu, không dấu cách tùy ý bạn để sở hữu kho đếm riêng
+    const namespace = 'tra_cuu_phu_gia_doc_quyen_2026';
+    const key = 'homepage';
 
-    // ĐÃ CẬP NHẬT: Chuyển sang đường dẫn API mới hoạt động ổn định và đồng bộ toàn cầu
-    fetch(`https://counterapi.dev{siteId}/up`)
+    // Sử dụng cổng đếm trực tuyến tự do, đồng bộ lập tức giữa mọi thiết bị trên thế giới
+    fetch(`https://jasoncameron.dev{namespace}/${key}`)
         .then(res => {
-            if (!res.ok) throw new Error('API bận hoặc lỗi kết nối');
+            if (!res.ok) throw new Error('Cổng mạng bận');
             return res.json();
         })
         .then(data => {
-            // Lấy con số tổng chính xác từ internet và định dạng dấu phẩy hàng nghìn
-            viewCountEl.textContent = Number(data.count).toLocaleString();
+            // Lấy dữ liệu tổng từ internet về (Abacus trả về trường value) và định dạng dấu phẩy hàng nghìn
+            viewCountEl.textContent = Number(data.value).toLocaleString();
         })
         .catch(err => {
             console.warn('Đang dùng bộ đếm thiết bị dự phòng do lỗi kết nối mạng:', err);
-            // CƠ CHẾ DỰ PHÒNG: Nếu chập chờn mạng, tự động dùng bộ nhớ máy để giữ con số chạy mượt mà
+            // CƠ CHẾ DỰ PHÒNG: Nếu chập chờn mạng, tự động dùng bộ nhớ máy để giữ giao diện đẹp
             let localViews = localStorage.getItem('page_views') || 0;
             localViews = parseInt(localViews) + 1;
             localStorage.setItem('page_views', localViews);
@@ -778,7 +779,7 @@ function initPageCounter() {
         });
 }
 
-// Kích hoạt chạy đếm lượt xem ngay khi tải trang xong
+// Chạy bộ đếm ngay khi trang web tải xong
 document.addEventListener('DOMContentLoaded', initPageCounter);
 </script>
 </body>
