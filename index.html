@@ -211,21 +211,21 @@
         }
 
         /* ======================== TỰ ĐỘNG THU NHỎ & CÂN ĐỐI TRÊN ĐIỆN THOẠI ======================== */
-       @media (max-width: 768px) {
-    body {
-        padding: 16px; 
-    }
+        @media (max-width: 768px) {
+            body {
+                padding: 16px; 
+            }
 
-    /* ĐÃ SỬA: Ép toàn bộ khối chọn ngôn ngữ và lượt xem căn giữa tuyệt đối trên mobile */
+            /* ĐÃ SỬA: Ép toàn bộ khối chọn ngôn ngữ và lượt xem căn giữa tuyệt đối trên mobile */
     .language-switcher {
         position: static; 
         display: flex;
-        flex-direction: column;   /* Xếp dòng ngôn ngữ ở trên, con mắt ở dưới */
-        align-items: center;      /* Căn giữa tăm tắp theo chiều dọc */
+        flex-direction: column;   
+        align-items: center;      
         justify-content: center;
         margin-bottom: 24px;
         margin-top: 5px;
-        gap: 6px;                 /* Tạo khoảng cách nhỏ vừa vặn giữa 2 dòng */
+        gap: 6px;                 
         width: 100%;
     }
 
@@ -234,26 +234,52 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        margin-top: 0 !important; /* Xóa margin cũ để dùng gap cho chuẩn */
+        margin-top: 0 !important; 
         text-align: center;
     }
 
-    /* Các đoạn code responsive khác của bạn bên dưới giữ nguyên... */
-    .header-container {
-        flex-direction: column; 
-        align-items: center;
-        text-align: center;
-        gap: 15px;
-        margin-top: 10px;
-        margin-bottom: 20px;
-    }
-    /* ... */
-}
+            /* Chuyển đổi toàn bộ Header sang dạng căn giữa dọc */
+            .header-container {
+                flex-direction: column; 
+                align-items: center;
+                text-align: center;
+                gap: 15px;
+                margin-top: 10px;
+                margin-bottom: 20px;
+            }
+
+            .title-link {
+                transform-origin: center center; 
+            }
+
+            .database-title {
+                text-align: center; 
+            }
+
+            .logo-box img {
+                height: 75px; 
+            }
+
+            /* Ép chữ chạy trên một dòng duy nhất và tự động co giãn theo màn hình */
+            .database-title .vi-text {
+                font-size: 5.6vw; 
+                white-space: nowrap; 
+            }
+
+            .database-title .en-text {
+                font-size: 4.5vw;
+                white-space: nowrap;
+            }
+            
+            .search-form-group {
+                max-width: 100%;
+            }
+        }
 	</style>
 </head>
 <body>
     
-        <!-- Cụm chọn ngôn ngữ kết hợp đếm lượt xem (Căn lề phải góc trên) -->
+    <!-- Cụm chọn ngôn ngữ kết hợp đếm lượt xem tối giản -->
 <div class="language-switcher" style="position: absolute; top: 24px; right: 24px; display: flex; flex-direction: column; align-items: flex-end; font-size: 13px; color: #718096; z-index: 10;">
     <div>
         <span class="lang-icon" style="margin-right: 6px; display: inline-flex; align-items: center; color: #38A169;">
@@ -268,7 +294,7 @@
         <span id="lang-en" style="cursor:pointer;">English</span>
     </div>
     
-    <!-- ĐÃ THÊM: Ô hiển thị số lượt xem trang ngay phía dưới dòng ngôn ngữ -->
+    <!-- Khung hiển thị icon con mắt và số lượt xem -->
     <div class="page-counter" style="margin-top: 6px; display: inline-flex; align-items: center; gap: 4px; font-weight: 500;">
         👁️ <strong id="viewCount" style="color: #4A5568;">...</strong>
     </div>
@@ -722,7 +748,7 @@
             }
         });
     }
-    // --- TÍNH NĂNG TỰ ĐỘNG ĐẾM VÀ HIỂN THỊ SỐ LƯỢT XEM TỐI GIẢN ---
+// --- TÍNH NĂNG TỰ ĐỘNG ĐẾM VÀ HIỂN THỊ SỐ LƯỢT XEM TỐI GIẢN ---
     function initPageCounter() {
         const viewCountEl = document.getElementById('viewCount');
         if (!viewCountEl) return;
@@ -732,15 +758,15 @@
         localViews = parseInt(localViews) + 1;
         localStorage.setItem('page_views', localViews);
         
-        // Tạo một số lượt xem cơ sở ban đầu (ví dụ: bắt đầu từ 1,240 lượt) để web trông thực tế
+        // Đặt số lượt xem cơ sở về 0 để bắt đầu đếm chuẩn xác từ đầu
         let baseViews = 0; 
         let totalViews = baseViews + localViews;
         
-        // Định dạng dấu phẩy phân tách hàng nghìn (Ví dụ: 1,241)
+        // Định dạng dấu phẩy phân tách hàng nghìn tự động (Ví dụ: 1,241)
         viewCountEl.textContent = totalViews.toLocaleString();
     }
 
-    // Chạy bộ đếm ngay khi trang web tải xong giao diện
+    // Chạy bộ đếm ngay khi trang web tải xong cấu trúc giao diện
     document.addEventListener('DOMContentLoaded', initPageCounter);
 </script>
 </body>
