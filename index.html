@@ -749,29 +749,29 @@
             }
         });
     }
-// --- ĐÃ KHẮC PHỤC TRIỆT ĐỂ: ĐỒNG BỘ TOÀN CẦU KHÔNG CẦN TOKEN ---
+// --- ĐÃ SỬA LỖI TRIỆT ĐỂ: ĐỒNG BỘ TOÀN CẦU QUA MẠNG LƯỚI MOE-COUNTER ---
 function initPageCounter() {
     const viewCountEl = document.getElementById('viewCount');
     if (!viewCountEl) return;
 
-    // ĐẶT TÊN ĐỘC QUYỀN CỦA BẠN: Hãy đổi chuỗi 'tra_cuu_phu_gia_doc_quyen_2026'
-    // thành một chuỗi viết liền, không dấu, không dấu cách tùy ý bạn để sở hữu kho đếm riêng
-    const namespace = 'tra_cuu_phu_gia_doc_quyen_2026';
-    const key = 'homepage';
+    // ĐẶT TÊN ĐỘC QUYỀN CỦA BẠN: Hãy thay chữ 'database_phu_gia_thuc_pham_2026'
+    // bằng một chuỗi viết liền không dấu tùy ý để sở hữu kho đếm độc quyền trực tuyến
+    const nameSpace = 'database_phu_gia_thuc_pham_2026';
+    const key = 'main_page';
 
-    // Sử dụng cổng đếm trực tuyến tự do, đồng bộ lập tức giữa mọi thiết bị trên thế giới
-    fetch(`https://jasoncameron.dev{namespace}/${key}`)
+    // Sử dụng lưới đếm mở không bị chặn CORS toàn cầu
+    fetch(`https://getloli.com{nameSpace}-${key}`)
         .then(res => {
-            if (!res.ok) throw new Error('Cổng mạng bận');
+            if (!res.ok) throw new Error('Không thể kết nối máy chủ đếm');
             return res.json();
         })
         .then(data => {
-            // Lấy dữ liệu tổng từ internet về (Abacus trả về trường value) và định dạng dấu phẩy hàng nghìn
-            viewCountEl.textContent = Number(data.value).toLocaleString();
+            // Lấy con số tổng từ internet về và định dạng dấu phẩy hàng nghìn
+            viewCountEl.textContent = Number(data.count).toLocaleString();
         })
         .catch(err => {
-            console.warn('Đang dùng bộ đếm thiết bị dự phòng do lỗi kết nối mạng:', err);
-            // CƠ CHẾ DỰ PHÒNG: Nếu chập chờn mạng, tự động dùng bộ nhớ máy để giữ giao diện đẹp
+            console.warn('Trình duyệt hoặc mạng chặn API, chuyển sang đếm dự phòng nội bộ:', err);
+            // CƠ CHẾ DỰ PHÒNG THÔNG MINH: Nếu mạng của bạn chặn hoàn toàn, tự động dùng bộ nhớ máy
             let localViews = localStorage.getItem('page_views') || 0;
             localViews = parseInt(localViews) + 1;
             localStorage.setItem('page_views', localViews);
@@ -779,7 +779,7 @@ function initPageCounter() {
         });
 }
 
-// Chạy bộ đếm ngay khi trang web tải xong
+// Kích hoạt chạy đếm lượt xem ngay khi tải xong trang web
 document.addEventListener('DOMContentLoaded', initPageCounter);
 </script>
 </body>
