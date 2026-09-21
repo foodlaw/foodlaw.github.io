@@ -634,29 +634,30 @@
                 let lastIns = "", lastVi = "", lastEn = "", lastFunc = "", lastSource = "";
                 
                 dataDatabase = rawData.map(item => {
-                    let ins = item.ins !== undefined ? String(item.ins).trim() : "";
-                    let vi = item.vietnamese_name !== undefined ? String(item.vietnamese_name).trim() : "";
-                    let en = item.english_name !== undefined ? String(item.english_name).trim() : "";
-                    let func = item.function !== undefined ? String(item.function).trim() : "";
-                    let source = item.source !== undefined ? String(item.source).trim() : "";
+    // Ép kiểu về chuỗi và xóa khoảng trắng thừa ở đuôi
+    let ins = item.ins !== undefined ? String(item.ins).trim() : "";
+    let vi = item.vietnamese_name !== undefined ? String(item.vietnamese_name).trim() : "";
+    let en = item.english_name !== undefined ? String(item.english_name).trim() : "";
+    let func = item.function !== undefined ? String(item.function).trim() : "";
+    let source = item.source !== undefined ? String(item.source).trim() : "";
 
-                    if (ins !== "") lastIns = ins; else ins = lastIns;
-                    if (vi !== "") lastVi = vi; else vi = lastVi;
-                    if (en !== "") lastEn = en; else en = lastEn;
-                    if (func !== "") lastFunc = func; else func = lastFunc;
-                    if (source !== "") lastSource = source; else source = lastSource;
+    // ĐÃ SỬA: CHỈ điền tràn đối với Mã INS và Tên phụ gia để phục vụ việc gom nhóm gộp dòng.
+    // Cột Chức năng và Nguồn sẽ ĐỂ NGUYÊN theo file Excel (Excel trống thì Web trống).
+    if (ins !== "") lastIns = ins; else ins = lastIns;
+    if (vi !== "") lastVi = vi; else vi = lastVi;
+    if (en !== "") lastEn = en; else en = lastEn;
 
-                    return {
-                        ins: ins,
-                        vietnamese_name: vi,
-                        english_name: en,
-                        function: func,
-                        cat_no: item.cat_no !== undefined ? String(item.cat_no).trim() : "",
-                        cat_name: item.cat_name !== undefined ? String(item.cat_name).trim() : "",
-                        ml: item.ml !== undefined ? String(item.ml).trim() : "",
-                        note: item.note !== undefined ? String(item.note).trim() : "",
-                        note_explanation: item.note_explanation !== undefined ? String(item.note_explanation).trim() : "",
-                        source: source
+    return {
+        ins: ins,
+        vietnamese_name: vi,
+        english_name: en,
+        function: func, // Giữ nguyên thô từ Excel
+        cat_no: item.cat_no !== undefined ? String(item.cat_no).trim() : "",
+        cat_name: item.cat_name !== undefined ? String(item.cat_name).trim() : "",
+        ml: item.ml !== undefined ? String(item.ml).trim() : "",
+        note: item.note !== undefined ? String(item.note).trim() : "",
+        note_explanation: item.note_explanation !== undefined ? String(item.note_explanation).trim() : "",
+        source: source // Giữ nguyên thô từ Excel
                     };
                 });
                 console.log("Đã nạp dữ liệu Excel thành công! Tổng số dòng:", dataDatabase.length);
