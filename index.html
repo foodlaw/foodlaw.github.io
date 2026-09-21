@@ -317,7 +317,7 @@
             <span>Miễn Trừ Trách Nhiệm</span>
         </div>
         <div class="disclaimer-content">
-            <p>Cơ sở dữ liệu này được xây dựng cho mục đích tra cứu thông tin dựa trên Thông tư 24/2019/TT-BYT Quy định về quản lý và sử dụng phụ gia thực phẩm và Thông tư 17/2023/TT-BYT sửa đổi, bổ sung và bãi bỏ một số văn bản quy phạm pháp luật về an toàn thực phẩm do Bộ trưởng Bộ Y tế ban hành, và không thay thế hoặc đóng vai trò như lời khuyên pháp lý chính thức.</p>
+            <p>Cơ sở dữ liệu này được xây dựng cho mục đích tra cứu thông tin dựa trên Thông tư 24/2019/TT-BYT Quy định về quản lý và sử dụng phụ gia thực phẩm và Thông tư 17/2023/TT-BYT Sửa đổi, bổ sung và bãi bỏ một số văn bản quy phạm pháp luật về an toàn thực phẩm do Bộ trưởng Bộ Y tế ban hành, và không thay thế hoặc đóng vai trò như lời khuyên pháp lý chính thức.</p>
             <p>Vui lòng tham khảo các văn bản pháp luật của Bộ Y tế để có thông tin chuẩn xác nhất.</p>
         </div>
     </div>
@@ -371,6 +371,358 @@
         .disclaimer-content p:last-child {
             margin-bottom: 0;
         }
+/* --- CSS CHO KHU VỰC BẢNG KẾT QUẢ TÌM KIẾM --- */
+.results-wrapper {
+    margin-top: 40px;
+    font-family: 'Inter', sans-serif;
+    animation: fadeInResult 0.3s ease;
+}
+
+@keyframes fadeInResult {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.results-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: #1A202C;
+}
+
+.results-subtitle {
+    color: #718096;
+    margin-bottom: 16px;
+    font-size: 14px;
+}
+
+/* Bộ nút xuất dữ liệu Excel/PDF */
+.export-buttons {
+    margin-bottom: 20px;
+}
+
+/* Nâng cấp nút Xuất file: Nền hồng nhạt Gradient, BỎ VIỀN hoàn toàn */
+.btn-export {
+    border: none; /* Bỏ viền cam/hồng cũ */
+    /* Hiệu ứng chuyển sắc Gradient tông hồng nhạt dịu mắt */
+    background: linear-gradient(180deg, #FCE7F3 0%, #FBCFE8 100%); 
+    color: #B33665; /* Giữ màu chữ hồng đậm hoa sen để dễ đọc */
+    padding: 10px 18px; /* Tăng nhẹ độ dày để nút bấm trông mướt hơn */
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 13.5px;
+    font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 2px 4px rgba(179, 54, 101, 0.08); /* Đổ bóng mờ siêu nhẹ tạo độ nổi nhẹ */
+    transition: all 0.2s ease;
+}
+
+/* Hiệu ứng tương tác mượt mà khi di chuột vào nút */
+.btn-export:hover {
+    background: linear-gradient(180deg, #FBCFE8 0%, #F9A8D4 100%); /* Hồng đậm hơn một chút khi hover */
+    transform: translateY(-1px); /* Nhấc nhẹ nút lên tạo cảm giác nổi */
+    box-shadow: 0 4px 8px rgba(179, 54, 101, 0.15);
+}
+
+/* Hiệu ứng khi người dùng click chuột */
+.btn-export:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(179, 54, 101, 0.08);
+}
+
+.showing-text {
+    color: #4A5568;
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+
+/* Hộp chứa chống vỡ giao diện, tự động sinh thanh cuộn ngang khi màn hình nhỏ */
+.table-responsive {
+    overflow-x: auto;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    border-radius: 8px;
+    border: 1px solid #E2E8F0;
+    background: #ffffff;
+}
+
+/* Cấu trúc bảng kết quả */
+.result-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 13.5px;
+    min-width: 1300px; /* Ép bảng rộng để chứa đủ 10 cột */
+}
+
+/* Thanh tiêu đề màu XANH ĐẬM */
+.result-table th {
+    background: linear-gradient(180deg, #1E5631 0%, #143B21 100%); /* Xanh lá cây sẫm đổ màu chuyển sắc */
+    color: #ffffff;
+    padding: 14px 12px;
+    font-weight: 600;
+    white-space: normal;
+    border-bottom: 2px solid #0D2615; /* Viền dưới tối hẳn để khóa khối bảng */
+    vertical-align: middle; 
+}
+
+/* Các ô nội dung dữ liệu */
+.result-table td {
+    padding: 14px 12px;
+    border-bottom: 1px solid #EDF2F7;
+    vertical-align: top;
+    line-height: 1.5;
+}
+
+.result-table tr:hover {
+    background-color: #F7FAFC; /* Hiệu ứng đổi màu nhẹ khi rê chuột qua hàng */
+}
+
+/* Định dạng cột số ML cho nổi bật */
+.result-table td.ml-highlight {
+    color: #38A169;
+    font-weight: 600;
+}
+
+/* Thanh phân trang nằm tách biệt ở đáy bảng */
+.pagination-bar {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 14px;
+    background: #ffffff;
+    border-top: 1px solid #EDF2F7;
+    font-size: 13px;
+    color: #4A5568;
+}
+
+.pagination-bar select {
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid #CBD5E0;
+    font-family: inherit;
+    margin-left: 5px;
+    outline: none;
+}
+
+.pagination-bar button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 0 6px;
+    color: #A0AEC0;
+    padding: 2px 6px;
+    transition: color 0.2s ease;
+}
+
+.pagination-bar button:hover {
+    color: #4A5568;
+}
+
+/* Tin nhắn thông báo lỗi */
+.message-error {
+    color: #E53E3E;
+    text-align: center;
+    margin-top: 32px;
+    font-size: 15px;
+    font-weight: 500;
+}
 </style>
+<div id="result-container"></div>
+<script>
+    // 1. Mảng dữ liệu mẫu chuẩn 10 cột theo quy định Bộ Y Tế
+    const dataDatabase = [
+        { 
+            ins: "100(i)", 
+            nameVi: "Curcumin", 
+            nameEn: "Curcumin", 
+            function: "Chất tạo màu", 
+            groupCode: "01.1.1", 
+            groupName: "Sữa lên men tự nhiên (không hương liệu)", 
+            ml: "GMP", 
+            notes: "Không quy định số lượng cụ thể, dùng vừa đủ", 
+            explain: "Chất màu tự nhiên thu được bằng cách chiết xuất từ củ nghệ", 
+            source: "Thông tư 24/2019/TT-BYT" 
+        },
+        { 
+            ins: "101(i)", 
+            nameVi: "Riboflavin từ nguồn tự nhiên", 
+            nameEn: "Riboflavin, synthetic", 
+            function: "Chất tạo màu", 
+            groupCode: "01.1.1", 
+            groupName: "Sữa lên men tự nhiên (không hương liệu)", 
+            ml: "100 mg/kg", 
+            notes: "Áp dụng trên sản phẩm thương mại", 
+            explain: "Vitamin B2 dùng làm chất tạo màu vàng", 
+            source: "Thông tư 24/2019/TT-BYT" 
+        },
+        { 
+            ins: "102", 
+            nameVi: "Tartrazin", 
+            nameEn: "Tartrazine", 
+            function: "Chất tạo màu", 
+            groupCode: "14.1.4", 
+            groupName: "Đồ uống có hương liệu (bao gồm cả nước uống có gas)", 
+            ml: "100 mg/kg", 
+            notes: "Tính theo sản phẩm sẵn sàng tiêu thụ", 
+            explain: "Chất màu vàng chanh tổng hợp nhân tạo", 
+            source: "Thông tư 17/2023/TT-BYT" 
+        }
+    ];
+
+    // 2. Lấy các phần tử HTML từ giao diện của bạn
+    const insInput = document.querySelector('.search-box');
+    const searchBtn = document.querySelector('.search-btn');
+    const resultContainer = document.getElementById('result-container');
+
+    // 3. Hàm xử lý tìm kiếm và tạo bảng kết quả
+    function performSearch() {
+        if (!insInput || !resultContainer) {
+            console.error("Lỗi: Không tìm thấy ô nhập liệu hoặc khung chứa kết quả!");
+            return;
+        }
+
+        const keyword = insInput.value.trim().toLowerCase();
+        
+        // Kiểm tra nếu ô tìm kiếm trống
+        if (keyword === "") {
+            resultContainer.innerHTML = `<div class="message-error">❌ Vui lòng nhập số INS hoặc tên phụ gia để thực hiện tìm kiếm!</div>`;
+            return;
+        }
+        
+        // Tìm kiếm dữ liệu đa năng
+        const filteredResults = dataDatabase.filter(item => 
+            item.ins.toLowerCase().includes(keyword) || 
+            item.nameVi.toLowerCase().includes(keyword) ||
+            item.nameEn.toLowerCase().includes(keyword)
+        );
+        
+        // Nếu không tìm thấy kết quả
+        if (filteredResults.length === 0) {
+            resultContainer.innerHTML = `<div class="message-error">🔍 Không tìm thấy phụ gia nào khớp với từ khóa "${insInput.value}".</div>`;
+            return;
+        }
+        
+        // Tạo chuỗi nội dung cho các dòng của bảng
+        let tableRows = "";
+        filteredResults.forEach(item => {
+            tableRows += `
+                <tr>
+                    <td><b>${item.ins}</b></td>
+                    <td>${item.nameVi}</td>
+                    <td>${item.nameEn}</td>
+                    <td>${item.function}</td>
+                    <td>${item.groupCode}</td>
+                    <td>${item.groupName}</td>
+                    <td class="ml-highlight">${item.ml}</td>
+                    <td>${item.notes}</td>
+                    <td>${item.explain}</td>
+                    <td><small style="color: #718096;">${item.source}</small></td>
+                </tr>
+            `;
+        });
+
+        // Đổ toàn bộ giao diện mới vào container (Đã dời cụm Export xuống dưới)
+        resultContainer.innerHTML = `
+            <div class="results-wrapper">
+                <h2 class="results-title">Kết quả</h2>
+                <p class="showing-text" style="margin-top: 10px;">Có ${filteredResults.length} kết quả tìm kiếm</p>
+                
+                <div class="table-responsive">
+                    <table class="result-table">
+                        <thead>
+                            <tr>
+                                <th>INS</th>
+                                <th style="min-width: 140px;">Tên phụ gia<br>(Tiếng Việt)</th>
+                                <th style="min-width: 140px;">Tên phụ gia<br>(Tiếng Anh)</th>
+                                <th>Chức năng</th>
+                                <th>Mã nhóm thực phẩm</th>
+                                <th>Nhóm thực phẩm</th>
+                                <th>ML (mg/kg)</th>
+                                <th>Ghi chú</th>
+                                <th>Giải thích</th>
+                                <th>Nguồn</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${tableRows}
+                        </tbody>
+                    </table>
+                    
+                    <!-- THANH CHỨC NĂNG DƯỚI ĐÁY BẢNG: Xuất file nằm trái, phân trang nằm phải -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px; background: #ffffff; border-top: 1px solid #EDF2F7; font-size: 13px; color: #4A5568; gap: 15px; flex-wrap: wrap;">
+                        
+                        <!-- Bộ nút Xuất file nằm bên trái -->
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn-export" onclick="exportTableToExcel()" style="margin: 0;">📄 Xuất file Excel</button>
+                            <button class="btn-export" onclick="exportTableToPDF()" style="margin: 0;">📄 Xuất file PDF</button>
+                        </div>
+                        
+                        <!-- Bộ phân trang nằm bên phải -->
+                        <div class="pagination-bar" style="padding: 0; border: none; display: flex; align-items: center;">
+                            <span>Số dòng hiển thị trong mỗi trang: 
+                                <select>
+                                    <option>10</option>
+                                </select>
+                            </span>
+                            <span style="margin-left: 16px; margin-right: 16px;">1 - ${filteredResults.length} trong tổng số ${filteredResults.length} trang</span>
+                            <button title="Trang đầu">|&lt;</button>
+                            <button title="Trang trước">&lt;</button>
+                            <button title="Trang sau">&gt;</button>
+                            <button title="Trang cuối">&gt;|</button>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    // 4. Các hàm xử lý xuất dữ liệu ra file thật
+    function exportTableToExcel() {
+        const table = document.querySelector(".result-table");
+        if (!table) return;
+
+        let csv = [];
+        const rows = table.querySelectorAll("tr");
+        for (let i = 0; i < rows.length; i++) {
+            let row = [], cols = rows[i].querySelectorAll("td, th");
+            for (let j = 0; j < cols.length; j++) {
+                let data = cols[j].innerText.replace(/"/g, '""');
+                row.push('"' + data + '"');
+            }
+            csv.push(row.join(","));
+        }
+        const csvContent = "\uFEFF" + csv.join("\n");
+        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+        const link = document.createElement("a");
+        const url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", "Ket_Qua_Tra_Cuu_Phu_Gia.csv");
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    function exportTableToPDF() {
+        window.print();
+    }
+
+    // 5. Gắn sự kiện lắng nghe người dùng tương tác
+    if (searchBtn) {
+        searchBtn.addEventListener('click', performSearch);
+    }
+    if (insInput) {
+        insInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                performSearch();
+            }
+        });
+    }
+</script>
 </body>
 </html>
