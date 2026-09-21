@@ -694,20 +694,22 @@ if (insInput && suggestionsBox) {
 
         // Giới hạn hiển thị tối đa 10 dòng gợi ý hàng đầu để tránh làm dài màn hình
         if (uniqueSuggestions.length > 0) {
-            uniqueSuggestions.slice(0, 10).forEach(item => {
-                const li = document.createElement('li');
-                li.innerHTML = `<span>${item.name}</span><span class="suggest-ins">INS ${item.ins}</span>`;
-                
-                // Khi người dùng nhấp chọn dòng gợi ý: điền chữ, ẩn hộp và tự kích hoạt tìm kiếm luôn
-                li.addEventListener('click', () => {
-                    insInput.value = item.name;
-                    suggestionsBox.style.display = "none";
-                    performSearch(); 
-                });
-                suggestionsBox.appendChild(li);
-            });
-            suggestionsBox.style.display = "block";
-        } else {
+    uniqueSuggestions.slice(0, 10).forEach(item => {
+        const li = document.createElement('li');
+        
+        // ĐÃ SỬA: Đưa số ra phía trước (đã bỏ chữ INS), và đưa tên phụ gia ra phía sau
+        li.innerHTML = `<span style="display: flex; gap: 12px; align-items: center;"><span class="suggest-ins">${item.ins}</span><span>${item.name}</span></span>`;
+        
+        // Các đoạn mã click chọn phía dưới giữ nguyên...
+        li.addEventListener('click', () => {
+            insInput.value = item.name;
+            suggestionsBox.style.display = "none";
+            performSearch(); 
+        });
+        suggestionsBox.appendChild(li);
+    });
+    suggestionsBox.style.display = "block";
+} else {
             suggestionsBox.style.display = "none";
         }
     });
