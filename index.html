@@ -606,112 +606,121 @@
     const searchBtn = document.querySelector('.search-btn');
     const resultContainer = document.getElementById('result-container');
 
-    // 3. Hàm xử lý tìm kiếm và tạo bảng kết quả
-    function performSearch() {
-        if (!insInput || !resultContainer) {
-            console.error("Lỗi: Không tìm thấy ô nhập liệu hoặc khung chứa kết quả!");
-            return;
-        }
+    // 3. Hàm xử lý tìm kiếm và tạo bảng kết quả (Đã tối ưu thuật toán tìm kiếm tràn dòng cho Excel trống ô)
+function performSearch() {
+    if (!insInput || !resultContainer) {
+        console.error("Lỗi: Không tìm thấy ô nhập liệu hoặc khung chứa kết quả!");
+        return;
+    }
 
-        const keyword = insInput.value.trim().toLowerCase();
+    const keyword = insInput.value.trim().toLowerCase();
+    
+    // Kiểm tra nếu ô tìm kiếm trống
+    if (keyword === "") {
+        resultContainer.innerHTML = `<div class="message-error" style="color: #8B0032; font-size: 15px; font-weight: bold;">💡 Vui lòng nhập số INS hoặc tên phụ gia, ví dụ 100(i), Curcumin...</div>`;
+        return;
+    }
+    
+    // THUẬT TOÁN ĐÃ SỬA: Tự động ghi nhớ thông tin điền đầy từ dòng trên xuống dòng dưới khi lọc dữ liệu
+    let currentIns = "";
+    let currentViName = "";
+    let currentEnName = "";
+    let currentFunc = "";
+    let currentSource = "";
+
+    const filteredResults = dataDatabase.filter(item => {
+        // Nếu dòng hiện tại có chứa thông tin thì cập nhật vào biến ghi nhớ
+        if (item.ins !== undefined) currentIns = String(item.ins).trim().toLowerCase();
+        if (item.vietnamese_name !== undefined) currentViName = String(item.vietnamese_name).trim().toLowerCase();
+        if (item.english_name !== undefined) currentEnName = String(item.english_name).trim().toLowerCase();
         
-        // Kiểm tra nếu ô tìm kiếm trống
-        if (keyword === "") {
-            resultContainer.innerHTML = `<div class="message-error" style="color: #8B0032; font-size: 15px; font-weight: bold;">💡 Vui lòng nhập số INS hoặc tên phụ gia, ví dụ 100(i), Curcumin...</div>`;
-            return;
-        }
-        
-        // Tìm kiếm dữ liệu đa năng dựa trên việc ép tất cả các trường về dạng chuỗi (String) đề phòng trường hợp Excel tự nhận diện kiểu Số
-        const filteredResults = dataDatabase.filter(item => {
-            const insStr = item.ins ? String(item.ins).toLowerCase() : "";
-            const viNameStr = item.vietnamese_name ? String(item.vietnamese_name).toLowerCase() : "";
-            const enNameStr = item.english_name ? String(item.english_name).toLowerCase() : "";
+        // Tiến hành đối chiếu từ khóa với dữ liệu đã được điền đầy ngầm
+        return currentIns.includes(keyword) || currentViName.includes(keyword) || currentEnName.includes(keyword);
+    });
+    
+    // Nếu không tìm thấy kết quả phù hợp
+    if (filteredResults.length === 0) {
+        resultContainer.innerHTML = `<div class="message-error" style="color: #8B0032; font-size: 15px; font-weight: bold;">🔍 Không tìm thấy phụ gia nào khớp với từ khóa "${insInput.value}".</div>`;
+        return;
+    }
+    
+    // Dựng chuỗi HTML các dòng (Tự động bù thông tin chung vào các ô trống để khi lên giao diện không bị trắng tinh)
+    let tableRows = "";
+    currentIns = ""; currentViName = ""; currentEnName = ""; currentFunc = ""; currentSource = "";
+
+    filteredResults.forEach(item => {
+        if (item.ins !== undefined) currentIns = String(item.ins);
+        if (item.vietnamese_name !== undefined) currentViName = String(item.vietnamese_name);
+        if (item.english_name !== undefined) currentEnName = String(item.english_name);
+        if (item.function !== undefined) currentFunc = String(item.function);
+        if (item.source !== undefined) currentSource = String(item.source);
+
+        tableRows += `
+            <tr>
+                <td class="col-ins"><b>${currentIns}</b></td>
+                <td class="col-viName">${currentViName}</td>
+                <td class="col-enName">${currentEnName}</td>
+                <td>${currentFunc}</td>
+                <td>${item.cat_no !== undefined ? String(item.cat_no) : ''}</td>
+                <td>${item.cat_name !== undefined ? String(item.cat_name) : ''}</td>
+                <td class="ml-highlight">${item.ml !== undefined ? String(item.ml) : ''}</td>
+                <td>${item.note !== undefined ? String(item.note) : ''}</td>
+                <td>${item.note_explanation !== undefined ? String(item.note_explanation) : ''}</td>
+                <td><small style="color: #718096;">${currentSource}</small></td>
+            </tr>
+        `;
+    });
+
+    // Đổ toàn bộ cấu trúc giao diện mới vào vùng chứa
+    resultContainer.innerHTML = `
+        <div class="results-wrapper">
+            <h2 class="results-title">Kết quả</h2>
+            <p class="showing-text" style="margin-top: 10px;">Có ${filteredResults.length} kết quả tìm kiếm</p>
             
-            return insStr.includes(keyword) || viNameStr.includes(keyword) || enNameStr.includes(keyword);
-        });
-        
-        // Nếu không tìm thấy kết quả phù hợp
-        if (filteredResults.length === 0) {
-            resultContainer.innerHTML = `<div class="message-error" style="color: #8B0032; font-size: 15px; font-weight: bold;">🔍 Không tìm thấy phụ gia nào khớp với từ khóa "${insInput.value}".</div>`;
-            return;
-        }
-        
-        // Tạo chuỗi HTML các dòng (ĐÃ SỬA: note_explanation khớp hoàn toàn với thuộc tính trong Excel mới của bạn)
-        let tableRows = "";
-        filteredResults.forEach(item => {
-            tableRows += `
-                <tr>
-                    <td class="col-ins"><b>${item.ins || ''}</b></td>
-                    <td class="col-viName">${item.vietnamese_name || ''}</td>
-                    <td class="col-enName">${item.english_name || ''}</td>
-                    <td>${item.function || ''}</td>
-                    <td>${item.cat_no || ''}</td>
-                    <td>${item.cat_name || ''}</td>
-                    <td class="ml-highlight">${item.ml || ''}</td>
-                    <td>${item.note || ''}</td>
-                    <td>${item.note_explanation || ''}</td>
-                    <td><small style="color: #718096;">${item.source || ''}</small></td>
-                </tr>
-            `;
-        });
-
-        // Đổ toàn bộ cấu trúc giao diện mới vào vùng chứa (Bổ sung id="result-table-body" cho tbody)
-        resultContainer.innerHTML = `
-            <div class="results-wrapper">
-                <h2 class="results-title">Kết quả</h2>
-                <p class="showing-text" style="margin-top: 10px;">Có ${filteredResults.length} kết quả tìm kiếm</p>
+            <div class="table-responsive">
+                <table class="result-table">
+                    <thead>
+                        <tr>
+                            <th>INS</th>
+                            <th style="min-width: 140px;">Tên phụ gia<br>Tiếng Việt</th>
+                            <th style="min-width: 140px;">Tên phụ gia<br>Tiếng Anh</th>
+                            <th>Chức năng</th>
+                            <th>Mã nhóm thực phẩm</th>
+                            <th>Nhóm thực phẩm</th>
+                            <th>ML (mg/kg)</th>
+                            <th>Ghi chú</th>
+                            <th>Giải thích ghi chú</th>
+                            <th>Nguồn</th>
+                        </tr>
+                    </thead>
+                    <tbody id="result-table-body">
+                        ${tableRows}
+                    </tbody>
+                </table>
                 
-                <div class="table-responsive">
-                    <table class="result-table">
-                        <thead>
-                            <tr>
-                                <th>INS</th>
-                                <th style="min-width: 140px;">Tên phụ gia<br>Tiếng Việt</th>
-                                <th style="min-width: 140px;">Tên phụ gia<br>Tiếng Anh</th>
-                                <th>Chức năng</th>
-                                <th>Mã nhóm thực phẩm</th>
-                                <th>Nhóm thực phẩm</th>
-                                <th>ML (mg/kg)</th>
-                                <th>Ghi chú</th>
-                                <th>Giải thích ghi chú</th>
-                                <th>Nguồn</th>
-                            </tr>
-                        </thead>
-                        <tbody id="result-table-body">
-                            ${tableRows}
-                        </tbody>
-                    </table>
-                    
-                    <!-- THANH CHỨC NĂNG DƯỚI ĐÁY BẢNG -->
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px; background: #ffffff; border-top: 1px solid #EDF2F7; font-size: 13px; color: #4A5568; gap: 15px; flex-wrap: wrap;">
-                        
-                        <!-- Bộ nút Xuất file nằm bên trái -->
-                        <div style="display: flex; gap: 10px;">
-                            <button class="btn-export" onclick="exportTableToExcel()" style="margin: 0;">📄 Xuất file Excel</button>
-                        </div>
-                        
-                        <!-- Bộ phân trang nằm bên phải -->
-                        <div class="pagination-bar" style="padding: 0; border: none; display: flex; align-items: center;">
-                            <span>Số dòng hiển thị trong mỗi trang: 
-                                <select>
-                                    <option>10</option>
-                                </select>
-                            </span>
-                            <span style="margin-left: 16px; margin-right: 16px;">1 - ${filteredResults.length} trong tổng số ${filteredResults.length} trang</span>
-                            <button title="Trang đầu">|&lt;</button>
-                            <button title="Trang trước">&lt;</button>
-                            <button title="Trang sau">&gt;</button>
-                            <button title="Trang cuối">&gt;|</button>
-                        </div>
-                        
+                <!-- THANH CHỨC NĂNG DƯỚI ĐÁY BẢNG -->
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px; background: #ffffff; border-top: 1px solid #EDF2F7; font-size: 13px; color: #4A5568; gap: 15px; flex-wrap: wrap;">
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn-export" onclick="exportTableToExcel()" style="margin: 0;">📄 Xuất file Excel</button>
+                    </div>
+                    <div class="pagination-bar" style="padding: 0; border: none; display: flex; align-items: center;">
+                        <span>Số dòng hiển thị trong mỗi trang: 
+                            <select><option>10</option></select>
+                        </span>
+                        <span style="margin-left: 16px; margin-right: 16px;">1 - ${filteredResults.length} trong tổng số ${filteredResults.length} trang</span>
+                        <button title="Trang đầu">|&lt;</button>
+                        <button title="Trang trước">&lt;</button>
+                        <button title="Trang sau">&gt;</button>
+                        <button title="Trang cuối">&gt;|</button>
                     </div>
                 </div>
             </div>
-        `;
+        </div>
+    `;
 
-        // Kích hoạt thuật toán gộp ô tự động chạy ngay sau khi bảng vừa hiển thị
-        mergeTableCells();
-    }
+    // Kích hoạt thuật toán gộp ô tự động chạy ngay sau khi bảng vừa hiển thị
+    mergeTableCells();
+}
 
     // 4. Thuật toán chạy ngầm tự động gộp ô trùng nhau cho 3 cột đầu tiên
     function mergeTableCells() {
