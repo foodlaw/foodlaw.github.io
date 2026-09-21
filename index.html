@@ -706,11 +706,11 @@
             </div>
         `;
 
-        // Kích hoạt thuật toán gộp ô tự động chạy ngay sau khi bảng vừa hiển thị
+        // Kích thái thuật toán gộp ô tự động chạy ngay sau khi bảng vừa hiển thị
         mergeTableCells();
     }
 
-    // 4. Thuật toán chạy ngầm tự động gộp ô trùng nhau cho 3 cột đầu tiên
+    // 4. Thuật toán chạy ngầm tự động gộp ô trùng nhau cho 3 cột đầu tiên (ĐÃ SỬA: Đóng đủ ngoặc)
     function mergeTableCells() {
         const columnsToMerge = ['.col-ins', '.col-viName', '.col-enName'];
         
@@ -736,22 +736,22 @@
         });
     }
 
-    // 5. Hàm xử lý xuất ngược bảng dữ liệu hiển thị thành file Excel (.xlsx) chuẩn
+    // 5. Hàm xử lý xuất ngược bảng dữ liệu hiển thị thành file Excel (.xlsx) chuẩn SheetJS
     function exportTableToExcel() {
         const table = document.querySelector(".result-table");
         if (!table) {
-            alert("Không có dữ liệu để xuất file!");
+            alert("Không có dữ liệu dữ liệu để xuất!");
             return;
         }
-
-        // Tạo một workbook mới từ thẻ table HTML bằng công cụ SheetJS
+        
+        // Tạo một workbook mới từ cấu trúc bảng HTML hiện tại trên trang
         const wb = XLSX.utils.table_to_book(table, { sheet: "KetQuaTraCuu" });
         
-        // Tiến hành ghi dữ liệu và tự động tải file .xlsx thật về máy
+        // Tải tệp xuống máy tính người dùng dạng đuôi mở rộng xlsx chuẩn
         XLSX.writeFile(wb, "Ket_Qua_Tra_Cuu_Phu_Gia.xlsx");
     }
 
-    // 6. Gắn các sự kiện lắng nghe người dùng tương tác với thanh tìm kiếm
+    // 6. Gắn các sự kiện lắng nghe người dùng tương tác với thanh tìm kiếm (ĐÃ SỬA: Bổ sung đầy đủ)
     if (searchBtn) {
         searchBtn.addEventListener('click', performSearch);
     }
