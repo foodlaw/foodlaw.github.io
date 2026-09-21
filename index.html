@@ -568,45 +568,37 @@
 </style>
 <div id="result-container"></div>
 <script>
-    // 1. Mảng dữ liệu mẫu chuẩn 10 cột theo quy định Bộ Y Tế
-    const dataDatabase = [
-        { 
-            ins: "100(i)", 
-            nameVi: "Curcumin", 
-            nameEn: "Curcumin", 
-            function: "Chất tạo màu", 
-            groupCode: "01.1.1", 
-            groupName: "Sữa lên men tự nhiên (không hương liệu)", 
-            ml: "GMP", 
-            notes: "Không quy định số lượng cụ thể, dùng vừa đủ", 
-            explain: "Chất màu tự nhiên thu được bằng cách chiết xuất từ củ nghệ", 
-            source: "Thông tư 24/2019/TT-BYT" 
-        },
-        { 
-            ins: "101(i)", 
-            nameVi: "Riboflavin từ nguồn tự nhiên", 
-            nameEn: "Riboflavin, synthetic", 
-            function: "Chất tạo màu", 
-            groupCode: "01.1.1", 
-            groupName: "Sữa lên men tự nhiên (không hương liệu)", 
-            ml: "100 mg/kg", 
-            notes: "Áp dụng trên sản phẩm thương mại", 
-            explain: "Vitamin B2 dùng làm chất tạo màu vàng", 
-            source: "Thông tư 24/2019/TT-BYT" 
-        },
-        { 
-            ins: "102", 
-            nameVi: "Tartrazin", 
-            nameEn: "Tartrazine", 
-            function: "Chất tạo màu", 
-            groupCode: "14.1.4", 
-            groupName: "Đồ uống có hương liệu (bao gồm cả nước uống có gas)", 
-            ml: "100 mg/kg", 
-            notes: "Tính theo sản phẩm sẵn sàng tiêu thụ", 
-            explain: "Chất màu vàng chanh tổng hợp nhân tạo", 
-            source: "Thông tư 17/2023/TT-BYT" 
-        }
-    ];
+    // 1. Khai báo biến hứng dữ liệu (sẽ nhận dữ liệu tự động từ file Excel khi tải trang)
+    let dataDatabase = [];
+
+    // Tự động tải ngầm và đọc dữ liệu file Excel ngay khi trang web mở ra
+    window.addEventListener('DOMContentLoaded', () => {
+        const fileName = "vnadditivedb.xlsx"; // Tên file Excel chính xác của bạn
+
+        fetch(fileName)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Không thể tải file Excel. Hãy chắc chắn file nằm chung thư mục với HTML!");
+                }
+                return response.arrayBuffer();
+            })
+            .then(buffer => {
+                // Giải mã tệp Excel bằng thư viện SheetJS đã nhúng ở head
+                const data = new Uint8Array(buffer);
+                const workbook = XLSX.read(data, { type: 'array' });
+                
+                // Đọc dữ liệu từ Sheet đầu tiên
+                const firstSheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[firstSheetName];
+                
+                // Đổ toàn bộ dữ liệu Excel dạng JSON vào mảng dataDatabase
+                dataDatabase = XLSX.utils.sheet_to_json(worksheet);
+                console.log("Đã nạp dữ liệu Excel thành công! Tổng số dòng:", dataDatabase.length);
+            })
+            .catch(error => {
+                console.error("Lỗi khi kết nối dữ liệu file Excel:", error);
+            });
+    });
 
     // 2. Lấy các phần tử HTML từ giao diện của bạn
     const insInput = document.querySelector('.search-box');
@@ -624,43 +616,43 @@
         
         // Kiểm tra nếu ô tìm kiếm trống
         if (keyword === "") {
-            resultContainer.innerHTML = `<div class="message-error" style="color: #C33D72; font-size: 15px; font-weight: bold;">💬 Vui lòng nhập số INS hoặc tên phụ gia, ví dụ 100(i), Curcumin...</div>`;
+            resultContainer.innerHTML = `<div class="message-error" style="color: #8B0032; font-size: 15px; font-weight: bold;">💡 Vui lòng nhập số INS hoặc tên phụ gia, ví dụ 100(i), Curcumin...</div>`;
             return;
         }
         
-        // Tìm kiếm dữ liệu đa năng
+        // Tìm kiếm dữ liệu đa năng dựa trên các tên cột chuẩn trong file Excel thật của bạn
         const filteredResults = dataDatabase.filter(item => 
-            item.ins.toLowerCase().includes(keyword) || 
-            item.nameVi.toLowerCase().includes(keyword) ||
-            item.nameEn.toLowerCase().includes(keyword)
+            (item.ins && String(item.ins).toLowerCase().includes(keyword)) || 
+            (item.vietnamese_name && String(item.vietnamese_name).toLowerCase().includes(keyword)) ||
+            (item.english_name && String(item.english_name).toLowerCase().includes(keyword))
         );
         
-        // Nếu không tìm thấy kết quả
+        // Nếu không tìm thấy kết quả phù hợp
         if (filteredResults.length === 0) {
-            resultContainer.innerHTML = `<div class="message-error">🔍 Không tìm thấy phụ gia nào khớp với từ khóa "${insInput.value}".</div>`;
+            resultContainer.innerHTML = `<div class="message-error" style="color: #8B0032; font-size: 15px; font-weight: bold;">🔍 Không tìm thấy phụ gia nào khớp với từ khóa "${insInput.value}".</div>`;
             return;
         }
         
-        // Tạo chuỗi nội dung cho các dòng của bảng
+        // Tạo chuỗi HTML các dòng (Có class col-ins, col-viName, col-enName để chạy hàm gộp ô)
         let tableRows = "";
         filteredResults.forEach(item => {
             tableRows += `
                 <tr>
-                    <td><b>${item.ins}</b></td>
-                    <td>${item.nameVi}</td>
-                    <td>${item.nameEn}</td>
-                    <td>${item.function}</td>
-                    <td>${item.groupCode}</td>
-                    <td>${item.groupName}</td>
-                    <td class="ml-highlight">${item.ml}</td>
-                    <td>${item.notes}</td>
-                    <td>${item.explain}</td>
-                    <td><small style="color: #718096;">${item.source}</small></td>
+                    <td class="col-ins"><b>${item.ins || ''}</b></td>
+                    <td class="col-viName">${item.vietnamese_name || ''}</td>
+                    <td class="col-enName">${item.english_name || ''}</td>
+                    <td>${item.function || ''}</td>
+                    <td>${item.cat_no || ''}</td>
+                    <td>${item.cat_name || ''}</td>
+                    <td class="ml-highlight">${item.ml || ''}</td>
+                    <td>${item.note || ''}</td>
+                    <td>${item.note_explaination || ''}</td>
+                    <td><small style="color: #718096;">${item.source || ''}</small></td>
                 </tr>
             `;
         });
 
-        // Đổ toàn bộ giao diện mới vào container (Đã dời cụm Export xuống dưới)
+        // Đổ toàn bộ cấu trúc giao diện mới vào vùng chứa (Bổ sung id="result-table-body" cho tbody)
         resultContainer.innerHTML = `
             <div class="results-wrapper">
                 <h2 class="results-title">Kết quả</h2>
@@ -682,12 +674,12 @@
                                 <th>Nguồn</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="result-table-body">
                             ${tableRows}
                         </tbody>
                     </table>
                     
-                    <!-- THANH CHỨC NĂNG DƯỚI ĐÁY BẢNG: Xuất file nằm trái, phân trang nằm phải -->
+                    <!-- THANH CHỨC NĂNG DƯỚI ĐÁY BẢNG -->
                     <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px; background: #ffffff; border-top: 1px solid #EDF2F7; font-size: 13px; color: #4A5568; gap: 15px; flex-wrap: wrap;">
                         
                         <!-- Bộ nút Xuất file nằm bên trái -->
@@ -713,37 +705,53 @@
                 </div>
             </div>
         `;
+
+        // Kích hoạt thuật toán gộp ô tự động chạy ngay sau khi bảng vừa hiển thị
+        mergeTableCells();
     }
 
-    // 4. Các hàm xử lý xuất dữ liệu ra file thật
+    // 4. Thuật toán chạy ngầm tự động gộp ô trùng nhau cho 3 cột đầu tiên
+    function mergeTableCells() {
+        const columnsToMerge = ['.col-ins', '.col-viName', '.col-enName'];
+        
+        columnsToMerge.forEach(colClass => {
+            const cells = document.querySelectorAll(`#result-table-body ${colClass}`);
+            let mainCell = null;
+            
+            cells.forEach(cell => {
+                const cellText = cell.textContent.trim();
+                if (!mainCell) {
+                    mainCell = cell;
+                    mainCell.rowSpan = 1;
+                } else if (cellText === mainCell.textContent.trim() && cellText !== "") {
+                    // Nếu dữ liệu ô dưới trùng ô trên thì tăng độ rộng gộp và ẩn ô dưới đi
+                    mainCell.rowSpan += 1;
+                    cell.style.display = 'none';
+                } else {
+                    // Khi gặp một chất phụ gia mới khác tên
+                    mainCell = cell;
+                    mainCell.rowSpan = 1;
+                }
+            });
+        });
+    }
+
+    // 5. Hàm xử lý xuất ngược bảng dữ liệu hiển thị thành file Excel (.xlsx) chuẩn
     function exportTableToExcel() {
         const table = document.querySelector(".result-table");
-        if (!table) return;
-
-        let csv = [];
-        const rows = table.querySelectorAll("tr");
-        for (let i = 0; i < rows.length; i++) {
-            let row = [], cols = rows[i].querySelectorAll("td, th");
-            for (let j = 0; j < cols.length; j++) {
-                let data = cols[j].innerText.replace(/"/g, '""');
-                row.push('"' + data + '"');
-            }
-            csv.push(row.join(","));
+        if (!table) {
+            alert("Không có dữ liệu để xuất file!");
+            return;
         }
-        const csvContent = "\uFEFF" + csv.join("\n");
-        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-        const link = document.createElement("a");
-        const url = URL.createObjectURL(blob);
-        link.setAttribute("href", url);
-        link.setAttribute("download", "Ket_Qua_Tra_Cuu_Phu_Gia.csv");
-        link.style.visibility = 'hidden';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+
+        // Tạo một workbook mới từ thẻ table HTML bằng công cụ SheetJS
+        const wb = XLSX.utils.table_to_book(table, { sheet: "KetQuaTraCuu" });
+        
+        // Tiến hành ghi dữ liệu và tự động tải file .xlsx thật về máy
+        XLSX.writeFile(wb, "Ket_Qua_Tra_Cuu_Phu_Gia.xlsx");
     }
 
-    
-    // 5. Gắn sự kiện lắng nghe người dùng tương tác
+    // 6. Gắn các sự kiện lắng nghe người dùng tương tác với thanh tìm kiếm
     if (searchBtn) {
         searchBtn.addEventListener('click', performSearch);
     }
