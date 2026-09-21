@@ -324,30 +324,34 @@
 
     <style>
         /* Định dạng hộp Disclaimer nổi khối tràn viền e */
-        .disclaimer-box {
-            background-color: #EFF9E7; /* Nền xanh lá */
+   .disclaimer-box {
+            /* ĐÃ SỬA: Màu nền xám rêu/xanh sage nhạt (Warm Sage) - tăng cả độ ấm và sắc xanh lá */
+            background-color: #EBF1E5; 
+            
             border: none;              /* Xóa bỏ hoàn toàn viền cứng để hết bẹt phẳng */
             border-radius: 6px;        
             padding: 16px 20px;
             margin-top: 40px;         /* Khoảng cách vừa vặn với thanh tìm kiếm phía trên */
             margin-bottom: 24px;
             width: 100%;
-		max-width: 100%;          /* Chiều rộng bằng khít với ô tìm kiếm */
+            max-width: 100%;          /* Chiều rộng bằng khít với ô tìm kiếm */
             box-sizing: border-box;
             
-            /* ĐÃ CẬP NHẬT: Đổ bóng mờ diện rộng giúp hộp tự nổi khối lên khỏi nền web cực sang */
-            box-shadow: 0 6px 16px 0 rgba(225, 117, 153, 0.12), 0 1px 3px 0 rgba(0, 0, 0, 0.04);
+            /* ĐÃ SỬA: Đổ bóng mờ pha sắc xanh rêu nhẹ để định hình khối tinh tế, nịnh mắt */
+            box-shadow: 0 6px 16px 0 rgba(100, 116, 89, 0.06), 0 1px 3px 0 rgba(0, 0, 0, 0.02);
             
             /* Tạo hiệu ứng chuyển động mượt mà khi di chuột */
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
         }
 
         /* Mẹo UI: Hiệu ứng nhích nhẹ nịnh mắt khi di chuột qua */
         .disclaimer-box:hover {
             transform: translateY(-1px);
-            box-shadow: 0 10px 20px 0 rgba(225, 117, 153, 0.16), 0 2px 6px 0 rgba(0, 0, 0, 0.06);
+            /* ĐÃ SỬA: Nền chuyển sang màu xám xanh lá đậm hơn, ấm áp khi hover */
+            background-color: #DDE5D5; 
+            /* ĐỔI BÓNG HOVER: Tăng độ sâu bóng đổ để tạo độ nổi khối tự nhiên */
+            box-shadow: 0 10px 20px 0 rgba(100, 116, 89, 0.1), 0 2px 6px 0 rgba(0, 0, 0, 0.03);
         }
-
         .disclaimer-title {
             display: flex;
             align-items: center;
