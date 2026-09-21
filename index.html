@@ -276,7 +276,34 @@
                 max-width: 100%;
             }
         }
-	</style>
+/* Định dạng phong cách cho từng dòng gợi ý đổ xuống */
+#suggestions-box li {
+    padding: 10px 16px;
+    font-size: 14.5px;
+    cursor: pointer;
+    color: #2D3748;
+    transition: background 0.2s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Đổi màu hồng nhạt berry khi rê chuột vào dòng gợi ý giống nút tra cứu của bạn */
+#suggestions-box li:hover {
+    background-color: #FFF5F7;
+    color: #B33665;
+}
+
+/* Kiểu dáng nhãn số INS nhỏ màu xám bên phải dòng gợi ý */
+#suggestions-box li .suggest-ins {
+    font-size: 12px;
+    background: #EDF2F7;
+    color: #4A5568;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+}	
+</style>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-RJLBDDW0Z2"></script>
 <script>
@@ -329,14 +356,19 @@
 
 	<hr>
 	
-    <!-- Vùng tìm kiếm -->
-    <div class="search-container">
-        <p style="margin-top: 40px;">Nhập số INS hoặc tên phụ gia:</p> 
-        <div class="search-form-group">
-            <input type="text" class="search-box">
-            <button class="search-btn">Tra cứu</button>
+    <!-- Vùng tìm kiếm (Đã nâng cấp để chứa danh sách gợi ý Autocomplete) -->
+<div class="search-container">
+    <p style="margin-top: 40px;">Nhập số INS hoặc tên phụ gia:</p> 
+    <div class="search-form-group" style="position: relative;">
+        <!-- Khung wrapper bọc quanh input và ul để danh sách đổ xuống chuẩn vị trí -->
+        <div style="position: relative; flex: 1; min-width: 0;">
+            <input type="text" class="search-box" style="width: 100%;">
+            <!-- Hộp danh sách gợi ý ngầm (Gõ chữ mới hiển thị) -->
+            <ul id="suggestions-box" style="position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 8px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); max-height: 250px; overflow-y: auto; z-index: 1000; margin: 0; padding: 0; list-style: none; display: none;"></ul>
         </div>
+        <button class="search-btn">Tra cứu</button>
     </div>
+</div>
     <!-- Hộp Disclaimer  nằm ngay dưới thanh tìm kiếm -->
     <div class="disclaimer-box">
         <div class="disclaimer-title">
@@ -627,8 +659,68 @@
     const insInput = document.querySelector('.search-box');
     const searchBtn = document.querySelector('.search-btn');
     const resultContainer = document.getElementById('result-container');
+// KÍCH HOẠT: Xử lý hiển thị danh sách gợi ý bắt đầu bằng chữ cái gõ vào
+const suggestionsBox = document.getElementById('suggestions-box');
 
-    // 3. Hàm xử lý tìm kiếm và tạo bảng kết quả
+if (insInput && suggestionsBox) {
+    insInput.addEventListener('input', () => {
+        const query = insInput.value.trim().toLowerCase();
+        suggestionsBox.innerHTML = "";
+        
+        if (query === "") {
+            suggestionsBox.style.display = "none";
+            return;
+        }
+
+        let uniqueSuggestions = [];
+        let seenNames = new Set();
+
+        // Quét dữ liệu từ file Excel đã nạp sẵn trong dataDatabase
+        dataDatabase.forEach(item => {
+            const viName = item.vietnamese_name ? String(item.vietnamese_name) : "";
+            const enName = item.english_name ? String(item.english_name) : "";
+            const insCode = item.ins ? String(item.ins) : "";
+
+            // Nếu gõ chữ -> tìm tên bắt đầu bằng chữ đó. Nếu gõ số -> tìm số INS chứa số đó
+            const isMatch = isNaN(query) ? 
+                (viName.toLowerCase().startsWith(query) || enName.toLowerCase().startsWith(query)) :
+                insCode.toLowerCase().includes(query);
+
+            if (isMatch && !seenNames.has(viName.toLowerCase())) {
+                seenNames.add(viName.toLowerCase());
+                uniqueSuggestions.push({ name: viName, ins: insCode });
+            }
+        });
+
+        // Giới hạn hiển thị tối đa 10 dòng gợi ý hàng đầu để tránh làm dài màn hình
+        if (uniqueSuggestions.length > 0) {
+            uniqueSuggestions.slice(0, 10).forEach(item => {
+                const li = document.createElement('li');
+                li.innerHTML = `<span>${item.name}</span><span class="suggest-ins">INS ${item.ins}</span>`;
+                
+                // Khi người dùng nhấp chọn dòng gợi ý: điền chữ, ẩn hộp và tự kích hoạt tìm kiếm luôn
+                li.addEventListener('click', () => {
+                    insInput.value = item.name;
+                    suggestionsBox.style.display = "none";
+                    performSearch(); 
+                });
+                suggestionsBox.appendChild(li);
+            });
+            suggestionsBox.style.display = "block";
+        } else {
+            suggestionsBox.style.display = "none";
+        }
+    });
+
+    // Tự động ẩn hộp gợi ý đi nếu người dùng nhấp chuột ra khu vực trống bên ngoài
+    document.addEventListener('click', (e) => {
+        if (!insInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
+            suggestionsBox.style.display = "none";
+        }
+    });
+}
+    
+// 3. Hàm xử lý tìm kiếm và tạo bảng kết quả
     function performSearch() {
         if (!insInput || !resultContainer) {
             console.error("Lỗi: Không tìm thấy ô nhập liệu hoặc khung chứa kết quả!");
