@@ -212,32 +212,42 @@
 
         /* ======================== TỰ ĐỘNG THU NHỎ & CÂN ĐỐI TRÊN ĐIỆN THOẠI ======================== */
         @media (max-width: 768px) {
-            body {
-                padding: 16px; 
-            }
+    body {
+        padding: 16px; 
+    }
 
-            /* Đưa thanh chọn ngôn ngữ vào luồng nội dung và căn giữa */
-            /* ĐÃ SỬA: Ép toàn bộ khối chọn ngôn ngữ và lượt xem căn giữa tuyệt đối trên mobile */
+    /* ĐÃ KHẮC PHỤC LỖI: Thêm !important để ép trình duyệt bỏ thuộc tính viết tay trên HTML */
     .language-switcher {
-        position: static; 
-        display: flex;
-        flex-direction: column;   
-        align-items: center;      
-        justify-content: center;
+        position: static !important; /* Bắt buộc hủy bỏ nép góc phải trên điện thoại */
+        display: flex !important;    /* Bắt buộc bật flexbox */
+        flex-direction: column !important;   /* Xếp dòng ngôn ngữ ở trên, con mắt ở dưới */
+        align-items: center !important;      /* Căn giữa tăm tắp theo chiều ngang */
+        justify-content: center !important;
         margin-bottom: 24px;
         margin-top: 5px;
         gap: 6px;                 
-        width: 100%;
+        width: 100% !important;
     }
 
-    /* ĐÃ THÊM: Đảm bảo ô con mắt cũng được căn giữa hoàn hảo, không bị lệch */
+    /* Đảm bảo ô con mắt cũng được căn giữa hoàn hảo trên điện thoại */
     .page-counter {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
         margin-top: 0 !important; 
         text-align: center;
     }
+
+    /* Chuyển đổi toàn bộ Header sang dạng căn giữa dọc */
+    .header-container {
+        flex-direction: column; 
+        align-items: center;
+        text-align: center;
+        gap: 15px;
+        margin-top: 10px;
+        margin-bottom: 20px;
+    }
+    
 
             .title-link {
                 transform-origin: center center; 
@@ -270,27 +280,10 @@
 </head>
 <body>
     
-    <!-- Cụm chọn ngôn ngữ kết hợp đếm lượt xem tối giản -->
-<div class="language-switcher" style="position: absolute; top: 24px; right: 24px; display: flex; flex-direction: column; align-items: flex-end; font-size: 13px; color: #718096; z-index: 10;">
-    <div>
-        <span class="lang-icon" style="margin-right: 6px; display: inline-flex; align-items: center; color: #38A169;">
-            <svg xmlns="http://w3.org" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="2" y1="12" x2="22" y2="12"></line>
-                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-            </svg>
-        </span>
-        <span id="lang-vi" class="active" style="cursor:pointer;">Tiếng Việt</span>
-        <span class="lang-divider" style="margin: 0 8px; color: #E2E8F0;">|</span>
-        <span id="lang-en" style="cursor:pointer;">English</span>
-    </div>
-    
-    <!-- Khung hiển thị icon con mắt và số lượt xem -->
-    <div class="page-counter" style="margin-top: 6px; display: inline-flex; align-items: center; gap: 4px; font-weight: 500;">
-        👁️ <strong id="viewCount" style="color: #4A5568;">...</strong>
-    </div>
+   <!-- Cụm chọn ngôn ngữ kết hợp đếm lượt xem tối giản (ĐÃ SỬA: Thay id="viewCount" bằng thẻ <img> đếm tự động) -->
+<div class="page-counter" style="margin-top: 6px; display: inline-flex; align-items: center; gap: 5px; font-weight: 500;">
+    👁️ <img src="https://glitch.me" alt="Views" style="height: 14.5px; vertical-align: middle; filter: contrast(0.85);">
 </div>
-    
     <!-- Phần Header hoàn thiện -->
     <div class="header-container">
         <div class="logo-box">
@@ -739,34 +732,7 @@
             }
         });
     }
-// --- BỘ ĐẾM ĐỒNG BỘ TOÀN CẦU THUẦN TÚY (ĐÃ SỬA CHUẨN ĐƯỜNG DẪN MẠNG) ---
-function initPageCounter() {
-    const viewCountEl = document.getElementById('viewCount');
-    if (!viewCountEl) return;
 
-    // Định danh độc quyền cho trang web của bạn trên internet
-    const siteId = 'foodstandards_database_2026';
-
-    // ĐÃ SỬA LỖI: Sửa lại chuẩn xác đường link v2 mới của CounterAPI, không bị thiếu dấu gạch chéo /
-    fetch(`https://counterapi.dev{siteId}/up`)
-        .then(res => {
-            if (!res.ok) throw new Error('API mạng bận hoặc bị chặn');
-            return res.json();
-        })
-        .then(data => {
-            // Đổ con số tổng duy nhất từ internet về và tự động thêm dấu phẩy hàng nghìn
-            // Điểm lưu ý: API v2 trả về trường 'count', ta lấy đúng trường này
-            viewCountEl.textContent = Number(data.count).toLocaleString();
-        })
-        .catch(err => {
-            console.error('Lỗi kết nối bộ đếm trực tuyến:', err);
-            // Quyết định không tự đếm riêng trên máy nữa, lỗi thì hiện dấu ba chấm để kiểm tra mạng
-            viewCountEl.textContent = '...';
-        });
-}
-
-// Kích hoạt chạy đếm lượt xem ngay khi trang web tải xong giao diện
-document.addEventListener('DOMContentLoaded', initPageCounter);
 </script>
 </body>
 </html>
