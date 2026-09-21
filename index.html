@@ -768,11 +768,12 @@ if (insInput && suggestionsBox) {
         filteredResults.forEach(item => {
             tableRows += `<tr><td class="col-ins"><b>${item.ins}</b></td><td class="col-viName">${item.vietnamese_name}</td><td class="col-enName">${item.english_name}</td><td class="col-func">${item.function}</td><td>${item.cat_no}</td><td>${item.cat_name}</td><td class="ml-highlight">${item.ml}</td><td>${item.note}</td><td>${item.note_explanation}</td><td><small style="color: #718096;">${item.source}</small></td></tr>`;
         });
-
+// DÁN VÀO ĐÂY: Dòng lệnh tính toán số phụ gia duy nhất sau khi gộp
+        const uniqueAdditivesCount = new Set(filteredResults.map(item => String(item.ins).trim().toLowerCase())).size;
         resultContainer.innerHTML = `
             <div class="results-wrapper">
                 <h2 class="results-title">Kết quả</h2>
-                <p class="showing-text" style="margin-top: 10px;">Có ${filteredResults.length} kết quả tìm kiếm</p>
+                <p class="showing-text" style="margin-top: 10px;">Có \${uniqueAdditivesCount} phụ gia được tìm thấy</p>
                 <div class="table-responsive">
                     <table class="result-table">
                         <thead>
