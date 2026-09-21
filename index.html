@@ -217,7 +217,7 @@
                 padding: 16px; 
             }
 
-            /* ĐÃ SỬA: Ép thanh chọn ngôn ngữ và dải số đèn LED căn giữa dọc tuyệt đối trên mobile */
+            /* Ép thanh chọn ngôn ngữ và dải số đèn LED căn giữa dọc tuyệt đối trên mobile */
             .language-switcher {
                 position: static !important; /* Hủy bỏ nép góc phải absolute trên mobile */
                 display: flex !important;
@@ -230,12 +230,12 @@
                 width: 100% !important;
             }
 
-            /* ĐÃ THÊM: Đảm bảo ô con mắt và đèn LED cũng tự động căn giữa, không bị xô lệch */
+            /* Đảm bảo ô con mắt và đèn LED cũng tự động căn giữa, không bị lệch */
             .page-counter {
                 display: inline-flex !important;
                 align-items: center !important;
                 justify-content: center !important;
-                margin-top: 0 !important; /* Xóa margin viết tay để dùng gap của cha cho chuẩn */
+                margin-top: 0 !important; 
                 text-align: center !important;
             }
 
@@ -297,18 +297,14 @@
 /* Kiểu dáng nhãn số INS nhỏ màu xám bên phải dòng gợi ý */
 #suggestions-box li .suggest-ins {
     font-size: 12px;
-    background: #F7FAFC;
+    background: #F1EFEA;
     color: #4A5568;
     padding: 2px 6px;
     border-radius: 4px;
     font-weight: 600;
     width: 65px;           
     display: inline-block; 
-    
-    /* SỬA DÒNG NÀY: Thay center thành left để chữ nhảy sang bên trái */
     text-align: left;    
-    
-    /* THÊM DÒNG NÀY: Tạo khoảng cách đệm 8px bên trái cho chữ đứng đẹp, không sát viền */
     padding-left: 8px;
     
     /* Đảm bảo kích thước ô không bị méo khi thêm padding */
