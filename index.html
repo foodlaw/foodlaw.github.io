@@ -688,18 +688,18 @@ if (insInput && suggestionsBox) {
 
         // Quét dữ liệu từ file Excel đã nạp sẵn trong dataDatabase
         dataDatabase.forEach(item => {
-            const viName = item.vietnamese_name ? String(item.vietnamese_name) : "";
-            const enName = item.english_name ? String(item.english_name) : "";
-            const insCode = item.ins ? String(item.ins) : "";
+    const viName = item.vietnamese_name ? String(item.vietnamese_name) : "";
+    const enName = item.english_name ? String(item.english_name) : "";
+    const insCode = item.ins ? String(item.ins) : "";
 
-            // Nếu gõ chữ -> tìm tên bắt đầu bằng chữ đó. Nếu gõ số -> tìm số INS chứa số đó
-            const isMatch = isNaN(query) ? 
-                (viName.toLowerCase().startsWith(query) || enName.toLowerCase().startsWith(query)) :
-                insCode.toLowerCase().includes(query);
+    // ĐÃ SỬA: Thay insCode.toLowerCase().includes(query) thành .startsWith(query)
+    const isMatch = isNaN(query) ? 
+        (viName.toLowerCase().startsWith(query) || enName.toLowerCase().startsWith(query)) :
+        insCode.toLowerCase().startsWith(query);
 
-            if (isMatch && !seenNames.has(viName.toLowerCase())) {
-                seenNames.add(viName.toLowerCase());
-                uniqueSuggestions.push({ name: viName, ins: insCode });
+    if (isMatch && !seenNames.has(viName.toLowerCase())) {
+        seenNames.add(viName.toLowerCase());
+        uniqueSuggestions.push({ name: viName, ins: insCode });
             }
         });
 
@@ -748,11 +748,14 @@ if (insInput && suggestionsBox) {
         }
         
         const filteredResults = dataDatabase.filter(item => {
-            const insStr = item.ins ? String(item.ins).toLowerCase() : "";
-            const viNameStr = item.vietnamese_name ? String(item.vietnamese_name).toLowerCase() : "";
-            const enNameStr = item.english_name ? String(item.english_name).toLowerCase() : "";
-            
-            return insStr.includes(keyword) || viNameStr.startsWith(keyword) || enNameStr.startsWith(keyword);
+    const insStr = item.ins ? String(item.ins).toLowerCase() : "";
+    const viNameStr = item.vietnamese_name ? String(item.vietnamese_name).toLowerCase() : "";
+    const enNameStr = item.english_name ? String(item.english_name).toLowerCase() : "";
+    
+    // ĐÃ SỬA: Đồng bộ insStr dùng .startsWith(keyword) thay vì .includes như cũ
+    return insStr.startsWith(keyword) || 
+           viNameStr.startsWith(keyword) || 
+           enNameStr.startsWith(keyword);
         });
         
         if (filteredResults.length === 0) {
