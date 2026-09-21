@@ -265,19 +265,26 @@
 </head>
 <body>
     
-    <!-- Thanh chọn ngôn ngữ -->
-    <div class="language-switcher">
-        <span class="lang-icon">
+        <!-- Cụm chọn ngôn ngữ kết hợp đếm lượt xem (Căn lề phải góc trên) -->
+<div class="language-switcher" style="position: absolute; top: 24px; right: 24px; display: flex; flex-direction: column; align-items: flex-end; font-size: 13px; color: #718096; z-index: 10;">
+    <div>
+        <span class="lang-icon" style="margin-right: 6px; display: inline-flex; align-items: center; color: #38A169;">
             <svg xmlns="http://w3.org" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="10"></circle>
                 <line x1="2" y1="12" x2="22" y2="12"></line>
                 <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
             </svg>
         </span>
-        <a href="?lang=vi" class="active">Tiếng Việt</a>
-        <span class="lang-divider">|</span>
-        <a href="?lang=en">English</a>
+        <span id="lang-vi" class="active" style="cursor:pointer;">Tiếng Việt</span>
+        <span class="lang-divider" style="margin: 0 8px; color: #E2E8F0;">|</span>
+        <span id="lang-en" style="cursor:pointer;">English</span>
     </div>
+    
+    <!-- ĐÃ THÊM: Ô hiển thị số lượt xem trang ngay phía dưới dòng ngôn ngữ -->
+    <div class="page-counter" style="margin-top: 6px; display: inline-flex; align-items: center; gap: 4px; font-weight: 500;">
+        👁️ <strong id="viewCount" style="color: #4A5568;">...</strong>
+    </div>
+</div>
     
     <!-- Phần Header hoàn thiện -->
     <div class="header-container">
@@ -727,6 +734,26 @@
             }
         });
     }
+    // --- TÍNH NĂNG TỰ ĐỘNG ĐẾM VÀ HIỂN THỊ SỐ LƯỢT XEM TỐI GIẢN ---
+    function initPageCounter() {
+        const viewCountEl = document.getElementById('viewCount');
+        if (!viewCountEl) return;
+
+        // Lưu và tự động tăng lượt truy cập local trong bộ nhớ trình duyệt
+        let localViews = localStorage.getItem('page_views') || 0;
+        localViews = parseInt(localViews) + 1;
+        localStorage.setItem('page_views', localViews);
+        
+        // Tạo một số lượt xem cơ sở ban đầu (ví dụ: bắt đầu từ 1,240 lượt) để web trông thực tế
+        let baseViews = 0; 
+        let totalViews = baseViews + localViews;
+        
+        // Định dạng dấu phẩy phân tách hàng nghìn (Ví dụ: 1,241)
+        viewCountEl.textContent = totalViews.toLocaleString();
+    }
+
+    // Chạy bộ đếm ngay khi trang web tải xong giao diện
+    document.addEventListener('DOMContentLoaded', initPageCounter);
 </script>
 </body>
 </html>
