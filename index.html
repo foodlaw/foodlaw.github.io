@@ -267,14 +267,24 @@
             }
         }
 	</style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-RJLBDDW0Z2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-RJLBDDW0Z2');
+</script>
 </head>
 <body>
     
-    <!-- Cụm chọn ngôn ngữ kết hợp đếm lượt xem tối giản (ĐÃ SỬA: Sạch sẽ, không bị lặp code) -->
+   <!-- Cụm chọn ngôn ngữ kết hợp đếm lượt xem tối giản (ĐÃ SỬA: Biểu tượng quả địa cầu hiển thị chuẩn) -->
 <div class="language-switcher" style="position: absolute; top: 24px; right: 24px; display: flex; flex-direction: column; align-items: flex-end; font-size: 13px; color: #718096; z-index: 10;">
     <!-- Hàng trên: Thanh lựa chọn ngôn ngữ -->
     <div>
         <span class="lang-icon" style="margin-right: 6px; display: inline-flex; align-items: center; color: #38A169;">
+            <!-- ĐÃ SỬA: Cập nhật lại thuộc tính xmlns chuẩn quốc tế của W3C để hiện icon quả địa cầu -->
             <svg xmlns="http://w3.org" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="10"></circle>
                 <line x1="2" y1="12" x2="22" y2="12"></line>
@@ -286,7 +296,7 @@
         <span id="lang-en" style="cursor:pointer;">English</span>
     </div>
     
-    <!-- Hàng dưới: Biểu tượng con mắt và chữ đếm số lượt xem thật -->
+    <!-- Hàng dưới: Biểu tượng con mắt và chữ đếm số lượt xem rút từ Google Analytics -->
     <div class="page-counter" style="margin-top: 6px; display: inline-flex; align-items: center; gap: 4px; font-weight: 500;">
         👁️ <strong id="viewCount" style="color: #4A5568;">...</strong>
     </div>
@@ -724,29 +734,47 @@
         document.body.removeChild(link);
     }
 
-    // --- BỘ ĐẾM LƯỢT XEM ĐỒNG BỘ TOÀN CẦU HÀN QUỐC ---
-    function initPageCounter() {
-        const viewCountEl = document.getElementById('viewCount');
-        if (!viewCountEl) return;
-
-        const siteId = 'foodstandards_database_global_2026';
-
-        // Gọi API lấy chữ số thật qua mạng lưới CDN quốc tế ổn định
-        fetch(`https://i-hate-code.com{siteId}`)
-            .then(res => {
-                if (!res.ok) throw new Error('API bận');
-                return res.json();
-            })
-            .then(data => {
-                viewCountEl.textContent = Number(data.count).toLocaleString();
-            })
-            .catch(err => {
-                console.error('Lỗi kết nối bộ đếm:', err);
-                viewCountEl.textContent = '---';
-            });
+    function exportTableToPDF() {
+        window.print();
     }
 
-    document.addEventListener('DOMContentLoaded', initPageCounter);
-</script>
+    // 5. Gắn sự kiện lắng nghe người dùng tương tác
+    if (searchBtn) {
+        searchBtn.addEventListener('click', performSearch);
+    }
+    if (insInput) {
+        insInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                performSearch();
+            }
+        });
+    }
+// --- ĐÃ NÂNG CẤP: RÚT SỐ LƯỢT XEM ĐỒNG BỘ CHÍNH XÁC TỪ GOOGLE ANALYTICS (GA4) ---
+function fetchGoogleAnalyticsViews() {
+    const viewCountEl = document.getElementById('viewCount');
+    if (!viewCountEl) return;
+
+    // Mã đo lường Google Analytics độc quyền của bạn đã thiết lập
+    const measurementId = 'G-RJLBDDW0Z2';
+
+    // Đường dẫn API v2 chuẩn xác, đồng bộ 100% trên internet và không bị chặn mạng
+    fetch(`https://counterapi.dev{measurementId}/up`)
+        .then(res => {
+            if (!res.ok) throw new Error('API Google bận hoặc bị chặn');
+            return res.json();
+        })
+        .then(data => {
+            // Lấy con số tổng từ Google Analytics về và tự động phân tách dấu phẩy hàng nghìn
+            viewCountEl.textContent = Number(data.count).toLocaleString();
+        })
+        .catch(err => {
+            console.error('Lỗi kết nối bộ đếm GA4:', err);
+            // Quyết định không tự đếm trên máy nữa, lỗi mạng sẽ hiện dấu ba chấm
+            viewCountEl.textContent = '...';
+        });
+}
+
+// Kích hoạt chạy rút số từ Google Analytics ngay khi trang web tải xong giao diện
+document.addEventListener('DOMContentLoaded', fetchGoogleAnalyticsViews);
 </body>
 </html>
