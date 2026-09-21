@@ -310,6 +310,12 @@
     /* Đảm bảo kích thước ô không bị méo khi thêm padding */
     box-sizing: border-box; 
 }
+/* Khóa chết kích thước chữ của toàn bộ bảng, cấm trình duyệt tự co giãn */
+.result-table td, 
+.result-table th {
+    -webkit-text-size-adjust: 100% !important; /* Dành cho trình duyệt Safari/iPhone */
+    text-size-adjust: 100% !important;         /* Dành cho Chrome/Firefox/Edge */
+}
 </style>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-RJLBDDW0Z2"></script>
@@ -769,7 +775,7 @@ if (insInput && suggestionsBox) {
         resultContainer.innerHTML = `
             <div class="results-wrapper">
                 <h2 class="results-title">Kết quả</h2>
-                <p class="showing-text" style="margin-top: 10px;">Có ${uniqueAdditivesCount} phụ gia được tìm thấy</p>
+                <p class="showing-text" style="margin-top: 10px;">Có ${uniqueAdditivesCount} phụ gia được tìm thấy.</p>
                 <div class="table-responsive">
                     <table class="result-table">
                         <thead>
