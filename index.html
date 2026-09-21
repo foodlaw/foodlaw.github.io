@@ -693,7 +693,6 @@
                         <!-- Bộ nút Xuất file nằm bên trái -->
                         <div style="display: flex; gap: 10px;">
                             <button class="btn-export" onclick="exportTableToExcel()" style="margin: 0;">📄 Xuất file Excel</button>
-                            <button class="btn-export" onclick="exportTableToPDF()" style="margin: 0;">📄 Xuất file PDF</button>
                         </div>
                         
                         <!-- Bộ phân trang nằm bên phải -->
@@ -743,10 +742,7 @@
         document.body.removeChild(link);
     }
 
-    function exportTableToPDF() {
-        window.print();
-    }
-
+    
     // 5. Gắn sự kiện lắng nghe người dùng tương tác
     if (searchBtn) {
         searchBtn.addEventListener('click', performSearch);
