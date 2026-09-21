@@ -216,12 +216,26 @@
                 padding: 16px; 
             }
 
-            /* Đưa thanh chọn ngôn ngữ vào luồng nội dung và căn giữa */
+            /* ĐÃ SỬA: Ép thanh chọn ngôn ngữ và dải số đèn LED căn giữa dọc tuyệt đối trên mobile */
             .language-switcher {
-                position: static; 
-                justify-content: center;
+                position: static !important; /* Hủy bỏ nép góc phải absolute trên mobile */
+                display: flex !important;
+                flex-direction: column !important; /* Dòng chữ ở trên, đèn LED ở dưới */
+                align-items: center !important;    /* Căn giữa tăm tắp theo chiều dọc */
+                justify-content: center !important;
                 margin-bottom: 24px;
                 margin-top: 5px;
+                gap: 8px;                    /* Tạo khoảng cách nhỏ vừa vặn giữa 2 dòng */
+                width: 100% !important;
+            }
+
+            /* ĐÃ THÊM: Đảm bảo ô con mắt và đèn LED cũng tự động căn giữa, không bị xô lệch */
+            .page-counter {
+                display: inline-flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                margin-top: 0 !important; /* Xóa margin viết tay để dùng gap của cha cho chuẩn */
+                text-align: center !important;
             }
 
             /* Chuyển đổi toàn bộ Header sang dạng căn giữa dọc */
@@ -274,9 +288,9 @@
 </head>
 <body>
     
-    <!-- Cụm chọn ngôn ngữ kết hợp đếm lượt xem (ĐÃ TRIỆT TIÊU 100% CHỮ HITS) -->
+    <!-- Cụm chọn ngôn ngữ kết hợp đếm lượt xem ĐÈN LED RETRO (Đã chốt đường link ẩn chữ hits) -->
 <div class="language-switcher" style="position: absolute; top: 24px; right: 24px; display: flex; flex-direction: column; align-items: flex-end; font-size: 13px; color: #718096; z-index: 10;">
-    <!-- Hàng trên: Thanh lựa chọn ngôn ngữ Việt | Anh -->
+    <!-- Hàng trên: Giữ nguyên thanh chọn ngôn ngữ hiện tại của bạn -->
     <div>
         <span class="lang-icon" style="margin-right: 6px; display: inline-flex; align-items: center; color: #38A169;">
             <svg xmlns="http://w3.org" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -290,11 +304,19 @@
         <span id="lang-en" style="cursor:pointer;">English</span>
     </div>
     
-    <!-- Hàng dưới: Chỉ giữ lại con mắt và ô khối chứa con số màu xanh lá cây, sạch bóng chữ hits -->
+    <!-- Hàng dưới: THÊM MỚI - Chỉ giữ lại icon con mắt và dải ô số điện tử LED màu xanh lá sạch sẽ -->
     <div class="page-counter" style="margin-top: 6px; display: inline-flex; align-items: center; gap: 6px; font-weight: 500;">
-        👁️ <img src="https://hits.sh/foodstandards.github.io.svg?theme=odometer&color=38a169&label=%20" alt="Views" style="height: 16px; vertical-align: middle;">
+        👁️ <img src="https://hits.sh/foodstandards.github.io.svg?theme=odometer&color=38a169&label=%20" alt="Views" style="height: 20px; vertical-align: middle; filter: contrast(1.15);">
     </div>
 </div>
+    
+    <!-- Phần Header hoàn thiện -->
+    <div class="header-container">
+        <div class="logo-box">
+            <a href="/">
+                <img src="logo.png" alt="FoodStanDB Logo">
+            </a>
+        </div>
         
         <a href="/" class="title-link">
             <h1 class="database-title">
