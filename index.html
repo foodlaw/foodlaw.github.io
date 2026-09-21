@@ -7,8 +7,8 @@
 	<link rel="icon" type="image/png" href="favicon.png">
     <!-- ĐÃ SỬA: Đường link nhúng font chữ Inter chuẩn xác từ Google Fonts -->
     <link href="https://googleapis.com" rel="stylesheet">
-	<!-- DÁN VÀO ĐÂY: Thư viện SheetJS để đọc Excel -->
-    <script src="https://jsdelivr.net"></script>
+	<!-- DÁN DÒNG NÀY VÀO THẺ HEAD: Sử dụng link dự phòng cdnjs cực kỳ ổn định -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 	<style>
         /* Khung bao quanh trang */
         body {
@@ -621,12 +621,14 @@
             return;
         }
         
-        // Tìm kiếm dữ liệu đa năng dựa trên các tên cột chuẩn trong file Excel thật của bạn
-        const filteredResults = dataDatabase.filter(item => 
-            (item.ins && String(item.ins).toLowerCase().includes(keyword)) || 
-            (item.vietnamese_name && String(item.vietnamese_name).toLowerCase().includes(keyword)) ||
-            (item.english_name && String(item.english_name).toLowerCase().includes(keyword))
-        );
+        // Tìm kiếm dữ liệu đa năng dựa trên việc ép tất cả các trường về dạng chuỗi (String) đề phòng trường hợp Excel tự nhận diện kiểu Số
+        const filteredResults = dataDatabase.filter(item => {
+            const insStr = item.ins ? String(item.ins).toLowerCase() : "";
+            const viNameStr = item.vietnamese_name ? String(item.vietnamese_name).toLowerCase() : "";
+            const enNameStr = item.english_name ? String(item.english_name).toLowerCase() : "";
+            
+            return insStr.includes(keyword) || viNameStr.includes(keyword) || enNameStr.includes(keyword);
+        });
         
         // Nếu không tìm thấy kết quả phù hợp
         if (filteredResults.length === 0) {
@@ -634,7 +636,7 @@
             return;
         }
         
-        // Tạo chuỗi HTML các dòng (Có class col-ins, col-viName, col-enName để chạy hàm gộp ô)
+        // Tạo chuỗi HTML các dòng (ĐÃ SỬA: note_explanation khớp hoàn toàn với thuộc tính trong Excel mới của bạn)
         let tableRows = "";
         filteredResults.forEach(item => {
             tableRows += `
@@ -647,7 +649,7 @@
                     <td>${item.cat_name || ''}</td>
                     <td class="ml-highlight">${item.ml || ''}</td>
                     <td>${item.note || ''}</td>
-                    <td>${item.note_explaination || ''}</td>
+                    <td>${item.note_explanation || ''}</td>
                     <td><small style="color: #718096;">${item.source || ''}</small></td>
                 </tr>
             `;
@@ -707,11 +709,11 @@
             </div>
         `;
 
-        // Kích thái thuật toán gộp ô tự động chạy ngay sau khi bảng vừa hiển thị
+        // Kích hoạt thuật toán gộp ô tự động chạy ngay sau khi bảng vừa hiển thị
         mergeTableCells();
     }
 
-    // 4. Thuật toán chạy ngầm tự động gộp ô trùng nhau cho 3 cột đầu tiên (ĐÃ SỬA: Đóng đủ ngoặc)
+    // 4. Thuật toán chạy ngầm tự động gộp ô trùng nhau cho 3 cột đầu tiên
     function mergeTableCells() {
         const columnsToMerge = ['.col-ins', '.col-viName', '.col-enName'];
         
@@ -737,22 +739,22 @@
         });
     }
 
-    // 5. Hàm xử lý xuất ngược bảng dữ liệu hiển thị thành file Excel (.xlsx) chuẩn SheetJS
+    // 5. Hàm xử lý xuất ngược bảng dữ liệu hiển thị thành file Excel (.xlsx) tải về máy bằng thư viện SheetJS
     function exportTableToExcel() {
         const table = document.querySelector(".result-table");
         if (!table) {
-            alert("Không có dữ liệu dữ liệu để xuất!");
+            alert("Không có dữ liệu để xuất file!");
             return;
         }
-        
+
         // Tạo một workbook mới từ cấu trúc bảng HTML hiện tại trên trang
         const wb = XLSX.utils.table_to_book(table, { sheet: "KetQuaTraCuu" });
         
-        // Tải tệp xuống máy tính người dùng dạng đuôi mở rộng xlsx chuẩn
+        // Tiến hành ghi dữ liệu và tải file .xlsx thật về máy
         XLSX.writeFile(wb, "Ket_Qua_Tra_Cuu_Phu_Gia.xlsx");
     }
 
-    // 6. Gắn các sự kiện lắng nghe người dùng tương tác với thanh tìm kiếm (ĐÃ SỬA: Bổ sung đầy đủ)
+    // 6. Gắn các sự kiện lắng nghe tương tác từ bàn phím và chuột
     if (searchBtn) {
         searchBtn.addEventListener('click', performSearch);
     }
