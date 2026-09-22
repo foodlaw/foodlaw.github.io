@@ -768,7 +768,8 @@ if (insInput && suggestionsBox) {
         
         let tableRows = "";
         filteredResults.forEach(item => {
-            tableRows += `<tr><td class="col-ins"><b>${item.ins}</b></td><td class="col-viName">${item.vietnamese_name}</td><td class="col-enName">${item.english_name}</td><td class="col-func">${item.function}</td><td>${item.cat_no}</td><td>${item.cat_name}</td><td class="ml-highlight">${item.ml}</td><td>${item.note}</td><td>${item.note_explanation}</td><td><small style="color: #718096;">${item.source}</small></td></tr>`;
+            // ĐÃ SỬA: Thêm class="col-catNo", class="col-catName" và class="col-ml" vào các cột thực phẩm tương ứng
+            tableRows += `<tr><td class="col-ins"><b>${item.ins}</b></td><td class="col-viName">${item.vietnamese_name}</td><td class="col-enName">${item.english_name}</td><td class="col-func">${item.function}</td><td class="col-catNo">${item.cat_no}</td><td class="col-catName">${item.cat_name}</td><td class="ml-highlight col-ml">${item.ml}</td><td>${item.note}</td><td>${item.note_explanation}</td><td><small style="color: #718096;">${item.source}</small></td></tr>`;
         });
 // DÁN VÀO ĐÂY: Dòng lệnh tính toán số phụ gia duy nhất sau khi gộp
         const uniqueAdditivesCount = new Set(filteredResults.map(item => String(item.ins).trim().toLowerCase())).size;
@@ -808,9 +809,10 @@ if (insInput && suggestionsBox) {
         mergeTableCells();
     }
 
-    // 4. Thuật toán chạy ngầm tự động gộp ô trùng nhau cho 4 cột đầu tiên
+    // 4. Thuật toán chạy ngầm tự động gộp ô trùng nhau (Đã bổ sung đầy đủ các cột dữ liệu)
     function mergeTableCells() {
-        const columnsToMerge = ['.col-ins', '.col-viName', '.col-enName', '.col-func'];
+        // ĐÃ SỬA: Điền thêm '.col-catNo', '.col-catName', '.col-ml' vào cuối mảng
+        const columnsToMerge = ['.col-ins', '.col-viName', '.col-enName', '.col-func', '.col-catNo', '.col-catName', '.col-ml'];
         
         columnsToMerge.forEach(colClass => {
             const cells = document.querySelectorAll(`#result-table-body ${colClass}`);
