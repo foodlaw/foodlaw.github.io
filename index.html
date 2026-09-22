@@ -675,85 +675,77 @@
             });
     });
 
-    // =========================================================================
-    // 2. KHAI BÁO BIẾN VÀ LẤY CÁC PHẦN TỬ HTML TỪ GIAO DIỆN
-    // =========================================================================
-    
-    // 🌟 BẮT BUỘC PHẢI CÓ DÒNG NÀY: Khai báo biến ngôn ngữ mặc định ban đầu là Tiếng Việt
-    if (typeof currentLanguage === 'undefined') {
-        var currentLanguage = "vi"; 
-    }
-
+    // 2. Lấy các phần tử HTML từ giao diện của bạn
     const insInput = document.querySelector('.search-box');
     const searchBtn = document.querySelector('.search-btn');
     const resultContainer = document.getElementById('result-container');
-    const suggestionsBox = document.getElementById('suggestions-box');
+// KÍCH HOẠT: Xử lý hiển thị danh sách gợi ý bắt đầu bằng chữ cái gõ vào
+const suggestionsBox = document.getElementById('suggestions-box');
 
-    // KÍCH HOẠT: Xử lý hiển thị danh sách gợi ý bắt đầu bằng chữ cái gõ vào
-    if (insInput && suggestionsBox) {
-        insInput.addEventListener('input', () => {
-            const query = insInput.value.trim().toLowerCase();
-            suggestionsBox.innerHTML = "";
-            
-            if (query === "") {
-                suggestionsBox.style.display = "none";
-                return;
-            }
+if (insInput && suggestionsBox) {
+    insInput.addEventListener('input', () => {
+        const query = insInput.value.trim().toLowerCase();
+        suggestionsBox.innerHTML = "";
+        
+        if (query === "") {
+            suggestionsBox.style.display = "none";
+            return;
+        }
 
-            let uniqueSuggestions = [];
-            let seenNames = new Set();
+        let uniqueSuggestions = [];
+        let seenNames = new Set();
 
-            // Quét dữ liệu từ file Excel đã nạp sẵn trong dataDatabase
-            dataDatabase.forEach(item => {
-                const viName = item.vietnamese_name ? String(item.vietnamese_name) : "";
-                const enName = item.english_name ? String(item.english_name) : "";
-                const insCode = item.ins ? String(item.ins) : "";
+        // Quét dữ liệu từ file Excel đã nạp sẵn trong dataDatabase
+        dataDatabase.forEach(item => {
+            const viName = item.vietnamese_name ? String(item.vietnamese_name) : "";
+            const enName = item.english_name ? String(item.english_name) : "";
+            const insCode = item.ins ? String(item.ins) : "";
 
-                // Bộ lọc startsWith thông minh theo đúng logic của bạn
-                const isMatch = isNaN(query) ? 
-                    (viName.toLowerCase().startsWith(query) || enName.toLowerCase().startsWith(query)) :
-                    insCode.toLowerCase().startsWith(query);
+            const isMatch = isNaN(query) ? 
+                (viName.toLowerCase().startsWith(query) || enName.toLowerCase().startsWith(query)) :
+                insCode.toLowerCase().startsWith(query);
 
-                if (isMatch) {
-                    // TỰ ĐỘNG TRÁO TÊN: Tiếng Anh hiện tên Anh, Tiếng Việt hiện tên Việt
-                    const displayName = currentLanguage === 'en' ? (enName || viName) : viName;
+            if (isMatch) {
+                // 🌟 TỰ ĐỘNG TRÁO TÊN: Tiếng Anh hiện tên Anh (nếu trống bù tên Việt), Tiếng Việt hiện tên Việt
+                const displayName = currentLanguage === 'en' ? (enName || viName) : viName;
 
-                    // Kiểm tra chống trùng lặp dựa trên tên hiển thị thực tế
-                    if (!seenNames.has(displayName.toLowerCase())) {
-                        seenNames.add(displayName.toLowerCase());
-                        uniqueSuggestions.push({ name: displayName, ins: insCode });
-                    }
+                // 🌟 ĐÃ SỬA: Kiểm tra chống trùng lặp dựa trên tên hiển thị thực tế thay vì cố định viName
+                if (!seenNames.has(displayName.toLowerCase())) {
+                    seenNames.add(displayName.toLowerCase());
+                    uniqueSuggestions.push({ name: displayName, ins: insCode });
                 }
-            });
-
-            // Giới hạn hiển thị tối đa 20 dòng gợi ý hàng đầu để tránh làm dài màn hình
-            if (uniqueSuggestions.length > 0) {
-                uniqueSuggestions.slice(0, 20).forEach(item => {
-                    const li = document.createElement('li');
-                    
-                    // Khung HTML số đứng trước tên đứng sau của bạn giữ nguyên
-                    li.innerHTML = `<span style="display: flex; gap: 12px; align-items: center;"><span class="suggest-ins">${item.ins}</span><span>${item.name}</span></span>`;
-                    
-                    li.addEventListener('click', () => {
-                        insInput.value = item.name;
-                        suggestionsBox.style.display = "none";
-                        performSearch(); 
-                    });
-                    suggestionsBox.appendChild(li);
-                });
-                suggestionsBox.style.display = "block";
-            } else {
-                suggestionsBox.style.display = "none";
-            }
-        }); 
-
-        // Tự động ẩn hộp gợi ý đi nếu người dùng nhấp chuột ra khu vực trống bên ngoài
-        document.addEventListener('click', (e) => {
-            if (!insInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
-                suggestionsBox.style.display = "none";
             }
         });
-    }
+
+        // Giới hạn hiển thị tối đa 10 dòng gợi ý hàng đầu để tránh làm dài màn hình
+        if (uniqueSuggestions.length > 0) {
+    // ĐÃ SỬA: Thay đổi từ .slice(0, 10) thành .slice(0, 20) để hiện tối đa 20 dòng
+    uniqueSuggestions.slice(0, 20).forEach(item => {
+        const li = document.createElement('li');
+        
+        // Khung HTML số đứng trước tên đứng sau của bạn giữ nguyên:
+        li.innerHTML = `<span style="display: flex; gap: 12px; align-items: center;"><span class="suggest-ins">${item.ins}</span><span>${item.name}</span></span>`;
+        
+        li.addEventListener('click', () => {
+            insInput.value = item.name;
+            suggestionsBox.style.display = "none";
+            performSearch(); 
+        });
+        suggestionsBox.appendChild(li);
+    });
+    suggestionsBox.style.display = "block";
+} else {
+            suggestionsBox.style.display = "none";
+        }
+    });
+
+    // Tự động ẩn hộp gợi ý đi nếu người dùng nhấp chuột ra khu vực trống bên ngoài
+    document.addEventListener('click', (e) => {
+        if (!insInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
+            suggestionsBox.style.display = "none";
+        }
+    });
+}
     
 // 3. Hàm xử lý tìm kiếm và tạo bảng kết quả
     function performSearch() {
@@ -765,8 +757,13 @@
         const keyword = insInput.value.trim().toLowerCase();
         
         if (keyword === "") {
-            resultContainer.innerHTML = `<div class="message-error" style="color: #8B0032; font-size: 20px; font-weight: bold; margin-top: 40px;">💬 Vui lòng nhập số INS hoặc tên phụ gia vào ô tìm kiếm.</div>`;
-            return;
+    // Tự động tráo câu thông báo lỗi theo ngôn ngữ hiện tại
+    const errorMsg = currentLanguage === 'en' ? 
+        "💬 Please fill in the INS number or additive name into the search box." : 
+        "💬 Vui lòng nhập số INS hoặc tên phụ gia vào ô tìm kiếm.";
+
+    resultContainer.innerHTML = `<div class="message-error" style="color: #8B0032; font-size: 20px; font-weight: bold; margin-top: 40px; text-align: center;">${errorMsg}</div>`;
+    return;
         }
         
         const filteredResults = dataDatabase.filter(item => {
@@ -1025,8 +1022,7 @@ if (spanEn) {
 if (spanVi && spanEn) {
     // 1. Khi người dùng click vào chữ English
     spanEn.addEventListener('click', function() {
-        currentLanguage = "en";
-	spanVi.style.fontWeight = '400';
+        spanVi.style.fontWeight = '400';
         spanVi.style.color = '#718096';
         spanVi.style.pointerEvents = 'auto';
         spanVi.classList.remove('active');
@@ -1050,8 +1046,7 @@ if (spanVi && spanEn) {
 
     // 2. Khi người dùng click quay lại chữ Tiếng Việt
     spanVi.addEventListener('click', function() {
-        currentLanguage = "vi"; 
-	spanEn.style.fontWeight = '400';
+        spanEn.style.fontWeight = '400';
         spanEn.style.color = '#718096';
         spanEn.style.pointerEvents = 'auto';
         spanEn.classList.remove('active');
