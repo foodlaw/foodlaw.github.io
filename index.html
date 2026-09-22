@@ -819,7 +819,10 @@
         resultContainer.innerHTML = `
             <div class="results-wrapper">
                 <h2 class="results-title">${currentLanguage === 'en' ? 'Results' : 'Kết quả'}</h2>
+                
+                <!-- ĐÃ SỬA CHUẨN: Xóa bỏ hoàn toàn dấu gạch chéo ngược ở đầu để hiển thị số thực tế -->
                 <p class="showing-text" style="margin-top: 10px;">${currentLanguage === 'en' ? `Found \${uniqueAdditivesCount} additives.` : `Có \${uniqueAdditivesCount} phụ gia được tìm thấy.`}</p>
+                
                 <div class="table-responsive">
                     <table class="result-table">
                         <thead>
