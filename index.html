@@ -377,7 +377,7 @@
 	
     <!-- Vùng tìm kiếm (Đã nâng cấp để chứa danh sách gợi ý Autocomplete) -->
 <div class="search-container">
-    <p style="margin-top: 40px;">Nhập số INS hoặc tên phụ gia:</p> 
+    <p style="margin-top: 40px;" id="search-label">Nhập số INS hoặc tên phụ gia:</p> 
     <div class="search-form-group" style="position: relative;">
         <!-- Khung wrapper bọc quanh input và ul để danh sách đổ xuống chuẩn vị trí -->
         <div style="position: relative; flex: 1; min-width: 0;">
@@ -981,59 +981,63 @@ function mergeTableCells() {
     }
 
     // 6. Gắn các sự kiện lắng nghe tương tác chuột và phím Enter từ người dùng
-    if (searchBtn) searchBtn.addEventListener('click', performSearch);
-    if (insInput) {
-        insInput.addEventListener('keypress', function(event) {
-            if (event.key === 'Enter') performSearch();
-        });
-    }
+if (searchBtn) searchBtn.addEventListener('click', performSearch);
+if (insInput) {
+    insInput.addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') performSearch();
+    });
+}
+
 // =========================================================================
-// ĐIỀU KHIỂN CHỮ ĐẬM / NHẠT CHO THANH NGÔN NGỮ THẺ SPAN GỐC
+// 🌟 KHỐI MÃ CHUẨN: ĐIỀU KHIỂN CHỮ ĐẬM/NHẠT VÀ TỰ ĐỔI NGÔN NGỮ CHỈ DẪN
 // =========================================================================
 const spanVi = document.getElementById('lang-vi');
 const spanEn = document.getElementById('lang-en');
+const searchLabelEl = document.getElementById('search-label'); 
 
 // Thiết lập trạng thái in đậm mặc định ban đầu cho Tiếng Việt khi vừa mở trang
 if (spanVi) {
     spanVi.style.fontWeight = '700';
     spanVi.style.color = '#1A202C';
-    spanVi.style.pointerEvents = 'none'; // Khóa không cho bấm lại khi đang kích hoạt
+    spanVi.style.pointerEvents = 'none'; 
 }
 if (spanEn) {
     spanEn.style.fontWeight = '400';
     spanEn.style.color = '#718096';
-    spanEn.style.pointerEvents = 'auto'; // Cho phép bấm chuyển sang tiếng Anh
+    spanEn.style.pointerEvents = 'auto'; 
 }
 
 if (spanVi && spanEn) {
     // 1. Khi người dùng click vào chữ English
     spanEn.addEventListener('click', function() {
-        // Tráo trạng thái Tiếng Việt: Thành in thường, màu xám, cho phép bấm lại
         spanVi.style.fontWeight = '400';
         spanVi.style.color = '#718096';
         spanVi.style.pointerEvents = 'auto';
         spanVi.classList.remove('active');
 
-        // Tráo trạng thái English: Thành in đậm, màu đen, khóa bấm liên tục
         spanEn.style.fontWeight = '700';
         spanEn.style.color = '#1A202C';
         spanEn.style.pointerEvents = 'none';
         spanEn.classList.add('active');
+
+        // Tự động đổi dòng chữ chỉ dẫn sang Tiếng Anh
+        if (searchLabelEl) searchLabelEl.textContent = "Fill in either the INS number or the food additive name";
     });
 
     // 2. Khi người dùng click quay lại chữ Tiếng Việt
     spanVi.addEventListener('click', function() {
-        // Tráo trạng thái English: Thành in thường, màu xám, cho phép bấm lại
         spanEn.style.fontWeight = '400';
         spanEn.style.color = '#718096';
         spanEn.style.pointerEvents = 'auto';
         spanEn.classList.remove('active');
 
-        // Tráo trạng thái Tiếng Việt: Thành in đậm, màu đen, khóa bấm liên tục
         spanVi.style.fontWeight = '700';
         spanVi.style.color = '#1A202C';
         spanVi.style.pointerEvents = 'none';
         spanVi.classList.add('active');
+
+        // Tự động đổi dòng chữ chỉ dẫn quay lại Tiếng Việt
+        if (searchLabelEl) searchLabelEl.textContent = "Nhập số INS hoặc tên phụ gia:";
     });
 }
 </script>
