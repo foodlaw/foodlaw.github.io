@@ -397,7 +397,7 @@
                 <line x1="12" y1="16" x2="12" y2="12"></line>
                 <line x1="12" y1="8" x2="12.01" y2="8"></line>
             </svg>
-            <span>Miễn Trừ Trách Nhiệm</span>
+            <span id="disclaimer-title-text">Miễn Trừ Trách Nhiệm</span>
         </div>
         <div class="disclaimer-content">
             <p>Cơ sở dữ liệu này được xây dựng cho mục đích tra cứu thông tin dựa trên Thông tư 24/2019/TT-BYT Quy định về quản lý và sử dụng phụ gia thực phẩm và Thông tư 17/2023/TT-BYT Sửa đổi, bổ sung và bãi bỏ một số văn bản quy phạm pháp luật về an toàn thực phẩm do Bộ trưởng Bộ Y tế ban hành, và không thay thế hoặc đóng vai trò như lời khuyên pháp lý chính thức.</p>
@@ -994,6 +994,7 @@ const spanVi = document.getElementById('lang-vi');
 const spanEn = document.getElementById('lang-en');
 const searchLabelEl = document.getElementById('search-label'); 
 const searchBtnTextEl = document.getElementById('search-btn-text');
+const disclaimerTitleTextEl = document.getElementById('disclaimer-title-text');
 
 // Thiết lập trạng thái in đậm mặc định ban đầu cho Tiếng Việt khi vừa mở trang
 if (spanVi) {
@@ -1023,6 +1024,7 @@ if (spanVi && spanEn) {
         // Tự động đổi dòng chữ chỉ dẫn sang Tiếng Anh
         if (searchLabelEl) searchLabelEl.textContent = "Fill in either the INS number or the food additive name";
 	if (searchBtnTextEl) searchBtnTextEl.textContent = "Search";
+	if (disclaimerTitleTextEl) disclaimerTitleTextEl.textContent = "Disclaimer";
     });
 
     // 2. Khi người dùng click quay lại chữ Tiếng Việt
@@ -1040,6 +1042,7 @@ if (spanVi && spanEn) {
         // Tự động đổi dòng chữ chỉ dẫn quay lại Tiếng Việt
         if (searchLabelEl) searchLabelEl.textContent = "Nhập số INS hoặc tên phụ gia:";
 	if (searchBtnTextEl) searchBtnTextEl.textContent = "Tra cứu";
+	if (disclaimerTitleTextEl) disclaimerTitleTextEl.textContent = "Miễn Trừ Trách Nhiệm";
     });
 }
 </script>
