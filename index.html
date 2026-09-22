@@ -861,7 +861,7 @@ function mergeTableCells() {
     });
 }
 
-    // 5. 🌟 HÀM XUẤT FILE EXCEL CHUẨN ĐÉT: Lấy dữ liệu gốc từ bộ nhớ, không sợ lệch cột
+    // 5. HÀM XUẤT FILE EXCEL THÔNG MINH: Tự động để trống ô trùng lặp, các cột thẳng hàng 100%
     function exportTableToExcel() {
         const keyword = insInput.value.trim().toLowerCase();
         
@@ -870,7 +870,7 @@ function mergeTableCells() {
             return;
         }
 
-        // 1. Tái lập bộ lọc dữ liệu gốc trong bộ nhớ giống y hệt lúc tra cứu
+        // 1. Lấy dữ liệu đã lọc sạch sẽ trong bộ nhớ
         const exportData = dataDatabase.filter(item => 
             item.ins.toLowerCase().startsWith(keyword) || 
             item.vietnamese_name.toLowerCase().startsWith(keyword) ||
@@ -882,26 +882,70 @@ function mergeTableCells() {
             return;
         }
 
-        // 2. Định nghĩa hàng tiêu đề viết hoa chữ cái đầu cực kỳ đẹp cho file Excel tải về
-        const excelRows = exportData.map(item => ({
-            "INS": item.ins,
-            "Tên phụ gia Tiếng Việt": item.vietnamese_name,
-            "Tên phụ gia Tiếng Anh": item.english_name,
-            "Chức năng": item.function,
-            "Mã nhóm thực phẩm": item.cat_no,
-            "Nhóm thực phẩm": item.cat_name,
-            "ML (mg/kg)": item.ml,
-            "Ghi chú": item.note,
-            "Giải thích ghi chú": item.note_explanation,
-            "Nguồn": item.source
-        }));
+        // các biến ghi nhớ để so sánh dòng trên và dòng dưới
+        let lastIns = "", lastVi = "", lastEn = "", lastFunc = "", lastCatNo = "";
 
-        // 3. Tiến hành đóng gói dữ liệu mảng phẳng sạch sẽ thành Workbook
+        // 2. Chuyển đổi dữ liệu và TỰ ĐỘNG XÓA CHỮ nếu trùng dòng trên
+        const excelRows = exportData.map(item => {
+            // Lưu giá trị thô để so sánh trước
+            const currentIns = item.ins;
+            const currentVi = item.vietnamese_name;
+            const currentEn = item.english_name;
+            const currentFunc = item.function;
+            const currentCatNo = item.cat_no;
+            const currentMl = item.ml;
+
+            // Thiết lập giá trị hiển thị mặc định bằng chính nó
+            let displayIns = currentIns;
+            let displayVi = currentVi;
+            let displayEn = currentEn;
+            let displayFunc = currentFunc;
+            let displayCatNo = currentCatNo;
+            let displayCatName = item.cat_name;
+            let displayMl = currentMl;
+
+            // Quy tắc 1: Nếu trùng INS, Tên Việt, Tên Anh -> Xóa chữ ô dưới
+            if (currentIns === lastIns) displayIns = ""; else lastIns = currentIns;
+            if (currentVi === lastVi) displayVi = ""; else lastVi = currentVi;
+            if (currentEn === lastEn) displayEn = ""; else lastEn = currentEn;
+            if (currentFunc === lastFunc) displayFunc = ""; else lastFunc = currentFunc;
+
+            // Quy tắc 2: Nếu trùng Mã nhóm -> Xóa chữ cột Mã nhóm và Tên nhóm
+            if (currentCatNo === lastCatNo && currentCatNo !== "") {
+                displayCatNo = "";
+                displayCatName = "";
+                // Ràng buộc thông minh: Chỉ gộp/xóa ML nếu nội dung ML trùng và mã nhóm cũng trùng
+                if (currentMl === cellMlMemory) {
+                    displayMl = "";
+                }
+            } else {
+                lastCatNo = currentCatNo;
+            }
+
+            // Ghi nhớ giá trị ML dòng này để xét cho dòng tiếp theo
+            var cellMlMemory = currentMl;
+
+            // Trả về hàng dữ liệu sạch sẽ đã được loại bỏ trùng lặp
+            return {
+                "INS": displayIns,
+                "Tên phụ gia Tiếng Việt": displayVi,
+                "Tên phụ gia Tiếng Anh": displayEn,
+                "Chức năng": displayFunc,
+                "Mã nhóm thực phẩm": displayCatNo,
+                "Nhóm thực phẩm": displayCatName,
+                "ML (mg/kg)": displayMl,
+                "Ghi chú": item.note,
+                "Giải thích ghi chú": item.note_explanation,
+                "Nguồn": item.source
+            };
+        });
+
+        // 3. Đóng gói thành Workbook Excel phẳng
         const worksheet = XLSX.utils.json_to_sheet(excelRows);
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, "KetQuaTraCuu");
         
-        // 4. Tải file .xlsx thật về máy, các cột thẳng hàng tăm tắp
+        // 4. Xuất file .xlsx chuẩn chỉnh về máy tính
         XLSX.writeFile(workbook, "Ket_Qua_Tra_Cuu_Phu_Gia.xlsx");
     }
 
