@@ -641,37 +641,43 @@
                 const worksheet = workbook.Sheets[firstSheetName];
                 
                 var rawData = XLSX.utils.sheet_to_json(worksheet);
-                let lastIns = "", lastVi = "", lastEn = "", lastFunc = "", lastSource = "";
+                let lastIns = "", lastVi = "", lastEn = "";
                 
                 dataDatabase = rawData.map(item => {
                     // Ép kiểu về chuỗi và xóa khoảng trắng thừa ở đuôi
                     let ins = item.ins !== undefined ? String(item.ins).trim() : "";
                     let vi = item.vietnamese_name !== undefined ? String(item.vietnamese_name).trim() : "";
                     let en = item.english_name !== undefined ? String(item.english_name).trim() : "";
-                    let func = item.function !== undefined ? String(item.function).trim() : "";
-                    let source = item.source !== undefined ? String(item.source).trim() : "";
 
                     // ĐÃ SỬA: CHỈ điền tràn đối với Mã INS và Tên phụ gia để phục vụ việc gom nhóm gộp dòng.
                     if (ins !== "") lastIns = ins; else ins = lastIns;
                     if (vi !== "") lastVi = vi; else vi = lastVi;
                     if (en !== "") lastEn = en; else en = lastEn;
 
+                    // 🛠️ ĐÃ CẬP NHẬT: Đọc chính xác tuyệt đối theo các tên cột mới đối xứng của bạn
                     return {
                         ins: ins,
                         vietnamese_name: vi,
                         english_name: en,
-                        function: func, 
                         cat_no: item.cat_no !== undefined ? String(item.cat_no).trim() : "",
-                        cat_name: item.cat_name !== undefined ? String(item.cat_name).trim() : "",
                         ml: item.ml !== undefined ? String(item.ml).trim() : "",
                         note: item.note !== undefined ? String(item.note).trim() : "",
-                        note_explanation: item.note_explanation !== undefined ? String(item.note_explanation).trim() : "",
-                        source: source, 
                         
-                        // 🌟 DÒNG THÊM MỚI: Bốc thêm 3 cột phiên bản tiếng Anh bạn tự dịch trong file Excel
+                        // Cặp cột Chức năng mới
+                        function_vi: item.function_vi !== undefined ? String(item.function_vi).trim() : "",
                         function_en: item.function_en !== undefined ? String(item.function_en).trim() : "",
+                        
+                        // Cặp cột Nhóm thực phẩm mới
+                        cat_name_vi: item.cat_name_vi !== undefined ? String(item.cat_name_vi).trim() : "",
                         cat_name_en: item.cat_name_en !== undefined ? String(item.cat_name_en).trim() : "",
-                        note_explanation_en: item.note_explanation_en !== undefined ? String(item.note_explanation_en).trim() : ""
+                        
+                        // Cặp cột Giải thích ghi chú mới
+                        note_text_vi: item.note_text_vi !== undefined ? String(item.note_text_vi).trim() : "",
+                        note_text_en: item.note_text_en !== undefined ? String(item.note_text_en).trim() : "",
+                        
+                        // Cặp cột Nguồn tài liệu mới
+                        source_vi: item.source_vi !== undefined ? String(item.source_vi).trim() : "",
+                        source_en: item.source_en !== undefined ? String(item.source_en).trim() : ""
                     };
                 });
                 console.log("Đã nạp dữ liệu Excel thành công! Tổng số dòng:", dataDatabase.length);
@@ -805,10 +811,11 @@ function performSearch() {
     
     let tableRows = "";
     filteredResults.forEach(item => {
-        // TRÁO CỘT THÔNG TIN: Tự động lấy cột tiếng Anh đã dịch thủ công từ Excel khi bật chế độ 'en'
-        const displayFunc = window.currentLanguage === "en" ? (item.function_en || item.function) : item.function;
-        const displayCatName = window.currentLanguage === "en" ? (item.cat_name_en || item.cat_name) : item.cat_name;
-        const displayExplanation = window.currentLanguage === "en" ? (item.note_explanation_en || item.note_explanation) : item.note_explanation;
+        // 🛠️ ĐÃ CẬP NHẬT: Tự động tráo đổi cột dữ liệu _vi và _en dựa trên ngôn ngữ đang chọn
+        const displayFunc = window.currentLanguage === "en" ? (item.function_en || item.function_vi) : item.function_vi;
+        const displayCatName = window.currentLanguage === "en" ? (item.cat_name_en || item.cat_name_vi) : item.cat_name_vi;
+        const displayExplanation = window.currentLanguage === "en" ? (item.note_text_en || item.note_text_vi) : item.note_text_vi;
+        const displaySource = window.currentLanguage === "en" ? (item.source_en || item.source_vi) : item.source_vi;
 
         tableRows += `<tr>
             <td class="col-ins"><b>${item.ins}</b></td>
@@ -820,18 +827,18 @@ function performSearch() {
             <td class="ml-highlight col-ml">${item.ml}</td>
             <td>${item.note}</td>
             <td>${displayExplanation}</td>
-            <td><small style="color: #718096;">${item.source}</small></td>
+            <td><small style="color: #718096;">${displaySource}</small></td>
         </tr>`;
     });
 
     // Dòng lệnh tính toán số phụ gia duy nhất sau khi gộp
     const uniqueAdditivesCount = new Set(filteredResults.map(item => String(item.ins).trim().toLowerCase())).size;
     
-    // Đổ toàn bộ giao diện mới vào vùng chứa (ĐÃ XÓA SẠCH GẠCH CHÉO NGƯỢC \ Ở DÒNG CHỮ HIỂN THỊ SỐ)
+    // Đổ toàn bộ giao diện mới vào vùng chứa (Cột ML giữ nguyên cứng theo ý bạn chốt)
     resultContainer.innerHTML = `
         <div class="results-wrapper">
             <h2 class="results-title">${window.currentLanguage === 'en' ? 'Results' : 'Kết quả'}</h2>
-            <p class="showing-text" style="margin-top: 10px;">${window.currentLanguage === 'en' ? `Found ${uniqueAdditivesCount} additives.` : `Có ${uniqueAdditivesCount} phụ gia được tìm thấy.`}</p>
+            <p class="showing-text" style="margin-top: 10px;">${window.currentLanguage === 'en' ? `Found \${uniqueAdditivesCount} additives.` : `Có \${uniqueAdditivesCount} phụ gia được tìm thấy.`}</p>
             <div class="table-responsive">
                 <table class="result-table">
                     <thead>
@@ -988,12 +995,13 @@ function mergeTableCells() {
             const currentVi = item.vietnamese_name;
             const currentEn = item.english_name;
             
-            // 🌟 ĐÃ SỬA: Tự động tráo cột nội dung thô tiếng Việt hoặc cột tiếng Anh tự dịch trong Excel
-            const currentFunc = window.currentLanguage === "en" ? (item.function_en || item.function) : item.function;
+            // 🛠️ ĐÃ CẬP NHẬT: Tự động chọn đúng cột dữ liệu _vi hoặc _en từ file Excel mới của bạn
+            const currentFunc = window.currentLanguage === "en" ? (item.function_en || item.function_vi) : item.function_vi;
             const currentCatNo = item.cat_no;
-            const currentCatName = window.currentLanguage === "en" ? (item.cat_name_en || item.cat_name) : item.cat_name;
+            const currentCatName = window.currentLanguage === "en" ? (item.cat_name_en || item.cat_name_vi) : item.cat_name_vi;
             const currentMl = item.ml;
-            const currentExplanation = window.currentLanguage === "en" ? (item.note_explanation_en || item.note_explanation) : item.note_explanation;
+            const currentExplanation = window.currentLanguage === "en" ? (item.note_text_en || item.note_text_vi) : item.note_text_vi;
+            const currentSource = window.currentLanguage === "en" ? (item.source_en || item.source_vi) : item.source_vi;
 
             // Bước B: Thiết lập giá trị hiển thị mặc định ban đầu
             let displayIns = currentIns;
@@ -1037,7 +1045,7 @@ function mergeTableCells() {
                     "ML (mg/kg)": displayMl, 
                     "Notes": item.note,
                     "Note Text": currentExplanation,
-                    "Source": item.source
+                    "Source": currentSource
                 };
             } else {
                 return {
@@ -1050,7 +1058,7 @@ function mergeTableCells() {
                     "ML (mg/kg)": displayMl,
                     "Ghi chú": item.note,
                     "Giải thích ghi chú": currentExplanation,
-                    "Nguồn": item.source
+                    "Nguồn": currentSource
                 };
             }
         });
@@ -1060,7 +1068,7 @@ function mergeTableCells() {
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, "KetQuaTraCuu");
         
-        // 4. 🌟 ĐÃ SỬA: Tự động đổi tên file tải về linh hoạt theo ngôn ngữ
+        // 4. Tự động đổi tên file tải về linh hoạt theo ngôn ngữ
         const targetFileName = window.currentLanguage === "en" ? "Food_Additives_Search_Results.xlsx" : "Ket_Qua_Tra_Cuu_Phu_Gia.xlsx";
         XLSX.writeFile(workbook, targetFileName);
     }
