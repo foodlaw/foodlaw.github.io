@@ -809,30 +809,57 @@ if (insInput && suggestionsBox) {
         mergeTableCells();
     }
 
-    // 4. Thuật toán chạy ngầm tự động gộp ô trùng nhau (Đã bổ sung đầy đủ các cột dữ liệu)
-    function mergeTableCells() {
-        // ĐÃ SỬA: Điền thêm '.col-catNo', '.col-catName', '.col-ml' vào cuối mảng
-        const columnsToMerge = ['.col-ins', '.col-viName', '.col-enName', '.col-func', '.col-catNo', '.col-catName', '.col-ml'];
+    // 4. Thuật toán chạy ngầm tự động gộp ô trùng nhau (Đã tối ưu logic ràng buộc cột ML theo mã nhóm)
+function mergeTableCells() {
+    // 1. Nhóm các cột gộp độc lập bình thường (bỏ cột '.col-ml' ra khỏi mảng này)
+    const normalColumns = ['.col-ins', '.col-viName', '.col-enName', '.col-func', '.col-catNo', '.col-catName'];
+    
+    normalColumns.forEach(colClass => {
+        const cells = document.querySelectorAll(`#result-table-body ${colClass}`);
+        let mainCell = null;
         
-        columnsToMerge.forEach(colClass => {
-            const cells = document.querySelectorAll(`#result-table-body ${colClass}`);
-            let mainCell = null;
-            
-            cells.forEach(cell => {
-                const cellText = cell.textContent.trim();
-                if (!mainCell) {
-                    mainCell = cell;
-                    mainCell.rowSpan = 1;
-                } else if (cellText === mainCell.textContent.trim() && cellText !== "") {
-                    mainCell.rowSpan += 1;
-                    cell.style.display = 'none';
-                } else {
-                    mainCell = cell;
-                    mainCell.rowSpan = 1;
-                }
-            });
+        cells.forEach(cell => {
+            const cellText = cell.textContent.trim();
+            if (!mainCell) {
+                mainCell = cell;
+                mainCell.rowSpan = 1;
+            } else if (cellText === mainCell.textContent.trim() && cellText !== "") {
+                mainCell.rowSpan += 1;
+                cell.style.display = 'none';
+            } else {
+                mainCell = cell;
+                mainCell.rowSpan = 1;
+            }
         });
-    }
+    });
+
+    // 2. 🌟 THUẬT TOÁN ĐẶC BIỆT: Chỉ gộp cột ML nếu nội dung ML TRÙNG và MÃ NHÓM THỰC PHẨM cũng phải TRÙNG
+    const mlCells = document.querySelectorAll(`#result-table-body .col-ml`);
+    const catNoCells = document.querySelectorAll(`#result-table-body .col-catNo`);
+    
+    let mainMlCell = null;
+    let mainCatNoText = ""; // Biến ghi nhớ mã nhóm thực phẩm của ô chính phía trên
+
+    mlCells.forEach((cell, index) => {
+        const currentMlText = cell.textContent.trim();
+        const currentCatNoText = catNoCells[index].textContent.trim(); // Lấy mã nhóm của dòng hiện tại
+
+        if (!mainMlCell) {
+            mainMlCell = cell;
+            mainMlCell.rowSpan = 1;
+            mainCatNoText = currentCatNoText;
+        } else if (currentMlText === mainMlCell.textContent.trim() && currentCatNoText === mainCatNoText && currentMlText !== "") {
+            // ĐIỀU KIỆN ĐÃ KHỚP: Cả lượng ML và Mã nhóm thực phẩm của dòng này đều trùng với dòng chính phía trên
+            mainMlCell.rowSpan += 1;
+            cell.style.display = 'none';
+        } else {
+            // Khi gặp một mức ML mới HOẶC một Mã nhóm thực phẩm hoàn toàn mới
+            mainMlCell = cell;
+            mainMlCell.rowSpan = 1;
+            mainCatNoText = currentCatNoText; // Cập nhật lại mã nhóm thực phẩm để xét cho các dòng tiếp theo
+        }
+    });
+}
 
     // 5. Hàm xử lý xuất ngược bảng dữ liệu hiển thị thành file Excel (.xlsx) chuẩn
     function exportTableToExcel() {
