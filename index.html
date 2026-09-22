@@ -861,7 +861,7 @@ function mergeTableCells() {
     });
 }
 
-    // 5. HÀM XUẤT FILE EXCEL THÔNG MINH: Tự động để trống ô trùng lặp, các cột thẳng hàng 100%
+    // 5. HÀM XUẤT FILE EXCEL: Xóa sạch ô trùng ML dựa theo Mã nhóm thực phẩm bị trùng
     function exportTableToExcel() {
         const keyword = insInput.value.trim().toLowerCase();
         
@@ -882,12 +882,12 @@ function mergeTableCells() {
             return;
         }
 
-        // các biến ghi nhớ để so sánh dòng trên và dòng dưới
-        let lastIns = "", lastVi = "", lastEn = "", lastFunc = "", lastCatNo = "";
+        // Khai báo các biến ghi nhớ dòng trên để đối chiếu dữ liệu dòng dưới
+        let lastIns = "", lastVi = "", lastEn = "", lastFunc = "", lastCatNo = "", lastMl = "";
 
-        // 2. Chuyển đổi dữ liệu và TỰ ĐỘNG XÓA CHỮ nếu trùng dòng trên
+        // 2. Chuyển đổi dữ liệu và TỰ ĐỘNG XÓA CHỮ lặp thông minh
         const excelRows = exportData.map(item => {
-            // Lưu giá trị thô để so sánh trước
+            // Bước A: Sao lưu lại giá trị thô ban đầu của dòng hiện tại để đối chiếu độc lập
             const currentIns = item.ins;
             const currentVi = item.vietnamese_name;
             const currentEn = item.english_name;
@@ -895,7 +895,7 @@ function mergeTableCells() {
             const currentCatNo = item.cat_no;
             const currentMl = item.ml;
 
-            // Thiết lập giá trị hiển thị mặc định bằng chính nó
+            // Bước B: Thiết lập giá trị hiển thị mặc định ban đầu
             let displayIns = currentIns;
             let displayVi = currentVi;
             let displayEn = currentEn;
@@ -904,28 +904,28 @@ function mergeTableCells() {
             let displayCatName = item.cat_name;
             let displayMl = currentMl;
 
-            // Quy tắc 1: Nếu trùng INS, Tên Việt, Tên Anh -> Xóa chữ ô dưới
+            // Quy tắc 1: Xóa trùng cho 4 cột thông tin phụ gia đầu tiên
             if (currentIns === lastIns) displayIns = ""; else lastIns = currentIns;
             if (currentVi === lastVi) displayVi = ""; else lastVi = currentVi;
             if (currentEn === lastEn) displayEn = ""; else lastEn = currentEn;
             if (currentFunc === lastFunc) displayFunc = ""; else lastFunc = currentFunc;
 
-            // Quy tắc 2: Nếu trùng Mã nhóm -> Xóa chữ cột Mã nhóm và Tên nhóm
+            // Quy tắc 2: 🌟 Xóa trùng cột ML (Chỉ xóa nếu nội dung ML và Mã nhóm thực phẩm dòng này trùng khít dòng trên)
+            if (currentMl === lastMl && currentCatNo === lastCatNo && currentMl !== "") {
+                displayMl = "";
+            } else {
+                lastMl = currentMl;
+            }
+
+            // Quy tắc 3: Xóa trùng cho cột Mã nhóm và cột Nhóm thực phẩm (Đặt ở dưới cùng để không làm nhiễu Quy tắc 2)
             if (currentCatNo === lastCatNo && currentCatNo !== "") {
                 displayCatNo = "";
                 displayCatName = "";
-                // Ràng buộc thông minh: Chỉ gộp/xóa ML nếu nội dung ML trùng và mã nhóm cũng trùng
-                if (currentMl === cellMlMemory) {
-                    displayMl = "";
-                }
             } else {
                 lastCatNo = currentCatNo;
             }
 
-            // Ghi nhớ giá trị ML dòng này để xét cho dòng tiếp theo
-            var cellMlMemory = currentMl;
-
-            // Trả về hàng dữ liệu sạch sẽ đã được loại bỏ trùng lặp
+            // Trả về hàng dữ liệu sạch sẽ, không lặp chữ rối mắt
             return {
                 "INS": displayIns,
                 "Tên phụ gia Tiếng Việt": displayVi,
@@ -940,12 +940,12 @@ function mergeTableCells() {
             };
         });
 
-        // 3. Đóng gói thành Workbook Excel phẳng
+        // 3. Đóng gói dữ liệu phẳng thành Workbook Excel sạch sẽ
         const worksheet = XLSX.utils.json_to_sheet(excelRows);
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, "KetQuaTraCuu");
         
-        // 4. Xuất file .xlsx chuẩn chỉnh về máy tính
+        // 4. Tiến hành lưu và tải tệp tin .xlsx về máy tính
         XLSX.writeFile(workbook, "Ket_Qua_Tra_Cuu_Phu_Gia.xlsx");
     }
 
