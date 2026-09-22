@@ -987,6 +987,55 @@ function mergeTableCells() {
             if (event.key === 'Enter') performSearch();
         });
     }
+// =========================================================================
+// ĐIỀU KHIỂN CHỮ ĐẬM / NHẠT CHO THANH NGÔN NGỮ THẺ SPAN GỐC
+// =========================================================================
+const spanVi = document.getElementById('lang-vi');
+const spanEn = document.getElementById('lang-en');
+
+// Thiết lập trạng thái in đậm mặc định ban đầu cho Tiếng Việt khi vừa mở trang
+if (spanVi) {
+    spanVi.style.fontWeight = '700';
+    spanVi.style.color = '#1A202C';
+    spanVi.style.pointerEvents = 'none'; // Khóa không cho bấm lại khi đang kích hoạt
+}
+if (spanEn) {
+    spanEn.style.fontWeight = '400';
+    spanEn.style.color = '#718096';
+    spanEn.style.pointerEvents = 'auto'; // Cho phép bấm chuyển sang tiếng Anh
+}
+
+if (spanVi && spanEn) {
+    // 1. Khi người dùng click vào chữ English
+    spanEn.addEventListener('click', function() {
+        // Tráo trạng thái Tiếng Việt: Thành in thường, màu xám, cho phép bấm lại
+        spanVi.style.fontWeight = '400';
+        spanVi.style.color = '#718096';
+        spanVi.style.pointerEvents = 'auto';
+        spanVi.classList.remove('active');
+
+        // Tráo trạng thái English: Thành in đậm, màu đen, khóa bấm liên tục
+        spanEn.style.fontWeight = '700';
+        spanEn.style.color = '#1A202C';
+        spanEn.style.pointerEvents = 'none';
+        spanEn.classList.add('active');
+    });
+
+    // 2. Khi người dùng click quay lại chữ Tiếng Việt
+    spanVi.addEventListener('click', function() {
+        // Tráo trạng thái English: Thành in thường, màu xám, cho phép bấm lại
+        spanEn.style.fontWeight = '400';
+        spanEn.style.color = '#718096';
+        spanEn.style.pointerEvents = 'auto';
+        spanEn.classList.remove('active');
+
+        // Tráo trạng thái Tiếng Việt: Thành in đậm, màu đen, khóa bấm liên tục
+        spanVi.style.fontWeight = '700';
+        spanVi.style.color = '#1A202C';
+        spanVi.style.pointerEvents = 'none';
+        spanVi.classList.add('active');
+    });
+}
 </script>
 </body>
 </html>
