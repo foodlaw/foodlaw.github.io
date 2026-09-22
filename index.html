@@ -861,15 +861,48 @@ function mergeTableCells() {
     });
 }
 
-    // 5. Hàm xử lý xuất ngược bảng dữ liệu hiển thị thành file Excel (.xlsx) chuẩn
+    // 5. 🌟 HÀM XUẤT FILE EXCEL CHUẨN ĐÉT: Lấy dữ liệu gốc từ bộ nhớ, không sợ lệch cột
     function exportTableToExcel() {
-        const table = document.querySelector(".result-table");
-        if (!table) {
-            alert("Không có dữ liệu để xuất file!");
+        const keyword = insInput.value.trim().toLowerCase();
+        
+        if (keyword === "") {
+            alert("Vui lòng nhập từ khóa và tra cứu trước khi xuất file!");
             return;
         }
-        const wb = XLSX.utils.table_to_book(table, { sheet: "KetQuaTraCuu" });
-        XLSX.writeFile(wb, "Ket_Qua_Tra_Cuu_Phu_Gia.xlsx");
+
+        // 1. Tái lập bộ lọc dữ liệu gốc trong bộ nhớ giống y hệt lúc tra cứu
+        const exportData = dataDatabase.filter(item => 
+            item.ins.toLowerCase().startsWith(keyword) || 
+            item.vietnamese_name.toLowerCase().startsWith(keyword) ||
+            item.english_name.toLowerCase().startsWith(keyword)
+        );
+
+        if (exportData.length === 0) {
+            alert("Không có dữ liệu phù hợp để xuất file!");
+            return;
+        }
+
+        // 2. Định nghĩa hàng tiêu đề viết hoa chữ cái đầu cực kỳ đẹp cho file Excel tải về
+        const excelRows = exportData.map(item => ({
+            "INS": item.ins,
+            "Tên phụ gia Tiếng Việt": item.vietnamese_name,
+            "Tên phụ gia Tiếng Anh": item.english_name,
+            "Chức năng": item.function,
+            "Mã nhóm thực phẩm": item.cat_no,
+            "Nhóm thực phẩm": item.cat_name,
+            "ML (mg/kg)": item.ml,
+            "Ghi chú": item.note,
+            "Giải thích ghi chú": item.note_explanation,
+            "Nguồn": item.source
+        }));
+
+        // 3. Tiến hành đóng gói dữ liệu mảng phẳng sạch sẽ thành Workbook
+        const worksheet = XLSX.utils.json_to_sheet(excelRows);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "KetQuaTraCuu");
+        
+        // 4. Tải file .xlsx thật về máy, các cột thẳng hàng tăm tắp
+        XLSX.writeFile(workbook, "Ket_Qua_Tra_Cuu_Phu_Gia.xlsx");
     }
 
     // 6. Gắn các sự kiện lắng nghe tương tác chuột và phím Enter từ người dùng
