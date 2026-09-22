@@ -948,12 +948,18 @@ function mergeTableCells() {
     });
 }
 
-    // 5. HÀM XUẤT FILE EXCEL: Xóa sạch ô trùng ML dựa theo Mã nhóm thực phẩm bị trùng
-    function exportTableToExcel() {
+    // =========================================================================
+    // 5. HÀM XUẤT FILE EXCEL THÔNG MINH SONG NGỮ: TỰ ĐỘNG DỊCH THEO GIAO DIỆN WEB
+    // =========================================================================
+        function exportTableToExcel() {
         const keyword = insInput.value.trim().toLowerCase();
         
         if (keyword === "") {
-            alert("Vui lòng nhập từ khóa và tra cứu trước khi xuất file!");
+            // Tự động dịch câu thông báo cảnh báo trước khi xuất file theo ngôn ngữ
+            const alertMsg = window.currentLanguage === 'en' ? 
+                "Please search for keywords before exporting the file!" : 
+                "Vui lòng nhập từ khóa và tra cứu trước khi xuất file!";
+            alert(alertMsg);
             return;
         }
 
@@ -965,22 +971,29 @@ function mergeTableCells() {
         );
 
         if (exportData.length === 0) {
-            alert("Không có dữ liệu phù hợp để xuất file!");
+            const noDataMsg = window.currentLanguage === 'en' ? 
+                "No appropriate data found to export!" : 
+                "Không có dữ liệu phù hợp để xuất file!";
+            alert(noDataMsg);
             return;
         }
 
         // Khai báo các biến ghi nhớ dòng trên để đối chiếu dữ liệu dòng dưới
         let lastIns = "", lastVi = "", lastEn = "", lastFunc = "", lastCatNo = "", lastMl = "";
 
-        // 2. Chuyển đổi dữ liệu và TỰ ĐỘNG XÓA CHỮ lặp thông minh
+        // 2. Chuyển đổi dữ liệu và TỰ ĐỘNG XÓA CHỮ lặp thông minh kết hợp ĐỔI CỘT NGÔN NGỮ
         const excelRows = exportData.map(item => {
             // Bước A: Sao lưu lại giá trị thô ban đầu của dòng hiện tại để đối chiếu độc lập
             const currentIns = item.ins;
             const currentVi = item.vietnamese_name;
             const currentEn = item.english_name;
-            const currentFunc = item.function;
+            
+            // 🌟 ĐÃ SỬA: Tự động tráo cột nội dung thô tiếng Việt hoặc cột tiếng Anh tự dịch trong Excel
+            const currentFunc = window.currentLanguage === "en" ? (item.function_en || item.function) : item.function;
             const currentCatNo = item.cat_no;
+            const currentCatName = window.currentLanguage === "en" ? (item.cat_name_en || item.cat_name) : item.cat_name;
             const currentMl = item.ml;
+            const currentExplanation = window.currentLanguage === "en" ? (item.note_explanation_en || item.note_explanation) : item.note_explanation;
 
             // Bước B: Thiết lập giá trị hiển thị mặc định ban đầu
             let displayIns = currentIns;
@@ -988,7 +1001,7 @@ function mergeTableCells() {
             let displayEn = currentEn;
             let displayFunc = currentFunc;
             let displayCatNo = currentCatNo;
-            let displayCatName = item.cat_name;
+            let displayCatName = currentCatName;
             let displayMl = currentMl;
 
             // Quy tắc 1: Xóa trùng cho 4 cột thông tin phụ gia đầu tiên
@@ -997,7 +1010,7 @@ function mergeTableCells() {
             if (currentEn === lastEn) displayEn = ""; else lastEn = currentEn;
             if (currentFunc === lastFunc) displayFunc = ""; else lastFunc = currentFunc;
 
-            // Quy tắc 2: 🌟 Xóa trùng cột ML (Chỉ xóa nếu nội dung ML và Mã nhóm thực phẩm dòng này trùng khít dòng trên)
+            // Quy tắc 2: Xóa trùng cột ML (Chỉ xóa nếu nội dung ML và Mã nhóm thực phẩm dòng này trùng khít dòng trên)
             if (currentMl === lastMl && currentCatNo === lastCatNo && currentMl !== "") {
                 displayMl = "";
             } else {
@@ -1012,19 +1025,34 @@ function mergeTableCells() {
                 lastCatNo = currentCatNo;
             }
 
-            // Trả về hàng dữ liệu sạch sẽ, không lặp chữ rối mắt
-            return {
-                "INS": displayIns,
-                "Tên phụ gia Tiếng Việt": displayVi,
-                "Tên phụ gia Tiếng Anh": displayEn,
-                "Chức năng": displayFunc,
-                "Mã nhóm thực phẩm": displayCatNo,
-                "Nhóm thực phẩm": displayCatName,
-                "ML (mg/kg)": displayMl,
-                "Ghi chú": item.note,
-                "Giải thích ghi chú": item.note_explanation,
-                "Nguồn": item.source
-            };
+            // Trả về tiêu đề hàng tiếng Anh hoặc tiếng Việt chuẩn chỉnh đồng bộ theo nút bấm
+            if (window.currentLanguage === "en") {
+                return {
+                    "INS": displayIns,
+                    "Additive Name (VN)": displayVi,
+                    "Additive Name (EN)": displayEn,
+                    "Functional Class": displayFunc,
+                    "Food Cat. No.": displayCatNo,
+                    "Food Category": displayCatName,
+                    "ML (mg/kg)": displayMl, // Cột ML giữ nguyên chữ ML (mg/kg) theo ý bạn chốt
+                    "Notes": item.note,
+                    "Note Text": currentExplanation,
+                    "Source": item.source
+                };
+            } else {
+                return {
+                    "INS": displayIns,
+                    "Tên phụ gia Tiếng Việt": displayVi,
+                    "Tên phụ gia Tiếng Anh": displayEn,
+                    "Chức năng": displayFunc,
+                    "Mã nhóm thực phẩm": displayCatNo,
+                    "Nhóm thực phẩm": displayCatName,
+                    "ML (mg/kg)": displayMl,
+                    "Ghi chú": item.note,
+                    "Giải thích ghi chú": currentExplanation,
+                    "Nguồn": item.source
+                };
+            }
         });
 
         // 3. Đóng gói dữ liệu phẳng thành Workbook Excel sạch sẽ
@@ -1032,11 +1060,14 @@ function mergeTableCells() {
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, "KetQuaTraCuu");
         
-        // 4. Tiến hành lưu và tải tệp tin .xlsx về máy tính
-        XLSX.writeFile(workbook, "Ket_Qua_Tra_Cuu_Phu_Gia.xlsx");
+        // 4. 🌟 ĐÃ SỬA: Tự động đổi tên file tải về linh hoạt theo ngôn ngữ
+        const targetFileName = window.currentLanguage === "en" ? "Food_Additives_Search_Results.xlsx" : "Ket_Qua_Tra_Cuu_Phu_Gia.xlsx";
+        XLSX.writeFile(workbook, targetFileName);
     }
 
-    // 6. Gắn các sự kiện lắng nghe tương tác chuột và phím Enter từ người dùng
+ // =========================================================================
+ // 6. GẮN CÁC SỰ KIỆN LẮNG NGHE TƯƠNG TÁC CHUỘT VÀ PHÍM ENTER TỪ NGƯỜI DÙNG
+ // =========================================================================
 if (searchBtn) searchBtn.addEventListener('click', performSearch);
 if (insInput) {
     insInput.addEventListener('keypress', function(event) {
