@@ -620,6 +620,8 @@
 </style>
 <div id="result-container"></div>
 <script>
+    // 🌟 KHỞI TẠO BIẾN TOÀN CỤC TRÊN CÙNG ĐỂ ĐỒNG BỘ 100% CÁC MỤC PHÍA DƯỚI
+    window.currentLanguage = "vi"; 
     // 1. Khai báo biến dữ liệu tổng (nhận dữ liệu tự động từ file Excel khi tải trang)
     let dataDatabase = [];
 
@@ -679,8 +681,8 @@
             });
     });
 
-    // =========================================================================
-// 2. KHAI BÁO BIẾN VÀ LẤY CÁC PHẦN TỬ HTML TỪ GIAO DIỆN
+  // =========================================================================
+ // 2. KHAI BÁO BIẾN VÀ LẤY CÁC PHẦN TỬ HTML TỪ GIAO DIỆN
 // =========================================================================
 
 // 🌟 BỔ SUNG DÒNG NÀY: Đảm bảo biến ngôn ngữ luôn sẵn sàng, tránh lỗi làm mất tính năng gợi ý
@@ -773,7 +775,7 @@ function performSearch() {
     
     // KIỂM TRA TRỐNG: Hiện câu thông báo lỗi chuẩn theo tiếng Anh viết tay của bạn
     if (keyword === "") {
-        const errorMsg = currentLanguage === 'en' ? 
+        const errorMsg = window.currentLanguage === 'en' ? 
             "💬 Please fill in the INS number or additive name into the search box." : 
             "💬 Vui lòng nhập số INS hoặc tên phụ gia vào ô tìm kiếm.";
 
@@ -793,7 +795,7 @@ function performSearch() {
     
     // KIỂM TRA RỖNG: Hiện thông báo "No results found." theo đúng ý bạn
     if (filteredResults.length === 0) {
-        const noResultMsg = currentLanguage === 'en' ? 
+        const noResultMsg = window.currentLanguage === 'en' ? 
             "💬 No results found." : 
             "💬 Không tìm thấy kết quả phù hợp.";
 
@@ -804,9 +806,9 @@ function performSearch() {
     let tableRows = "";
     filteredResults.forEach(item => {
         // TRÁO CỘT THÔNG TIN: Tự động lấy cột tiếng Anh đã dịch thủ công từ Excel khi bật chế độ 'en'
-        const displayFunc = currentLanguage === "en" ? (item.function_en || item.function) : item.function;
-        const displayCatName = currentLanguage === "en" ? (item.cat_name_en || item.cat_name) : item.cat_name;
-        const displayExplanation = currentLanguage === "en" ? (item.note_explanation_en || item.note_explanation) : item.note_explanation;
+        const displayFunc = window.currentLanguage === "en" ? (item.function_en || item.function) : item.function;
+        const displayCatName = window.currentLanguage === "en" ? (item.cat_name_en || item.cat_name) : item.cat_name;
+        const displayExplanation = window.currentLanguage === "en" ? (item.note_explanation_en || item.note_explanation) : item.note_explanation;
 
         tableRows += `<tr>
             <td class="col-ins"><b>${item.ins}</b></td>
@@ -825,25 +827,25 @@ function performSearch() {
     // Dòng lệnh tính toán số phụ gia duy nhất sau khi gộp
     const uniqueAdditivesCount = new Set(filteredResults.map(item => String(item.ins).trim().toLowerCase())).size;
     
-    // Đổ toàn bộ giao diện mới vào vùng chứa (Đã xóa sạch gạch chéo ngược \ bị lỗi chuỗi)
+    // Đổ toàn bộ giao diện mới vào vùng chứa (ĐÃ XÓA SẠCH GẠCH CHÉO NGƯỢC \ Ở DÒNG CHỮ HIỂN THỊ SỐ)
     resultContainer.innerHTML = `
         <div class="results-wrapper">
-            <h2 class="results-title">${currentLanguage === 'en' ? 'Results' : 'Kết quả'}</h2>
-            <p class="showing-text" style="margin-top: 10px;">${currentLanguage === 'en' ? `Found \${uniqueAdditivesCount} additives.` : `Có \${uniqueAdditivesCount} phụ gia được tìm thấy.`}</p>
+            <h2 class="results-title">${window.currentLanguage === 'en' ? 'Results' : 'Kết quả'}</h2>
+            <p class="showing-text" style="margin-top: 10px;">${window.currentLanguage === 'en' ? `Found \${uniqueAdditivesCount} additives.` : `Có \${uniqueAdditivesCount} phụ gia được tìm thấy.`}</p>
             <div class="table-responsive">
                 <table class="result-table">
                     <thead>
                         <tr>
                             <th>INS</th>
-                            <th style="min-width: 140px;">${currentLanguage === 'en' ? 'Additive Name<br>(Vietnamese)' : 'Tên phụ gia<br>Tiếng Việt'}</th>
-                            <th style="min-width: 140px;">${currentLanguage === 'en' ? 'Additive Name<br>(English)' : 'Tên phụ gia<br>Tiếng Anh'}</th>
-                            <th style="min-width: 110px;">${currentLanguage === 'en' ? 'Function' : 'Chức năng'}</th>
-                            <th>${currentLanguage === 'en' ? 'Food Cat. No.' : 'Mã nhóm thực phẩm'}</th>
-                            <th>${currentLanguage === 'en' ? 'Food Category' : 'Nhóm thực phẩm'}</th>
-                            <th>${currentLanguage === 'en' ? 'Max Level (ML)' : 'ML (mg/kg)'}</th>
-                            <th>${currentLanguage === 'en' ? 'Note' : 'Ghi chú'}</th>
-                            <th>${currentLanguage === 'en' ? 'Note Explanation' : 'Giải thích ghi chú'}</th>
-                            <th>${currentLanguage === 'en' ? 'Source' : 'Nguồn'}</th>
+                            <th style="min-width: 140px;">${window.currentLanguage === 'en' ? 'Additive Name<br>(Vietnamese)' : 'Tên phụ gia<br>Tiếng Việt'}</th>
+                            <th style="min-width: 140px;">${window.currentLanguage === 'en' ? 'Additive Name<br>(English)' : 'Tên phụ gia<br>Tiếng Anh'}</th>
+                            <th style="min-width: 110px;">${window.currentLanguage === 'en' ? 'Function' : 'Chức năng'}</th>
+                            <th>${window.currentLanguage === 'en' ? 'Food Cat. No.' : 'Mã nhóm thực phẩm'}</th>
+                            <th>${window.currentLanguage === 'en' ? 'Food Category' : 'Nhóm thực phẩm'}</th>
+                            <th>${window.currentLanguage === 'en' ? 'Max Level (ML)' : 'ML (mg/kg)'}</th>
+                            <th>${window.currentLanguage === 'en' ? 'Note' : 'Ghi chú'}</th>
+                            <th>${window.currentLanguage === 'en' ? 'Note Explanation' : 'Giải thích ghi chú'}</th>
+                            <th>${window.currentLanguage === 'en' ? 'Source' : 'Nguồn'}</th>
                         </tr>
                     </thead>
                     <tbody id="result-table-body">
@@ -852,7 +854,7 @@ function performSearch() {
                 </table>
                 <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px; background: #ffffff; border-top: 1px solid #EDF2F7; font-size: 13px; color: #4A5568; gap: 15px; flex-wrap: wrap;">
                     <div style="display: flex; gap: 10px;">
-                        <button class="btn-export" onclick="exportTableToExcel()" style="margin: 0;">${currentLanguage === 'en' ? '📄 Export to Excel' : '📄 Xuất file Excel'}</button>
+                        <button class="btn-export" onclick="exportTableToExcel()">${window.currentLanguage === 'en' ? '📄 Export to Excel' : '📄 Xuất file Excel'}</button>
                     </div>
                 </div>
             </div>
@@ -862,8 +864,8 @@ function performSearch() {
     mergeTableCells();
     }
 
-    // =========================================================================
-// 4. THUẬT TOÁN CHẠY NGẦM TỰ ĐỘNG GỘP Ô TRÙNG NHAU THEO RÀNG BUỘC LOGIC
+  // =========================================================================
+ // 4. THUẬT TOÁN CHẠY NGẦM TỰ ĐỘNG GỘP Ô TRÙNG NHAU THEO RÀNG BUỘC LOGIC
 // =========================================================================
 function mergeTableCells() {
     // 1. Nhóm các cột gộp độc lập bình thường (Chỉ giữ lại INS và các cột Mã nhóm, Tên nhóm thực phẩm)
@@ -1066,7 +1068,8 @@ if (spanEn) {
 if (spanVi && spanEn) {
     // 1. Khi người dùng click vào chữ English
     spanEn.addEventListener('click', function() {
-        spanVi.style.fontWeight = '400';
+        window.currentLanguage = "en"; 
+	spanVi.style.fontWeight = '400';
         spanVi.style.color = '#718096';
         spanVi.style.pointerEvents = 'auto';
         spanVi.classList.remove('active');
@@ -1085,6 +1088,9 @@ if (spanVi && spanEn) {
                 <p>This database is compiled for informational purposes only in accordance with Circular Nos. 24/2019/TT-BYT and 17/2023/TT-BYT, and does not replace or serve as legal advice.</p>
                 <p>Please refer to official Ministry of Health documents for accurate compliance information.</p>
             `;
+        }
+	if (resultContainer && resultContainer.innerHTML !== "") {
+            performSearch();
         }
     });
 
@@ -1109,6 +1115,9 @@ if (spanVi && spanEn) {
                 <p>Cơ sở dữ liệu này được xây dựng cho mục đích tra cứu thông tin dựa trên Thông tư 24/2019/TT-BYT Quy định về quản lý và sử dụng phụ gia thực phẩm và Thông tư 17/2023/TT-BYT Sửa đổi, bổ sung và bãi bỏ một số văn bản quy phạm pháp luật về an toàn thực phẩm do Bộ trưởng Bộ Y tế ban hành, và không thay thế hoặc đóng vai trò như lời khuyên pháp lý chính thức.</p>
                 <p>Vui lòng tham khảo các văn bản pháp luật của Bộ Y tế để có thông tin chuẩn xác nhất.</p>
             `;
+        }
+	if (resultContainer && resultContainer.innerHTML !== "") {
+            performSearch();
         }
     });
 }
