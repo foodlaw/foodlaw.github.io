@@ -706,10 +706,10 @@ if (insInput && suggestionsBox) {
                 insCode.toLowerCase().startsWith(query);
 
             if (isMatch) {
-                // 🌟 TỰ ĐỘNG TRÁO TÊN: Tiếng Anh hiện tên Anh (nếu trống bù tên Việt), Tiếng Việt hiện tên Việt
+                // TỰ ĐỘNG TRÁO TÊN: Tiếng Anh hiện tên Anh, Tiếng Việt hiện tên Việt
                 const displayName = currentLanguage === 'en' ? (enName || viName) : viName;
 
-                // 🌟 ĐÃ SỬA: Kiểm tra chống trùng lặp dựa trên tên hiển thị thực tế thay vì cố định viName
+                // Kiểm tra chống trùng lặp dựa trên tên hiển thị thực tế
                 if (!seenNames.has(displayName.toLowerCase())) {
                     seenNames.add(displayName.toLowerCase());
                     uniqueSuggestions.push({ name: displayName, ins: insCode });
@@ -717,27 +717,26 @@ if (insInput && suggestionsBox) {
             }
         });
 
-        // Giới hạn hiển thị tối đa 10 dòng gợi ý hàng đầu để tránh làm dài màn hình
+        // Giới hạn hiển thị tối đa 20 dòng gợi ý hàng đầu để tránh làm dài màn hình
         if (uniqueSuggestions.length > 0) {
-    // ĐÃ SỬA: Thay đổi từ .slice(0, 10) thành .slice(0, 20) để hiện tối đa 20 dòng
-    uniqueSuggestions.slice(0, 20).forEach(item => {
-        const li = document.createElement('li');
-        
-        // Khung HTML số đứng trước tên đứng sau của bạn giữ nguyên:
-        li.innerHTML = `<span style="display: flex; gap: 12px; align-items: center;"><span class="suggest-ins">${item.ins}</span><span>${item.name}</span></span>`;
-        
-        li.addEventListener('click', () => {
-            insInput.value = item.name;
-            suggestionsBox.style.display = "none";
-            performSearch(); 
-        });
-        suggestionsBox.appendChild(li);
-    });
-    suggestionsBox.style.display = "block";
-} else {
+            uniqueSuggestions.slice(0, 20).forEach(item => {
+                const li = document.createElement('li');
+                
+                // Khung HTML số đứng trước tên đứng sau của bạn giữ nguyên
+                li.innerHTML = `<span style="display: flex; gap: 12px; align-items: center;"><span class="suggest-ins">${item.ins}</span><span>${item.name}</span></span>`;
+                
+                li.addEventListener('click', () => {
+                    insInput.value = item.name;
+                    suggestionsBox.style.display = "none";
+                    performSearch(); 
+                });
+                suggestionsBox.appendChild(li);
+            });
+            suggestionsBox.style.display = "block";
+        } else {
             suggestionsBox.style.display = "none";
         }
-    });
+    }); // Dấu này đóng sự kiện lắng nghe 'input' của insInput là ĐỦ VÀ ĐÚNG.
 
     // Tự động ẩn hộp gợi ý đi nếu người dùng nhấp chuột ra khu vực trống bên ngoài
     document.addEventListener('click', (e) => {
