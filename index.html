@@ -399,7 +399,7 @@
             </svg>
             <span id="disclaimer-title-text">Miễn Trừ Trách Nhiệm</span>
         </div>
-        <div class="disclaimer-content">
+        <div class="disclaimer-content" id="disclaimer-body">
             <p>Cơ sở dữ liệu này được xây dựng cho mục đích tra cứu thông tin dựa trên Thông tư 24/2019/TT-BYT Quy định về quản lý và sử dụng phụ gia thực phẩm và Thông tư 17/2023/TT-BYT Sửa đổi, bổ sung và bãi bỏ một số văn bản quy phạm pháp luật về an toàn thực phẩm do Bộ trưởng Bộ Y tế ban hành, và không thay thế hoặc đóng vai trò như lời khuyên pháp lý chính thức.</p>
             <p>Vui lòng tham khảo các văn bản pháp luật của Bộ Y tế để có thông tin chuẩn xác nhất.</p>
         </div>
@@ -995,6 +995,7 @@ const spanEn = document.getElementById('lang-en');
 const searchLabelEl = document.getElementById('search-label'); 
 const searchBtnTextEl = document.getElementById('search-btn-text');
 const disclaimerTitleTextEl = document.getElementById('disclaimer-title-text');
+const disclaimerBodyEl = document.getElementById('disclaimer-body');
 
 // Thiết lập trạng thái in đậm mặc định ban đầu cho Tiếng Việt khi vừa mở trang
 if (spanVi) {
@@ -1025,6 +1026,12 @@ if (spanVi && spanEn) {
         if (searchLabelEl) searchLabelEl.textContent = "Fill in either the INS number or the food additive name";
 	if (searchBtnTextEl) searchBtnTextEl.textContent = "Search";
 	if (disclaimerTitleTextEl) disclaimerTitleTextEl.textContent = "Disclaimer";
+	if (disclaimerBodyEl) {
+            disclaimerBodyEl.innerHTML = `
+                <p>This database is compiled for informational purposes only in accordance with Circular Nos. 24/2019/TT-BYT and 17/2023/TT-BYT, and does not replace or serve as legal advice.</p>
+                <p>Please refer to official Ministry of Health documents for accurate compliance information.</p>
+            `;
+        }
     });
 
     // 2. Khi người dùng click quay lại chữ Tiếng Việt
@@ -1043,6 +1050,12 @@ if (spanVi && spanEn) {
         if (searchLabelEl) searchLabelEl.textContent = "Nhập số INS hoặc tên phụ gia:";
 	if (searchBtnTextEl) searchBtnTextEl.textContent = "Tra cứu";
 	if (disclaimerTitleTextEl) disclaimerTitleTextEl.textContent = "Miễn Trừ Trách Nhiệm";
+	if (disclaimerBodyEl) {
+            disclaimerBodyEl.innerHTML = `
+                <p>Cơ sở dữ liệu này được xây dựng cho mục đích tra cứu thông tin dựa trên Thông tư 24/2019/TT-BYT Quy định về quản lý và sử dụng phụ gia thực phẩm và Thông tư 17/2023/TT-BYT Sửa đổi, bổ sung và bãi bỏ một số văn bản quy phạm pháp luật về an toàn thực phẩm do Bộ trưởng Bộ Y tế ban hành, và không thay thế hoặc đóng vai trò như lời khuyên pháp lý chính thức.</p>
+                <p>Vui lòng tham khảo các văn bản pháp luật của Bộ Y tế để có thông tin chuẩn xác nhất.</p>
+            `;
+        }
     });
 }
 </script>
