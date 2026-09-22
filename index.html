@@ -809,10 +809,10 @@ if (insInput && suggestionsBox) {
         mergeTableCells();
     }
 
-    // 4. Thuật toán chạy ngầm tự động gộp ô trùng nhau (Đã tối ưu logic ràng buộc cột ML theo mã nhóm)
+    // 4. Thuật toán chạy ngầm tự động gộp ô trùng nhau (Đã ràng buộc cột Chức năng theo mã INS)
 function mergeTableCells() {
-    // 1. Nhóm các cột gộp độc lập bình thường (bỏ cột '.col-ml' ra khỏi mảng này)
-    const normalColumns = ['.col-ins', '.col-viName', '.col-enName', '.col-func', '.col-catNo', '.col-catName'];
+    // 1. Nhóm các cột gộp độc lập bình thường (Bỏ '.col-func' và '.col-ml' ra khỏi mảng này)
+    const normalColumns = ['.col-ins', '.col-viName', '.col-enName', '.col-catNo', '.col-catName'];
     
     normalColumns.forEach(colClass => {
         const cells = document.querySelectorAll(`#result-table-body ${colClass}`);
@@ -833,30 +833,55 @@ function mergeTableCells() {
         });
     });
 
-    // 2. 🌟 THUẬT TOÁN ĐẶC BIỆT: Chỉ gộp cột ML nếu nội dung ML TRÙNG và MÃ NHÓM THỰC PHẨM cũng phải TRÙNG
+    // Các phần tử cột INS để làm mốc đối chiếu ràng buộc
+    const insCells = document.querySelectorAll(`#result-table-body .col-ins`);
+
+    // 2. 🌟 THUẬT TOÁN ĐẶC BIỆT 1: Chỉ gộp cột Chức năng nếu chữ TRÙNG và mã chất INS cũng phải TRÙNG
+    const funcCells = document.querySelectorAll(`#result-table-body .col-func`);
+    let mainFuncCell = null;
+    let mainInsTextForFunc = ""; // Biến ghi nhớ mã INS của ô chính phía trên
+
+    funcCells.forEach((cell, index) => {
+        const currentFuncText = cell.textContent.trim();
+        const currentInsText = insCells[index].textContent.trim(); // Lấy mã INS của dòng hiện tại
+
+        if (!mainFuncCell) {
+            mainFuncCell = cell;
+            mainFuncCell.rowSpan = 1;
+            mainInsTextForFunc = currentInsText;
+        } else if (currentFuncText === mainFuncCell.textContent.trim() && currentInsText === mainInsTextForFunc && currentFuncText !== "") {
+            // ĐIỀU KIỆN ĐÃ KHỚP: Cả chữ Chức năng và Mã INS đều trùng với dòng chính phía trên
+            mainFuncCell.rowSpan += 1;
+            cell.style.display = 'none';
+        } else {
+            // Khi gặp một Chức năng mới HOẶC sang một mã chất INS hoàn toàn mới
+            mainFuncCell = cell;
+            mainFuncCell.rowSpan = 1;
+            mainInsTextForFunc = currentInsText; // Cập nhật lại mốc mã INS mới
+        }
+    });
+
+    // 3. 🌟 THUẬT TOÁN ĐẶC BIỆT 2: Chỉ gộp cột ML nếu nội dung ML trùng và MÃ NHÓM THỰC PHẨM cũng phải trùng (Giữ nguyên logic chuẩn trước đó)
     const mlCells = document.querySelectorAll(`#result-table-body .col-ml`);
     const catNoCells = document.querySelectorAll(`#result-table-body .col-catNo`);
-    
     let mainMlCell = null;
-    let mainCatNoText = ""; // Biến ghi nhớ mã nhóm thực phẩm của ô chính phía trên
+    let mainCatNoText = ""; 
 
     mlCells.forEach((cell, index) => {
         const currentMlText = cell.textContent.trim();
-        const currentCatNoText = catNoCells[index].textContent.trim(); // Lấy mã nhóm của dòng hiện tại
+        const currentCatNoText = catNoCells[index].textContent.trim(); 
 
         if (!mainMlCell) {
             mainMlCell = cell;
             mainMlCell.rowSpan = 1;
             mainCatNoText = currentCatNoText;
         } else if (currentMlText === mainMlCell.textContent.trim() && currentCatNoText === mainCatNoText && currentMlText !== "") {
-            // ĐIỀU KIỆN ĐÃ KHỚP: Cả lượng ML và Mã nhóm thực phẩm của dòng này đều trùng với dòng chính phía trên
             mainMlCell.rowSpan += 1;
             cell.style.display = 'none';
         } else {
-            // Khi gặp một mức ML mới HOẶC một Mã nhóm thực phẩm hoàn toàn mới
             mainMlCell = cell;
             mainMlCell.rowSpan = 1;
-            mainCatNoText = currentCatNoText; // Cập nhật lại mã nhóm thực phẩm để xét cho các dòng tiếp theo
+            mainCatNoText = currentCatNoText; 
         }
     });
 }
