@@ -695,7 +695,7 @@ if (insInput && suggestionsBox) {
         let uniqueSuggestions = [];
         let seenNames = new Set();
 
-        / Quét dữ liệu từ file Excel đã nạp sẵn trong dataDatabase
+        // Quét dữ liệu từ file Excel đã nạp sẵn trong dataDatabase
         dataDatabase.forEach(item => {
             const viName = item.vietnamese_name ? String(item.vietnamese_name) : "";
             const enName = item.english_name ? String(item.english_name) : "";
