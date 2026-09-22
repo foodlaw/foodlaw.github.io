@@ -642,30 +642,34 @@
                 let lastIns = "", lastVi = "", lastEn = "", lastFunc = "", lastSource = "";
                 
                 dataDatabase = rawData.map(item => {
-    // Ép kiểu về chuỗi và xóa khoảng trắng thừa ở đuôi
-    let ins = item.ins !== undefined ? String(item.ins).trim() : "";
-    let vi = item.vietnamese_name !== undefined ? String(item.vietnamese_name).trim() : "";
-    let en = item.english_name !== undefined ? String(item.english_name).trim() : "";
-    let func = item.function !== undefined ? String(item.function).trim() : "";
-    let source = item.source !== undefined ? String(item.source).trim() : "";
+                    // Ép kiểu về chuỗi và xóa khoảng trắng thừa ở đuôi
+                    let ins = item.ins !== undefined ? String(item.ins).trim() : "";
+                    let vi = item.vietnamese_name !== undefined ? String(item.vietnamese_name).trim() : "";
+                    let en = item.english_name !== undefined ? String(item.english_name).trim() : "";
+                    let func = item.function !== undefined ? String(item.function).trim() : "";
+                    let source = item.source !== undefined ? String(item.source).trim() : "";
 
-    // ĐÃ SỬA: CHỈ điền tràn đối với Mã INS và Tên phụ gia để phục vụ việc gom nhóm gộp dòng.
-    // Cột Chức năng và Nguồn sẽ ĐỂ NGUYÊN theo file Excel (Excel trống thì Web trống).
-    if (ins !== "") lastIns = ins; else ins = lastIns;
-    if (vi !== "") lastVi = vi; else vi = lastVi;
-    if (en !== "") lastEn = en; else en = lastEn;
+                    // ĐÃ SỬA: CHỈ điền tràn đối với Mã INS và Tên phụ gia để phục vụ việc gom nhóm gộp dòng.
+                    if (ins !== "") lastIns = ins; else ins = lastIns;
+                    if (vi !== "") lastVi = vi; else vi = lastVi;
+                    if (en !== "") lastEn = en; else en = lastEn;
 
-    return {
-        ins: ins,
-        vietnamese_name: vi,
-        english_name: en,
-        function: func, // Giữ nguyên thô từ Excel
-        cat_no: item.cat_no !== undefined ? String(item.cat_no).trim() : "",
-        cat_name: item.cat_name !== undefined ? String(item.cat_name).trim() : "",
-        ml: item.ml !== undefined ? String(item.ml).trim() : "",
-        note: item.note !== undefined ? String(item.note).trim() : "",
-        note_explanation: item.note_explanation !== undefined ? String(item.note_explanation).trim() : "",
-        source: source // Giữ nguyên thô từ Excel
+                    return {
+                        ins: ins,
+                        vietnamese_name: vi,
+                        english_name: en,
+                        function: func, 
+                        cat_no: item.cat_no !== undefined ? String(item.cat_no).trim() : "",
+                        cat_name: item.cat_name !== undefined ? String(item.cat_name).trim() : "",
+                        ml: item.ml !== undefined ? String(item.ml).trim() : "",
+                        note: item.note !== undefined ? String(item.note).trim() : "",
+                        note_explanation: item.note_explanation !== undefined ? String(item.note_explanation).trim() : "",
+                        source: source, 
+                        
+                        // 🌟 DÒNG THÊM MỚI: Bốc thêm 3 cột phiên bản tiếng Anh bạn tự dịch trong file Excel
+                        function_en: item.function_en !== undefined ? String(item.function_en).trim() : "",
+                        cat_name_en: item.cat_name_en !== undefined ? String(item.cat_name_en).trim() : "",
+                        note_explanation_en: item.note_explanation_en !== undefined ? String(item.note_explanation_en).trim() : ""
                     };
                 });
                 console.log("Đã nạp dữ liệu Excel thành công! Tổng số dòng:", dataDatabase.length);
@@ -675,13 +679,21 @@
             });
     });
 
-    // 2. Lấy các phần tử HTML từ giao diện của bạn
-    const insInput = document.querySelector('.search-box');
-    const searchBtn = document.querySelector('.search-btn');
-    const resultContainer = document.getElementById('result-container');
-// KÍCH HOẠT: Xử lý hiển thị danh sách gợi ý bắt đầu bằng chữ cái gõ vào
+    // =========================================================================
+// 2. KHAI BÁO BIẾN VÀ LẤY CÁC PHẦN TỬ HTML TỪ GIAO DIỆN
+// =========================================================================
+
+// 🌟 BỔ SUNG DÒNG NÀY: Đảm bảo biến ngôn ngữ luôn sẵn sàng, tránh lỗi làm mất tính năng gợi ý
+if (typeof currentLanguage === 'undefined') {
+    var currentLanguage = "vi"; 
+}
+
+const insInput = document.querySelector('.search-box');
+const searchBtn = document.querySelector('.search-btn');
+const resultContainer = document.getElementById('result-container');
 const suggestionsBox = document.getElementById('suggestions-box');
 
+// KÍCH HOẠT: Xử lý hiển thị danh sách gợi ý bắt đầu bằng chữ cái gõ vào
 if (insInput && suggestionsBox) {
     insInput.addEventListener('input', () => {
         const query = insInput.value.trim().toLowerCase();
@@ -706,10 +718,10 @@ if (insInput && suggestionsBox) {
                 insCode.toLowerCase().startsWith(query);
 
             if (isMatch) {
-                // 🌟 TỰ ĐỘNG TRÁO TÊN: Tiếng Anh hiện tên Anh (nếu trống bù tên Việt), Tiếng Việt hiện tên Việt
+                // TỰ ĐỘNG TRÁO TÊN GỢI Ý: Giao diện Tiếng Anh hiện tên Anh, Tiếng Việt hiện tên Việt
                 const displayName = currentLanguage === 'en' ? (enName || viName) : viName;
 
-                // 🌟 ĐÃ SỬA: Kiểm tra chống trùng lặp dựa trên tên hiển thị thực tế thay vì cố định viName
+                // Kiểm tra chống trùng lặp dựa trên tên hiển thị thực tế
                 if (!seenNames.has(displayName.toLowerCase())) {
                     seenNames.add(displayName.toLowerCase());
                     uniqueSuggestions.push({ name: displayName, ins: insCode });
@@ -717,24 +729,23 @@ if (insInput && suggestionsBox) {
             }
         });
 
-        // Giới hạn hiển thị tối đa 10 dòng gợi ý hàng đầu để tránh làm dài màn hình
+        // Giới hạn hiển thị tối đa 20 dòng gợi ý hàng đầu để tránh làm dài màn hình
         if (uniqueSuggestions.length > 0) {
-    // ĐÃ SỬA: Thay đổi từ .slice(0, 10) thành .slice(0, 20) để hiện tối đa 20 dòng
-    uniqueSuggestions.slice(0, 20).forEach(item => {
-        const li = document.createElement('li');
-        
-        // Khung HTML số đứng trước tên đứng sau của bạn giữ nguyên:
-        li.innerHTML = `<span style="display: flex; gap: 12px; align-items: center;"><span class="suggest-ins">${item.ins}</span><span>${item.name}</span></span>`;
-        
-        li.addEventListener('click', () => {
-            insInput.value = item.name;
-            suggestionsBox.style.display = "none";
-            performSearch(); 
-        });
-        suggestionsBox.appendChild(li);
-    });
-    suggestionsBox.style.display = "block";
-} else {
+            uniqueSuggestions.slice(0, 20).forEach(item => {
+                const li = document.createElement('li');
+                
+                // Khung HTML số đứng trước tên đứng sau của bạn giữ nguyên:
+                li.innerHTML = `<span style="display: flex; gap: 12px; align-items: center;"><span class="suggest-ins">${item.ins}</span><span>${item.name}</span></span>`;
+                
+                li.addEventListener('click', () => {
+                    insInput.value = item.name;
+                    suggestionsBox.style.display = "none";
+                    performSearch(); 
+                });
+                suggestionsBox.appendChild(li);
+            });
+            suggestionsBox.style.display = "block";
+        } else {
             suggestionsBox.style.display = "none";
         }
     });
@@ -747,83 +758,116 @@ if (insInput && suggestionsBox) {
     });
 }
     
-// 3. Hàm xử lý tìm kiếm và tạo bảng kết quả
-    function performSearch() {
-        if (!insInput || !resultContainer) {
-            console.error("Lỗi: Không tìm thấy ô nhập liệu hoặc khung chứa kết quả!");
-            return;
-        }
+// =========================================================================
+// 3. HÀM XỬ LÝ TÌM KIẾM VÀ TẠO BẢNG KẾT QUẢ ĐỒNG BỘ SONG NGỮ DỮ LIỆU EXCEL
+// =========================================================================
+function performSearch() {
+    if (!insInput || !resultContainer) {
+        console.error("Lỗi: Không tìm thấy ô nhập liệu hoặc khung chứa kết quả!");
+        return;
+    }
+    // Tự động đóng hộp gợi ý khi bấm tìm kiếm
+    if (suggestionsBox) suggestionsBox.style.display = "none";
 
-        const keyword = insInput.value.trim().toLowerCase();
-        
-        if (keyword === "") {
-            resultContainer.innerHTML = `<div class="message-error" style="color: #8B0032; font-size: 20px; font-weight: bold; margin-top: 40px;">💬 Vui lòng nhập số INS hoặc tên phụ gia vào ô tìm kiếm.</div>`;
-            return;
-        }
-        
-        const filteredResults = dataDatabase.filter(item => {
-    const insStr = item.ins ? String(item.ins).toLowerCase() : "";
-    const viNameStr = item.vietnamese_name ? String(item.vietnamese_name).toLowerCase() : "";
-    const enNameStr = item.english_name ? String(item.english_name).toLowerCase() : "";
+    const keyword = insInput.value.trim().toLowerCase();
     
-    // ĐÃ SỬA: Đồng bộ insStr dùng .startsWith(keyword) thay vì .includes như cũ
-    return insStr.startsWith(keyword) || 
-           viNameStr.startsWith(keyword) || 
-           enNameStr.startsWith(keyword);
-        });
+    // KIỂM TRA TRỐNG: Hiện câu thông báo lỗi chuẩn theo tiếng Anh viết tay của bạn
+    if (keyword === "") {
+        const errorMsg = currentLanguage === 'en' ? 
+            "💬 Please fill in the INS number or additive name into the search box." : 
+            "💬 Vui lòng nhập số INS hoặc tên phụ gia vào ô tìm kiếm.";
+
+        resultContainer.innerHTML = `<div class="message-error" style="color: #8B0032; font-size: 20px; font-weight: bold; margin-top: 40px; text-align: center;">${errorMsg}</div>`;
+        return;
+    }
+    
+    const filteredResults = dataDatabase.filter(item => {
+        const insStr = item.ins ? String(item.ins).toLowerCase() : "";
+        const viNameStr = item.vietnamese_name ? String(item.vietnamese_name).toLowerCase() : "";
+        const enNameStr = item.english_name ? String(item.english_name).toLowerCase() : "";
         
-        if (filteredResults.length === 0) {
-            resultContainer.innerHTML = `<div class="message-error" style="color: #8B0032; font-size: 20px; font-weight: bold; margin-top: 40px;">💬 Không tìm thấy kết quả phù hợp.</div>`;
-            return;
-        }
-        
-        let tableRows = "";
-        filteredResults.forEach(item => {
-            // ĐÃ SỬA: Thêm class="col-catNo", class="col-catName" và class="col-ml" vào các cột thực phẩm tương ứng
-            tableRows += `<tr><td class="col-ins"><b>${item.ins}</b></td><td class="col-viName">${item.vietnamese_name}</td><td class="col-enName">${item.english_name}</td><td class="col-func">${item.function}</td><td class="col-catNo">${item.cat_no}</td><td class="col-catName">${item.cat_name}</td><td class="ml-highlight col-ml">${item.ml}</td><td>${item.note}</td><td>${item.note_explanation}</td><td><small style="color: #718096;">${item.source}</small></td></tr>`;
-        });
-// DÁN VÀO ĐÂY: Dòng lệnh tính toán số phụ gia duy nhất sau khi gộp
-        const uniqueAdditivesCount = new Set(filteredResults.map(item => String(item.ins).trim().toLowerCase())).size;
-        resultContainer.innerHTML = `
-            <div class="results-wrapper">
-                <h2 class="results-title">Kết quả</h2>
-                <p class="showing-text" style="margin-top: 10px;">Có ${uniqueAdditivesCount} phụ gia được tìm thấy.</p>
-                <div class="table-responsive">
-                    <table class="result-table">
-                        <thead>
-                            <tr>
-                                <th>INS</th>
-                                <th style="min-width: 140px;">Tên phụ gia<br>Tiếng Việt</th>
-                                <th style="min-width: 140px;">Tên phụ gia<br>Tiếng Anh</th>
-                                <th style="min-width: 110px;">Chức năng</th>
-                                <th>Mã nhóm thực phẩm</th>
-                                <th>Nhóm thực phẩm</th>
-                                <th>ML (mg/kg)</th>
-                                <th>Ghi chú</th>
-                                <th>Giải thích ghi chú</th>
-                                <th>Nguồn</th>
-                            </tr>
-                        </thead>
-                        <tbody id="result-table-body">
-                            ${tableRows}
-                        </tbody>
-                    </table>
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px; background: #ffffff; border-top: 1px solid #EDF2F7; font-size: 13px; color: #4A5568; gap: 15px; flex-wrap: wrap;">
-                        <div style="display: flex; gap: 10px;">
-                            <button class="btn-export" onclick="exportTableToExcel()" style="margin: 0;">📄 Xuất file Excel</button>
-                        </div>
+        return insStr.startsWith(keyword) || 
+               viNameStr.startsWith(keyword) || 
+               enNameStr.startsWith(keyword);
+    });
+    
+    // KIỂM TRA RỖNG: Hiện thông báo "No results found." theo đúng ý bạn
+    if (filteredResults.length === 0) {
+        const noResultMsg = currentLanguage === 'en' ? 
+            "💬 No results found." : 
+            "💬 Không tìm thấy kết quả phù hợp.";
+
+        resultContainer.innerHTML = `<div class="message-error" style="color: #8B0032; font-size: 20px; font-weight: bold; margin-top: 40px; text-align: center;">${noResultMsg}</div>`;
+        return;
+    }
+    
+    let tableRows = "";
+    filteredResults.forEach(item => {
+        // TRÁO CỘT THÔNG TIN: Tự động lấy cột tiếng Anh đã dịch thủ công từ Excel khi bật chế độ 'en'
+        const displayFunc = currentLanguage === "en" ? (item.function_en || item.function) : item.function;
+        const displayCatName = currentLanguage === "en" ? (item.cat_name_en || item.cat_name) : item.cat_name;
+        const displayExplanation = currentLanguage === "en" ? (item.note_explanation_en || item.note_explanation) : item.note_explanation;
+
+        tableRows += `<tr>
+            <td class="col-ins"><b>${item.ins}</b></td>
+            <td class="col-viName">${item.vietnamese_name}</td>
+            <td class="col-enName">${item.english_name}</td>
+            <td class="col-func">${displayFunc}</td>
+            <td class="col-catNo">${item.cat_no}</td>
+            <td class="col-catName">${displayCatName}</td>
+            <td class="ml-highlight col-ml">${item.ml}</td>
+            <td>${item.note}</td>
+            <td>${displayExplanation}</td>
+            <td><small style="color: #718096;">${item.source}</small></td>
+        </tr>`;
+    });
+
+    // Dòng lệnh tính toán số phụ gia duy nhất sau khi gộp
+    const uniqueAdditivesCount = new Set(filteredResults.map(item => String(item.ins).trim().toLowerCase())).size;
+    
+    // Đổ toàn bộ giao diện mới vào vùng chứa (Đã xóa sạch gạch chéo ngược \ bị lỗi chuỗi)
+    resultContainer.innerHTML = `
+        <div class="results-wrapper">
+            <h2 class="results-title">${currentLanguage === 'en' ? 'Results' : 'Kết quả'}</h2>
+            <p class="showing-text" style="margin-top: 10px;">${currentLanguage === 'en' ? `Found \${uniqueAdditivesCount} additives.` : `Có \${uniqueAdditivesCount} phụ gia được tìm thấy.`}</p>
+            <div class="table-responsive">
+                <table class="result-table">
+                    <thead>
+                        <tr>
+                            <th>INS</th>
+                            <th style="min-width: 140px;">${currentLanguage === 'en' ? 'Additive Name<br>(Vietnamese)' : 'Tên phụ gia<br>Tiếng Việt'}</th>
+                            <th style="min-width: 140px;">${currentLanguage === 'en' ? 'Additive Name<br>(English)' : 'Tên phụ gia<br>Tiếng Anh'}</th>
+                            <th style="min-width: 110px;">${currentLanguage === 'en' ? 'Function' : 'Chức năng'}</th>
+                            <th>${currentLanguage === 'en' ? 'Food Cat. No.' : 'Mã nhóm thực phẩm'}</th>
+                            <th>${currentLanguage === 'en' ? 'Food Category' : 'Nhóm thực phẩm'}</th>
+                            <th>${currentLanguage === 'en' ? 'Max Level (ML)' : 'ML (mg/kg)'}</th>
+                            <th>${currentLanguage === 'en' ? 'Note' : 'Ghi chú'}</th>
+                            <th>${currentLanguage === 'en' ? 'Note Explanation' : 'Giải thích ghi chú'}</th>
+                            <th>${currentLanguage === 'en' ? 'Source' : 'Nguồn'}</th>
+                        </tr>
+                    </thead>
+                    <tbody id="result-table-body">
+                        ${tableRows}
+                    </tbody>
+                </table>
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px; background: #ffffff; border-top: 1px solid #EDF2F7; font-size: 13px; color: #4A5568; gap: 15px; flex-wrap: wrap;">
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn-export" onclick="exportTableToExcel()" style="margin: 0;">${currentLanguage === 'en' ? '📄 Export to Excel' : '📄 Xuất file Excel'}</button>
                     </div>
                 </div>
             </div>
-        `;
+        </div>
+    `;
 
-        mergeTableCells();
+    mergeTableCells();
     }
 
-    // 4. Thuật toán chạy ngầm tự động gộp ô trùng nhau (Đã ràng buộc cột Chức năng theo mã INS)
+    // =========================================================================
+// 4. THUẬT TOÁN CHẠY NGẦM TỰ ĐỘNG GỘP Ô TRÙNG NHAU THEO RÀNG BUỘC LOGIC
+// =========================================================================
 function mergeTableCells() {
-    // 1. Nhóm các cột gộp độc lập bình thường (Bỏ '.col-func' và '.col-ml' ra khỏi mảng này)
-    const normalColumns = ['.col-ins', '.col-viName', '.col-enName', '.col-catNo', '.col-catName'];
+    // 1. Nhóm các cột gộp độc lập bình thường (Chỉ giữ lại INS và các cột Mã nhóm, Tên nhóm thực phẩm)
+    const normalColumns = ['.col-ins', '.col-catNo', '.col-catName'];
     
     normalColumns.forEach(colClass => {
         const cells = document.querySelectorAll(`#result-table-body ${colClass}`);
@@ -844,35 +888,40 @@ function mergeTableCells() {
         });
     });
 
-    // Các phần tử cột INS để làm mốc đối chiếu ràng buộc
+    // Mốc đối chiếu cố định: Lấy toàn bộ các ô thuộc cột INS làm căn cứ
     const insCells = document.querySelectorAll(`#result-table-body .col-ins`);
 
-    // 2. 🌟 THUẬT TOÁN ĐẶC BIỆT 1: Chỉ gộp cột Chức năng nếu chữ TRÙNG và mã chất INS cũng phải TRÙNG
-    const funcCells = document.querySelectorAll(`#result-table-body .col-func`);
-    let mainFuncCell = null;
-    let mainInsTextForFunc = ""; // Biến ghi nhớ mã INS của ô chính phía trên
+    // 2. 🌟 THUẬT TOÁN ĐẶC BIỆT 1: Gộp cột Tên (Việt, Anh) và Chức năng dựa theo MÃ INS trùng nhau
+    // Điều này giúp ngăn chặn dữ liệu bị gộp tràn hàng chéo nhau giữa các chất khác nhau
+    const dependentColumns = ['.col-viName', '.col-enName', '.col-func'];
+    
+    dependentColumns.forEach(colClass => {
+        const cells = document.querySelectorAll(`#result-table-body ${colClass}`);
+        let mainCell = null;
+        let mainInsText = ""; // Lưu mã INS của dòng làm mốc gộp phía trên
 
-    funcCells.forEach((cell, index) => {
-        const currentFuncText = cell.textContent.trim();
-        const currentInsText = insCells[index].textContent.trim(); // Lấy mã INS của dòng hiện tại
+        cells.forEach((cell, index) => {
+            const currentCellText = cell.textContent.trim();
+            const currentInsText = insCells[index].textContent.trim(); // Lấy mã INS của dòng hiện tại
 
-        if (!mainFuncCell) {
-            mainFuncCell = cell;
-            mainFuncCell.rowSpan = 1;
-            mainInsTextForFunc = currentInsText;
-        } else if (currentFuncText === mainFuncCell.textContent.trim() && currentInsText === mainInsTextForFunc && currentFuncText !== "") {
-            // ĐIỀU KIỆN ĐÃ KHỚP: Cả chữ Chức năng và Mã INS đều trùng với dòng chính phía trên
-            mainFuncCell.rowSpan += 1;
-            cell.style.display = 'none';
-        } else {
-            // Khi gặp một Chức năng mới HOẶC sang một mã chất INS hoàn toàn mới
-            mainFuncCell = cell;
-            mainFuncCell.rowSpan = 1;
-            mainInsTextForFunc = currentInsText; // Cập nhật lại mốc mã INS mới
-        }
+            if (!mainCell) {
+                mainCell = cell;
+                mainCell.rowSpan = 1;
+                mainInsText = currentInsText;
+            } else if (currentCellText === mainCell.textContent.trim() && currentInsText === mainInsText && currentCellText !== "") {
+                // ĐIỀU KIỆN KHỚP: Cả nội dung ô và mã chất phụ gia INS đều trùng dòng trên
+                mainCell.rowSpan += 1;
+                cell.style.display = 'none';
+            } else {
+                // Khi nội dung thay đổi HOẶC chuyển sang một chất phụ gia mới hoàn toàn
+                mainCell = cell;
+                mainCell.rowSpan = 1;
+                mainInsText = currentInsText; // Cập nhật mốc INS mới để xét dòng tiếp
+            }
+        });
     });
 
-    // 3. 🌟 THUẬT TOÁN ĐẶC BIỆT 2: Chỉ gộp cột ML nếu nội dung ML trùng và MÃ NHÓM THỰC PHẨM cũng phải trùng (Giữ nguyên logic chuẩn trước đó)
+    // 3. 🌟 THUẬT TOÁN ĐẶC BIỆT 2: Chỉ gộp cột ML nếu nội dung ML trùng và MÃ NHÓM THỰC PHẨM cũng phải trùng
     const mlCells = document.querySelectorAll(`#result-table-body .col-ml`);
     const catNoCells = document.querySelectorAll(`#result-table-body .col-catNo`);
     let mainMlCell = null;
