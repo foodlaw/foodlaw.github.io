@@ -313,6 +313,12 @@
 /* Khóa chết kích thước chữ của toàn bộ bảng, cấm trình duyệt tự co giãn */
 .result-table td, 
 .result-table th {
+    /* 🛠️ BỔ SUNG DÒNG NÀY: Ép kích thước chữ cố định là 14px cho toàn bảng */
+    font-size: 14px !important;
+    
+    /* 🛠️ BỔ SUNG DÒNG NÀY: Giúp độ giãn cách các dòng chữ đều nhau, không bị lệch phông */
+    line-height: 1.5 !important; 
+    
     -webkit-text-size-adjust: 100% !important; /* Dành cho trình duyệt Safari/iPhone */
     text-size-adjust: 100% !important;         /* Dành cho Chrome/Firefox/Edge */
 }
