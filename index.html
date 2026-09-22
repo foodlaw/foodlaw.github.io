@@ -695,27 +695,31 @@ if (insInput && suggestionsBox) {
         let uniqueSuggestions = [];
         let seenNames = new Set();
 
-        // Quét dữ liệu từ file Excel đã nạp sẵn trong dataDatabase
+      // Quét dữ liệu từ file Excel đã nạp sẵn trong dataDatabase
         dataDatabase.forEach(item => {
-    const viName = item.vietnamese_name ? String(item.vietnamese_name) : "";
-    const enName = item.english_name ? String(item.english_name) : "";
-    const insCode = item.ins ? String(item.ins) : "";
+            const viName = item.vietnamese_name ? String(item.vietnamese_name) : "";
+            const enName = item.english_name ? String(item.english_name) : "";
+            const insCode = item.ins ? String(item.ins) : "";
+            
+            const isMatch = isNaN(query) ? 
+                (viName.toLowerCase().startsWith(query) || enName.toLowerCase().startsWith(query)) :
+                insCode.toLowerCase().startsWith(query);
 
-    // ĐÃ SỬA: Thay insCode.toLowerCase().includes(query) thành .startsWith(query)
-    const isMatch = isNaN(query) ? 
-        (viName.toLowerCase().startsWith(query) || enName.toLowerCase().startsWith(query)) :
-        insCode.toLowerCase().startsWith(query);
+            if (isMatch) {
+                // 🌟 TỰ ĐỘNG TRÁO TÊN: Giao diện Tiếng Anh hiện tên Anh, Tiếng Việt hiện tên Việt
+                const displayName = currentLanguage === 'en' ? (enName || viName) : viName;
 
-    if (isMatch && !seenNames.has(viName.toLowerCase())) {
-        seenNames.add(viName.toLowerCase());
-        uniqueSuggestions.push({ name: viName, ins: insCode });
+                // Kiểm tra chống trùng lặp thông minh dựa theo tên hiển thị thực tế
+                if (!seenNames.has(displayName.toLowerCase())) {
+                    seenNames.add(displayName.toLowerCase());
+                    uniqueSuggestions.push({ name: displayName, ins: insCode });
+                }
             }
         });
 
-        // Giới hạn hiển thị tối đa 10 dòng gợi ý hàng đầu để tránh làm dài màn hình
+        // Giới hạn hiển thị tối đa 20 dòng gợi ý hàng đầu để tránh làm dài màn hình
         if (uniqueSuggestions.length > 0) {
-    // ĐÃ SỬA: Thay đổi từ .slice(0, 10) thành .slice(0, 20) để hiện tối đa 20 dòng
-    uniqueSuggestions.slice(0, 20).forEach(item => {
+        uniqueSuggestions.slice(0, 20).forEach(item => {
         const li = document.createElement('li');
         
         // Khung HTML số đứng trước tên đứng sau của bạn giữ nguyên:
