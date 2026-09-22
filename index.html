@@ -676,167 +676,132 @@
     });
 
     // 2. Lấy các phần tử HTML từ giao diện của bạn
-    
-    // 🌟 KHAI BÁO BIẾN NGÔN NGỮ Ở ĐÂY ĐỂ TRÁNH LỖI MẤT GỢI Ý
-    if (typeof currentLanguage === 'undefined') {
-        var currentLanguage = "vi"; 
-    }
-
     const insInput = document.querySelector('.search-box');
     const searchBtn = document.querySelector('.search-btn');
     const resultContainer = document.getElementById('result-container');
-    const suggestionsBox = document.getElementById('suggestions-box');
+// KÍCH HOẠT: Xử lý hiển thị danh sách gợi ý bắt đầu bằng chữ cái gõ vào
+const suggestionsBox = document.getElementById('suggestions-box');
 
-    // KÍCH HOẠT: Xử lý hiển thị danh sách gợi ý bắt đầu bằng chữ cái gõ vào
-    if (insInput && suggestionsBox) {
-        insInput.addEventListener('input', () => {
-            const query = insInput.value.trim().toLowerCase();
-            suggestionsBox.innerHTML = "";
-            
-            if (query === "") {
-                suggestionsBox.style.display = "none";
-                return;
-            }
+if (insInput && suggestionsBox) {
+    insInput.addEventListener('input', () => {
+        const query = insInput.value.trim().toLowerCase();
+        suggestionsBox.innerHTML = "";
+        
+        if (query === "") {
+            suggestionsBox.style.display = "none";
+            return;
+        }
 
-            let uniqueSuggestions = [];
-            let seenNames = new Set();
+        let uniqueSuggestions = [];
+        let seenNames = new Set();
 
-            // Quét dữ liệu từ file Excel đã nạp sẵn trong dataDatabase
-            dataDatabase.forEach(item => {
-                const viName = item.vietnamese_name ? String(item.vietnamese_name) : "";
-                const enName = item.english_name ? String(item.english_name) : "";
-                const insCode = item.ins ? String(item.ins) : "";
+        // Quét dữ liệu từ file Excel đã nạp sẵn trong dataDatabase
+        dataDatabase.forEach(item => {
+            const viName = item.vietnamese_name ? String(item.vietnamese_name) : "";
+            const enName = item.english_name ? String(item.english_name) : "";
+            const insCode = item.ins ? String(item.ins) : "";
 
-                const isMatch = isNaN(query) ? 
-                    (viName.toLowerCase().startsWith(query) || enName.toLowerCase().startsWith(query)) :
-                    insCode.toLowerCase().startsWith(query);
+            const isMatch = isNaN(query) ? 
+                (viName.toLowerCase().startsWith(query) || enName.toLowerCase().startsWith(query)) :
+                insCode.toLowerCase().startsWith(query);
 
-                if (isMatch) {
-                    // 🌟 TỰ ĐỘNG TRÁO TÊN GỢI Ý THEO NGÔN NGỮ
-                    const displayName = currentLanguage === 'en' ? (enName || viName) : viName;
+            if (isMatch) {
+                // 🌟 TỰ ĐỘNG TRÁO TÊN: Tiếng Anh hiện tên Anh (nếu trống bù tên Việt), Tiếng Việt hiện tên Việt
+                const displayName = currentLanguage === 'en' ? (enName || viName) : viName;
 
-                    if (!seenNames.has(displayName.toLowerCase())) {
-                        seenNames.add(displayName.toLowerCase());
-                        uniqueSuggestions.push({ name: displayName, ins: insCode });
-                    }
+                // 🌟 ĐÃ SỬA: Kiểm tra chống trùng lặp dựa trên tên hiển thị thực tế thay vì cố định viName
+                if (!seenNames.has(displayName.toLowerCase())) {
+                    seenNames.add(displayName.toLowerCase());
+                    uniqueSuggestions.push({ name: displayName, ins: insCode });
                 }
-            });
-
-            // Giới hạn hiển thị tối đa 20 dòng gợi ý hàng đầu để tránh làm dài màn hình
-            if (uniqueSuggestions.length > 0) {
-                uniqueSuggestions.slice(0, 20).forEach(item => {
-                    const li = document.createElement('li');
-                    
-                    // Khung HTML số đứng trước tên đứng sau của bạn giữ nguyên:
-                    li.innerHTML = `<span style="display: flex; gap: 12px; align-items: center;"><span class="suggest-ins">${item.ins}</span><span>${item.name}</span></span>`;
-                    
-                    li.addEventListener('click', () => {
-                        insInput.value = item.name;
-                        suggestionsBox.style.display = "none";
-                        performSearch(); 
-                    });
-                    suggestionsBox.appendChild(li);
-                });
-                suggestionsBox.style.display = "block";
-            } else {
-                suggestionsBox.style.display = "none";
             }
         });
 
-        // Tự động ẩn hộp gợi ý đi nếu người dùng nhấp chuột ra khu vực trống bên ngoài
-        document.addEventListener('click', (e) => {
-            if (!insInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
-                suggestionsBox.style.display = "none";
-            }
+        // Giới hạn hiển thị tối đa 10 dòng gợi ý hàng đầu để tránh làm dài màn hình
+        if (uniqueSuggestions.length > 0) {
+    // ĐÃ SỬA: Thay đổi từ .slice(0, 10) thành .slice(0, 20) để hiện tối đa 20 dòng
+    uniqueSuggestions.slice(0, 20).forEach(item => {
+        const li = document.createElement('li');
+        
+        // Khung HTML số đứng trước tên đứng sau của bạn giữ nguyên:
+        li.innerHTML = `<span style="display: flex; gap: 12px; align-items: center;"><span class="suggest-ins">${item.ins}</span><span>${item.name}</span></span>`;
+        
+        li.addEventListener('click', () => {
+            insInput.value = item.name;
+            suggestionsBox.style.display = "none";
+            performSearch(); 
         });
-    }
+        suggestionsBox.appendChild(li);
+    });
+    suggestionsBox.style.display = "block";
+} else {
+            suggestionsBox.style.display = "none";
+        }
+    });
+
+    // Tự động ẩn hộp gợi ý đi nếu người dùng nhấp chuột ra khu vực trống bên ngoài
+    document.addEventListener('click', (e) => {
+        if (!insInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
+            suggestionsBox.style.display = "none";
+        }
+    });
+}
     
-    // 3. Hàm xử lý tìm kiếm và tạo bảng kết quả
+// 3. Hàm xử lý tìm kiếm và tạo bảng kết quả
     function performSearch() {
         if (!insInput || !resultContainer) {
             console.error("Lỗi: Không tìm thấy ô nhập liệu hoặc khung chứa kết quả!");
             return;
         }
-        if (suggestionsBox) suggestionsBox.style.display = "none";
 
         const keyword = insInput.value.trim().toLowerCase();
         
         if (keyword === "") {
-            // Tự động tráo câu thông báo lỗi theo ngôn ngữ hiện tại chuẩn xác
-            const errorMsg = currentLanguage === 'en' ? 
-                "💬 Please fill in the INS number or additive name into the search box." : 
-                "💬 Vui lòng nhập số INS hoặc tên phụ gia vào ô tìm kiếm.";
-
-            resultContainer.innerHTML = `<div class="message-error" style="color: #8B0032; font-size: 20px; font-weight: bold; margin-top: 40px; text-align: center;">${errorMsg}</div>`;
+            resultContainer.innerHTML = `<div class="message-error" style="color: #8B0032; font-size: 20px; font-weight: bold; margin-top: 40px;">💬 Vui lòng nhập số INS hoặc tên phụ gia vào ô tìm kiếm.</div>`;
             return;
         }
         
         const filteredResults = dataDatabase.filter(item => {
-            const insStr = item.ins ? String(item.ins).toLowerCase() : "";
-            const viNameStr = item.vietnamese_name ? String(item.vietnamese_name).toLowerCase() : "";
-            const enNameStr = item.english_name ? String(item.english_name).toLowerCase() : "";
-            
-            return insStr.startsWith(keyword) || 
-                   viNameStr.startsWith(keyword) || 
-                   enNameStr.startsWith(keyword);
+    const insStr = item.ins ? String(item.ins).toLowerCase() : "";
+    const viNameStr = item.vietnamese_name ? String(item.vietnamese_name).toLowerCase() : "";
+    const enNameStr = item.english_name ? String(item.english_name).toLowerCase() : "";
+    
+    // ĐÃ SỬA: Đồng bộ insStr dùng .startsWith(keyword) thay vì .includes như cũ
+    return insStr.startsWith(keyword) || 
+           viNameStr.startsWith(keyword) || 
+           enNameStr.startsWith(keyword);
         });
         
         if (filteredResults.length === 0) {
-            // Tự động tráo thông báo khi không tìm thấy kết quả
-            const noResultMsg = currentLanguage === 'en' ? 
-                "💬 No matching results found." : 
-                "💬 Không tìm thấy kết quả phù hợp.";
-
-            resultContainer.innerHTML = `<div class="message-error" style="color: #8B0032; font-size: 20px; font-weight: bold; margin-top: 40px; text-align: center;">${noResultMsg}</div>`;
+            resultContainer.innerHTML = `<div class="message-error" style="color: #8B0032; font-size: 20px; font-weight: bold; margin-top: 40px;">💬 Không tìm thấy kết quả phù hợp.</div>`;
             return;
         }
         
         let tableRows = "";
         filteredResults.forEach(item => {
-            // 🌟 TỰ ĐỘNG TRÁO DỮ LIỆU ĐOẠN VĂN THEO NGÔN NGỮ (Nếu có cột tiếng Anh trong Excel)
-            const displayFunc = currentLanguage === "en" ? (item.function_en || item.function) : item.function;
-            const displayCatName = currentLanguage === "en" ? (item.cat_name_en || item.cat_name) : item.cat_name;
-            const displayExplanation = currentLanguage === "en" ? (item.note_explanation_en || item.note_explanation) : item.note_explanation;
-
-            tableRows += `<tr>
-                <td class="col-ins"><b>${item.ins}</b></td>
-                <td class="col-viName">${item.vietnamese_name}</td>
-                <td class="col-enName">${item.english_name}</td>
-                <td class="col-func">${displayFunc}</td>
-                <td class="col-catNo">${item.cat_no}</td>
-                <td class="col-catName">${displayCatName}</td>
-                <td class="ml-highlight col-ml">${item.ml}</td>
-                <td>${item.note}</td>
-                <td>${displayExplanation}</td>
-                <td><small style="color: #718096;">${item.source}</small></td>
-            </tr>`;
+            // ĐÃ SỬA: Thêm class="col-catNo", class="col-catName" và class="col-ml" vào các cột thực phẩm tương ứng
+            tableRows += `<tr><td class="col-ins"><b>${item.ins}</b></td><td class="col-viName">${item.vietnamese_name}</td><td class="col-enName">${item.english_name}</td><td class="col-func">${item.function}</td><td class="col-catNo">${item.cat_no}</td><td class="col-catName">${item.cat_name}</td><td class="ml-highlight col-ml">${item.ml}</td><td>${item.note}</td><td>${item.note_explanation}</td><td><small style="color: #718096;">${item.source}</small></td></tr>`;
         });
-
-        // Dòng lệnh tính toán số phụ gia duy nhất sau khi gộp
+// DÁN VÀO ĐÂY: Dòng lệnh tính toán số phụ gia duy nhất sau khi gộp
         const uniqueAdditivesCount = new Set(filteredResults.map(item => String(item.ins).trim().toLowerCase())).size;
-        
-        // 🌟 TỰ ĐỘNG DỊCH TIÊU ĐỀ BẢNG VÀ SỐ LƯỢNG KẾT QUẢ THEO BIẾN currentLanguage
         resultContainer.innerHTML = `
             <div class="results-wrapper">
-                <h2 class="results-title">${currentLanguage === 'en' ? 'Results' : 'Kết quả'}</h2>
-                
-                <!-- ĐÃ SỬA CHUẨN: Xóa bỏ hoàn toàn dấu gạch chéo ngược ở đầu để hiển thị số thực tế -->
-                <p class="showing-text" style="margin-top: 10px;">${currentLanguage === 'en' ? `Found \${uniqueAdditivesCount} additives.` : `Có \${uniqueAdditivesCount} phụ gia được tìm thấy.`}</p>
-                
+                <h2 class="results-title">Kết quả</h2>
+                <p class="showing-text" style="margin-top: 10px;">Có ${uniqueAdditivesCount} phụ gia được tìm thấy.</p>
                 <div class="table-responsive">
                     <table class="result-table">
                         <thead>
                             <tr>
                                 <th>INS</th>
-                                <th style="min-width: 140px;">${currentLanguage === 'en' ? 'Additive Name<br>(Vietnamese)' : 'Tên phụ gia<br>Tiếng Việt'}</th>
-                                <th style="min-width: 140px;">${currentLanguage === 'en' ? 'Additive Name<br>(English)' : 'Tên phụ gia<br>Tiếng Anh'}</th>
-                                <th style="min-width: 110px;">${currentLanguage === 'en' ? 'Function' : 'Chức năng'}</th>
-                                <th>${currentLanguage === 'en' ? 'Food Cat. No.' : 'Mã nhóm thực phẩm'}</th>
-                                <th>${currentLanguage === 'en' ? 'Food Category' : 'Nhóm thực phẩm'}</th>
-                                <th>${currentLanguage === 'en' ? 'Max Level (ML)' : 'ML (mg/kg)'}</th>
-                                <th>${currentLanguage === 'en' ? 'Note' : 'Ghi chú'}</th>
-                                <th>${currentLanguage === 'en' ? 'Note Explanation' : 'Giải thích ghi chú'}</th>
-                                <th>${currentLanguage === 'en' ? 'Source' : 'Nguồn'}</th>
+                                <th style="min-width: 140px;">Tên phụ gia<br>Tiếng Việt</th>
+                                <th style="min-width: 140px;">Tên phụ gia<br>Tiếng Anh</th>
+                                <th style="min-width: 110px;">Chức năng</th>
+                                <th>Mã nhóm thực phẩm</th>
+                                <th>Nhóm thực phẩm</th>
+                                <th>ML (mg/kg)</th>
+                                <th>Ghi chú</th>
+                                <th>Giải thích ghi chú</th>
+                                <th>Nguồn</th>
                             </tr>
                         </thead>
                         <tbody id="result-table-body">
@@ -845,7 +810,7 @@
                     </table>
                     <div style="display: flex; justify-content: space-between; align-items: center; padding: 14px; background: #ffffff; border-top: 1px solid #EDF2F7; font-size: 13px; color: #4A5568; gap: 15px; flex-wrap: wrap;">
                         <div style="display: flex; gap: 10px;">
-                            <button class="btn-export" onclick="exportTableToExcel()" style="margin: 0;">${currentLanguage === 'en' ? '📄 Export to Excel' : '📄 Xuất file Excel'}</button>
+                            <button class="btn-export" onclick="exportTableToExcel()" style="margin: 0;">📄 Xuất file Excel</button>
                         </div>
                     </div>
                 </div>
@@ -1052,9 +1017,6 @@ if (spanEn) {
 if (spanVi && spanEn) {
     // 1. Khi người dùng click vào chữ English
     spanEn.addEventListener('click', function() {
-        // 🌟 THÊM DÒNG NÀY: Báo cho hệ thống biết đã chuyển sang Tiếng Anh
-        currentLanguage = "en"; 
-
         spanVi.style.fontWeight = '400';
         spanVi.style.color = '#718096';
         spanVi.style.pointerEvents = 'auto';
@@ -1067,26 +1029,18 @@ if (spanVi && spanEn) {
 
         // Tự động đổi dòng chữ chỉ dẫn sang Tiếng Anh
         if (searchLabelEl) searchLabelEl.textContent = "Fill in either the INS number or the food additive name";
-        if (searchBtnTextEl) searchBtnTextEl.textContent = "Search";
-        if (disclaimerTitleTextEl) disclaimerTitleTextEl.textContent = "Disclaimer";
-        if (disclaimerBodyEl) {
+	if (searchBtnTextEl) searchBtnTextEl.textContent = "Search";
+	if (disclaimerTitleTextEl) disclaimerTitleTextEl.textContent = "Disclaimer";
+	if (disclaimerBodyEl) {
             disclaimerBodyEl.innerHTML = `
                 <p>This database is compiled for informational purposes only in accordance with Circular Nos. 24/2019/TT-BYT and 17/2023/TT-BYT, and does not replace or serve as legal advice.</p>
                 <p>Please refer to official Ministry of Health documents for accurate compliance information.</p>
             `;
         }
-        
-        // 🌟 THÊM KHỐI NÀY: Nếu màn hình đang hiển thị sẵn câu thông báo lỗi cũ, tự động chạy lại để dịch sang Tiếng Anh ngay lập tức mà không cần người dùng bấm Search lại
-        if (insInput && (insInput.value.trim() === "" && resultContainer.innerHTML !== "")) {
-            performSearch();
-        }
     });
 
     // 2. Khi người dùng click quay lại chữ Tiếng Việt
     spanVi.addEventListener('click', function() {
-        // 🌟 THÊM DÒNG NÀY: Báo cho hệ thống biết đã quay lại Tiếng Việt
-        currentLanguage = "vi"; 
-
         spanEn.style.fontWeight = '400';
         spanEn.style.color = '#718096';
         spanEn.style.pointerEvents = 'auto';
@@ -1099,18 +1053,13 @@ if (spanVi && spanEn) {
 
         // Tự động đổi dòng chữ chỉ dẫn quay lại Tiếng Việt
         if (searchLabelEl) searchLabelEl.textContent = "Nhập số INS hoặc tên phụ gia:";
-        if (searchBtnTextEl) searchBtnTextEl.textContent = "Tra cứu";
-        if (disclaimerTitleTextEl) disclaimerTitleTextEl.textContent = "Miễn Trừ Trách Nhiệm";
-        if (disclaimerBodyEl) {
+	if (searchBtnTextEl) searchBtnTextEl.textContent = "Tra cứu";
+	if (disclaimerTitleTextEl) disclaimerTitleTextEl.textContent = "Miễn Trừ Trách Nhiệm";
+	if (disclaimerBodyEl) {
             disclaimerBodyEl.innerHTML = `
                 <p>Cơ sở dữ liệu này được xây dựng cho mục đích tra cứu thông tin dựa trên Thông tư 24/2019/TT-BYT Quy định về quản lý và sử dụng phụ gia thực phẩm và Thông tư 17/2023/TT-BYT Sửa đổi, bổ sung và bãi bỏ một số văn bản quy phạm pháp luật về an toàn thực phẩm do Bộ trưởng Bộ Y tế ban hành, và không thay thế hoặc đóng vai trò như lời khuyên pháp lý chính thức.</p>
                 <p>Vui lòng tham khảo các văn bản pháp luật của Bộ Y tế để có thông tin chuẩn xác nhất.</p>
             `;
-        }
-        
-        // 🌟 THÊM KHỐI NÀY: Tự động dịch lại câu thông báo lỗi cũ sang Tiếng Việt
-        if (insInput && (insInput.value.trim() === "" && resultContainer.innerHTML !== "")) {
-            performSearch();
         }
     });
 }
