@@ -326,7 +326,8 @@
 .site-footer {
     background-color: #F8FAFC; 
     color: #4A5568;
-    padding: 40px 24px;
+    /* 🛠️ ĐÃ SỬA: Đổi padding lề trái/phải về 0 để ép nội dung sát mép biên, thẳng hàng với hộp trên */
+    padding: 40px 0px; 
     margin-top: 60px;
     border-top: 1px solid #E2E8F0; 
     border-radius: 8px 8px 0 0;
@@ -351,19 +352,27 @@
     display: block;
 }
 
+/* 🛠️ TÌM VÀ THAY THẾ ĐOẠN CSS .footer-container THÀNH THẾ NÀY: */
 .footer-container {
-    max-width: 1200px;
-    margin: 0 auto;
+    width: 100%; /* Ép khung chiếm trọn vẹn chiều rộng có sẵn */
+    
+    /* ĐÃ SỬA: Xóa bỏ margin: 0 auto (nguyên nhân gây đẩy chữ vào giữa) */
+    margin: 0; 
+    
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: flex-start;
     flex-wrap: wrap;
     gap: 24px;
     position: relative;
     z-index: 2; 
+    
+    /* Khóa chết lề trái/phải về 0 để ăn khớp tuyệt đối theo trục dọc của thẻ body */
+    padding-left: 20px !important;
+    margin-left: 20px !important;
+    box-sizing: border-box;
 }
 
-.footer-left { display: flex; flex-direction: column; gap: 8px; }
 .footer-brand { font-size: 16px; font-weight: 700; color: #1A202C; }
 .footer-copyright { margin: 0; color: #718096; font-size: 13px; }
 .footer-right { display: flex; flex-direction: column; align-items: flex-end; gap: 16px; }
@@ -383,7 +392,10 @@
 .footer-links a:hover { color: #CE4A7E; text-decoration: underline; }
 
 @media (max-width: 768px) {
+    /* 🛠️ ĐÃ SỬA: Khi xem trên điện thoại thì tự động căn giữa đều lại cho cân đối */
+    .site-footer { padding: 40px 16px; }
     .footer-container { flex-direction: column; align-items: center; text-align: center; }
+    .footer-left { align-items: center; }
     .footer-right { align-items: center; }
     .footer-lotus-watermark { right: 50%; transform: translateX(50%); bottom: 10px; }
 }
