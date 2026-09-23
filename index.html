@@ -322,6 +322,71 @@
     -webkit-text-size-adjust: 100% !important; /* Dành cho trình duyệt Safari/iPhone */
     text-size-adjust: 100% !important;         /* Dành cho Chrome/Firefox/Edge */
 }
+/* GIAO DIỆN CHÂN TRANG NỀN SÁNG - BANNER HOA SEN CHÌM */
+.site-footer {
+    background-color: #F8FAFC; 
+    color: #4A5568;
+    padding: 40px 24px;
+    margin-top: 60px;
+    border-top: 1px solid #E2E8F0; 
+    border-radius: 8px 8px 0 0;
+    position: relative; 
+    overflow: hidden; 
+}
+
+.footer-lotus-watermark {
+    position: absolute;
+    bottom: -20px;   
+    right: 20px;     
+    width: 140px;    
+    opacity: 0.06;   /* Tạo độ mờ 6% ẩn hiện chìm sâu tinh tế, không làm rối chữ */
+    pointer-events: none; 
+    user-select: none;
+    z-index: 1;
+}
+
+.footer-lotus-watermark img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 24px;
+    position: relative;
+    z-index: 2; 
+}
+
+.footer-left { display: flex; flex-direction: column; gap: 8px; }
+.footer-brand { font-size: 16px; font-weight: 700; color: #1A202C; }
+.footer-copyright { margin: 0; color: #718096; font-size: 13px; }
+.footer-right { display: flex; flex-direction: column; align-items: flex-end; gap: 16px; }
+.footer-socials { display: flex; gap: 14px; font-size: 18px; }
+.footer-socials a { text-decoration: none; transition: transform 0.2s; }
+.footer-socials a:hover { transform: scale(1.15); }
+.footer-links { display: flex; gap: 16px; flex-wrap: wrap; }
+
+.footer-links a {
+    color: #B33665; /* Đồng bộ màu hồng cánh sen thương hiệu của bạn */
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.footer-links a:hover { color: #CE4A7E; text-decoration: underline; }
+
+@media (max-width: 768px) {
+    .footer-container { flex-direction: column; align-items: center; text-align: center; }
+    .footer-right { align-items: center; }
+    .footer-lotus-watermark { right: 50%; transform: translateX(50%); bottom: 10px; }
+}
 </style>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-RJLBDDW0Z2"></script>
@@ -1128,6 +1193,9 @@ if (spanVi && spanEn) {
                 <p>Please refer to the official legal documents of the Ministry of Health of Vietnam for accurate compliance information.</p>
             `;
         }
+
+        // 🌟 DÒNG THÊM MỚI: Tự động dịch phần chân trang Footer sang Tiếng Anh
+        if (document.getElementById('footer-brand-text')) document.getElementById('footer-brand-text').textContent = "Contacts";
         if (resultContainer && resultContainer.innerHTML !== "") {
             performSearch();
         }
@@ -1158,11 +1226,40 @@ if (spanVi && spanEn) {
                 <p>Vui lòng tham khảo các văn bản pháp luật của Bộ Y tế để có thông tin chuẩn xác nhất.</p>
             `;
         }
+
+        // 🌟 DÒNG THÊM MỚI: Tự động dịch phần chân trang Footer quay lại Tiếng Việt
+        if (document.getElementById('footer-brand-text')) document.getElementById('footer-brand-text').textContent = "Liên hệ";
         if (resultContainer && resultContainer.innerHTML !== "") {
             performSearch();
         }
     });
 }
 </script>
+<!-- CỤM CHÂN TRANG FOOTER NỀN SÁNG - TỐI GIẢN CHỈ GIỮ LẠI LIÊN HỆ VÀ ICON -->
+<footer class="site-footer">
+    <!-- Khối Banner Hoa Sen Chìm Đằng Sau (Tự động bốc ảnh logo.png làm mờ) -->
+    <div class="footer-lotus-watermark">
+        <img src="logo.png" alt="Lotus Watermark" onerror="this.style.display='none'">
+    </div>
+
+    <div class="footer-container">
+        <!-- Khối bên trái: Chứa chữ Liên hệ và DÀN ICON nằm ngay phía dưới -->
+        <div class="footer-left" style="display: flex; flex-direction: column; gap: 12px; align-items: flex-start;">
+            <div class="footer-brand" id="footer-brand-text">Liên hệ</div>
+            
+            <!-- Dàn icon mạng xã hội nằm gọn gàng bên lề trái -->
+            <div class="footer-socials" style="display: flex; gap: 14px; font-size: 18px; margin-top: 4px;">
+                <a href="#" aria-label="Facebook">📘</a>
+                <a href="#" aria-label="X">𝕏</a>
+                <a href="#" aria-label="Instagram">📸</a>
+                <a href="#" aria-label="TikTok">🎵</a>
+                <a href="#" aria-label="YouTube">📺</a>
+            </div>
+        </div>
+
+        <!-- Khối bên phải: Đã bỏ trống hoàn toàn để giao diện thông thoáng, thanh lịch -->
+        <div class="footer-right"></div>
+    </div>
+</footer>
 </body>
 </html>
