@@ -1190,69 +1190,81 @@ if (spanEn) {
 
 if (spanVi && spanEn) {
     // 1. Khi người dùng click vào chữ English
-    spanEn.addEventListener('click', function() {
-        window.currentLanguage = "en"; // Đã nạp tín hiệu Tiếng Anh chuẩn
-        
-        spanVi.style.fontWeight = '400';
-        spanVi.style.color = '#718096';
-        spanVi.style.pointerEvents = 'auto';
-        spanVi.classList.remove('active');
+spanEn.addEventListener('click', function() {
+    window.currentLanguage = "en"; // Đã nạp tín hiệu Tiếng Anh chuẩn
+    
+    spanVi.style.fontWeight = '400';
+    spanVi.style.color = '#718096';
+    spanVi.style.pointerEvents = 'auto';
+    spanVi.classList.remove('active');
 
-        spanEn.style.fontWeight = '700';
-        spanEn.style.color = '#1A202C';
-        spanEn.style.pointerEvents = 'none';
-        spanEn.classList.add('active');
+    spanEn.style.fontWeight = '700';
+    spanEn.style.color = '#1A202C';
+    spanEn.style.pointerEvents = 'none';
+    spanEn.classList.add('active');
 
-        // Tự động đổi dòng chữ chỉ dẫn sang Tiếng Anh
-        if (searchLabelEl) searchLabelEl.textContent = "Fill in either the INS number or the food additive name";
-        if (searchBtnTextEl) searchBtnTextEl.textContent = "Search";
-        if (disclaimerTitleTextEl) disclaimerTitleTextEl.textContent = "Disclaimer";
-        if (disclaimerBodyEl) {
-            disclaimerBodyEl.innerHTML = `
-                <p>This database is compiled for informational purposes only in accordance with Circular Nos. 24/2019/TT-BYT and 17/2023/TT-BYT, and does not replace or serve as legal advice.</p>
-                <p>Please refer to the official legal documents of the Ministry of Health of Vietnam for accurate compliance information.</p>
-            `;
-        }
+    // Tự động đổi dòng chữ chỉ dẫn sang Tiếng Anh
+    if (searchLabelEl) searchLabelEl.textContent = "Fill in either the INS number or the food additive name";
+    if (searchBtnTextEl) searchBtnTextEl.textContent = "Search";
+    if (disclaimerTitleTextEl) disclaimerTitleTextEl.textContent = "Disclaimer";
+    if (disclaimerBodyEl) {
+        disclaimerBodyEl.innerHTML = `
+            <p>This database is compiled for informational purposes only in accordance with Circular Nos. 24/2019/TT-BYT and 17/2023/TT-BYT, and does not replace or serve as legal advice.</p>
+            <p>Please refer to the official legal documents of the Ministry of Health of Vietnam for accurate compliance information.</p>
+        `;
+    }
 
-        // 🌟 DÒNG THÊM MỚI: Tự động dịch phần chân trang Footer sang Tiếng Anh
-        if (document.getElementById('footer-brand-text')) document.getElementById('footer-brand-text').textContent = "Contacts";
-        if (resultContainer && resultContainer.innerHTML !== "") {
-            performSearch();
-        }
-    });
+    // Tự động dịch phần chân trang Footer sang Tiếng Anh
+    if (document.getElementById('footer-brand-text')) document.getElementById('footer-brand-text').textContent = "Contacts";
+    
+    // 🌟 DÒNG THÊM MỚI: Tự động tráo dòng chữ cập nhật ngày góc đáy phải sang Tiếng Anh chuyên nghiệp
+    if (document.getElementById('footer-update-text')) {
+        document.getElementById('footer-update-text').textContent = "Last Updated 23.09.2026";
+    }
+
+    if (resultContainer && resultContainer.innerHTML !== "") {
+        performSearch();
+    }
+});
 
     // 2. Khi người dùng click quay lại chữ Tiếng Việt
-    spanVi.addEventListener('click', function() {
-        // Thêm dòng này để báo cho hệ thống biết đã chuyển về Tiếng Việt thành công
-        window.currentLanguage = "vi"; 
+spanVi.addEventListener('click', function() {
+    // Thêm dòng này để báo cho hệ thống biết đã chuyển về Tiếng Việt thành công
+    window.currentLanguage = "vi"; 
 
-        spanEn.style.fontWeight = '400';
-        spanEn.style.color = '#718096';
-        spanEn.style.pointerEvents = 'auto';
-        spanEn.classList.remove('active');
+    spanEn.style.fontWeight = '400';
+    spanEn.style.color = '#718096';
+    spanEn.style.pointerEvents = 'auto';
+    spanEn.classList.remove('active');
 
-        spanVi.style.fontWeight = '700';
-        spanVi.style.color = '#1A202C';
-        spanVi.style.pointerEvents = 'none';
-        spanVi.classList.add('active');
+    spanVi.style.fontWeight = '700';
+    spanVi.style.color = '#1A202C';
+    spanVi.style.pointerEvents = 'none';
+    spanVi.classList.add('active');
 
-        // Tự động đổi dòng chữ chỉ dẫn quay lại Tiếng Việt
-        if (searchLabelEl) searchLabelEl.textContent = "Nhập số INS hoặc tên phụ gia:";
-        if (searchBtnTextEl) searchBtnTextEl.textContent = "Tra cứu";
-        if (disclaimerTitleTextEl) disclaimerTitleTextEl.textContent = "Miễn Trừ Trách Nhiệm";
-        if (disclaimerBodyEl) {
-            disclaimerBodyEl.innerHTML = `
-                <p>Cơ sở dữ liệu này được xây dựng cho mục đích tra cứu thông tin dựa trên Thông tư 24/2019/TT-BYT Quy định về quản lý và sử dụng phụ gia thực phẩm và Thông tư 17/2023/TT-BYT Sửa đổi, bổ sung và bãi bỏ một số văn bản quy phạm pháp luật về an toàn thực phẩm do Bộ trưởng Bộ Y tế ban hành, và không thay thế hoặc đóng vai trò như lời khuyên pháp lý chính thức.</p>
-                <p>Vui lòng tham khảo các văn bản pháp luật của Bộ Y tế để có thông tin chuẩn xác nhất.</p>
-            `;
-        }
+    // Tự động đổi dòng chữ chỉ dẫn quay lại Tiếng Việt
+    if (searchLabelEl) searchLabelEl.textContent = "Nhập số INS hoặc tên phụ gia:";
+    if (searchBtnTextEl) searchBtnTextEl.textContent = "Tra cứu";
+    if (disclaimerTitleTextEl) disclaimerTitleTextEl.textContent = "Miễn Trừ Trách Nhiệm";
+    if (disclaimerBodyEl) {
+        disclaimerBodyEl.innerHTML = `
+            <p>Cơ sở dữ liệu này được xây dựng cho mục đích tra cứu thông tin dựa trên Thông tư 24/2019/TT-BYT Quy định về quản lý và sử dụng phụ gia thực phẩm và Thông tư 17/2023/TT-BYT Sửa đổi, bổ sung và bãi bỏ một số văn bản quy phạm pháp luật về an toàn thực phẩm do Bộ trưởng Bộ Y tế ban hành, và không thay thế hoặc đóng vai trò như lời khuyên pháp lý chính thức.</p>
+            <p>Vui lòng tham khảo các văn bản pháp luật của Bộ Y tế để có thông tin chuẩn xác nhất.</p>
+        `;
+    }
 
-        // 🌟 DÒNG THÊM MỚI: Tự động dịch phần chân trang Footer quay lại Tiếng Việt
-        if (document.getElementById('footer-brand-text')) document.getElementById('footer-brand-text').textContent = "Liên hệ";
-        if (resultContainer && resultContainer.innerHTML !== "") {
-            performSearch();
-        }
-    });
+    // Tự động dịch phần chân trang Footer quay lại Tiếng Việt
+    if (document.getElementById('footer-brand-text')) document.getElementById('footer-brand-text').textContent = "Liên hệ";
+    
+    // 🌟 DÒNG THÊM MỚI: Tự động tráo dòng chữ cập nhật ngày góc đáy phải quay về Tiếng Việt
+    if (document.getElementById('footer-update-text')) {
+        document.getElementById('footer-update-text').textContent = "Cập nhật ngày 23.09.2026";
+    }
+
+    if (resultContainer && resultContainer.innerHTML !== "") {
+        performSearch();
+    }
+});
 }
 </script>
 <!-- CỤM CHÂN TRANG FOOTER NỀN SÁNG - TỐI GIẢN CHỈ GIỮ LẠI LIÊN HỆ VÀ ICON -->
@@ -1278,7 +1290,7 @@ if (spanVi && spanEn) {
         </div>
 
         <!-- Khối bên phải: Đã bỏ trống hoàn toàn để giao diện thông thoáng, thanh lịch -->
-        <div class="footer-right">Cập nhật ngày 23.09.2026</div>
+        <div class="footer-right" id="footer-update-text">Cập nhật ngày 23.09.2026</div>
     </div>
 </footer>
 </body>
