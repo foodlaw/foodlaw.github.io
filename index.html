@@ -5,7 +5,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Food Standards Database</title>
 	<link rel="icon" type="image/png" href="favicon.png">
-    <!-- ĐÃ SỬA: Đường link nhúng font chữ Inter chuẩn xác từ Google Fonts -->
+    <Đường link nhúng font chữ Inter chuẩn xác từ Google Fonts -->
     <link href="https://googleapis.com" rel="stylesheet">
 	<!-- DÁN DÒNG NÀY VÀO THẺ HEAD: Sử dụng link dự phòng cdnjs cực kỳ ổn định -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -995,7 +995,7 @@ function mergeTableCells() {
             const currentVi = item.vietnamese_name;
             const currentEn = item.english_name;
             
-            // 🛠️ ĐÃ CẬP NHẬT: Tự động chọn đúng cột dữ liệu _vi hoặc _en từ file Excel mới của bạn
+            // Tự động chọn đúng cột dữ liệu _vi hoặc _en từ file Excel mới của bạn
             const currentFunc = window.currentLanguage === "en" ? (item.function_en || item.function_vi) : item.function_vi;
             const currentCatNo = item.cat_no;
             const currentCatName = window.currentLanguage === "en" ? (item.cat_name_en || item.cat_name_vi) : item.cat_name_vi;
