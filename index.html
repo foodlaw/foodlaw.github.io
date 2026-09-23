@@ -105,7 +105,7 @@
             gap: 6px;                 
         }
 
-        /* Tiêu đề tiếng Việt màu đen hiện đại */
+        /* Tiêu đề tiếng Việt màu đen */
         .database-title .vi-text {
             color: #1A202C;        
             font-weight: 700;       
@@ -335,7 +335,7 @@
 </head>
 <body>
     
-    <!-- Cụm chọn ngôn ngữ kết hợp đếm lượt xem ĐÈN LED RETRO (Đã chốt đường link ẩn chữ hits) -->
+    <!-- Cụm chọn ngôn ngữ kết hợp đếm lượt xem ĐÈN LED RETRO (Đường link ẩn chữ hits) -->
 <div class="language-switcher" style="position: absolute; top: 24px; right: 24px; display: flex; flex-direction: column; align-items: flex-end; font-size: 13px; color: #718096; z-index: 10;">
     <!-- Hàng trên: Giữ nguyên thanh chọn ngôn ngữ hiện tại của bạn -->
     <div>
@@ -351,7 +351,7 @@
         <span id="lang-en" style="cursor:pointer;">English</span>
     </div>
     
-    <!-- Hàng dưới: THÊM MỚI - Chỉ giữ lại icon con mắt và dải ô số điện tử LED màu xanh lá sạch sẽ -->
+    <!-- Hàng dưới: icon con mắt và dải ô số điện tử LED màu xanh lá-->
     <div class="page-counter" style="margin-top: 6px; display: inline-flex; align-items: center; gap: 6px; font-weight: 500;">
         👁️ <img src="https://hits.sh/foodstandards.github.io.svg?theme=odometer&color=38a169&label=%20" alt="Views" style="height: 20px; vertical-align: middle; filter: contrast(1.15);">
     </div>
@@ -375,7 +375,7 @@
 
 	<hr>
 	
-    <!-- Vùng tìm kiếm (Đã nâng cấp để chứa danh sách gợi ý Autocomplete) -->
+    <!-- Vùng tìm kiếm (Chứa danh sách gợi ý Autocomplete) -->
 <div class="search-container">
     <p style="margin-top: 40px;" id="search-label">Nhập số INS hoặc tên phụ gia:</p> 
     <div class="search-form-group" style="position: relative;">
@@ -408,7 +408,7 @@
     <style>
         /* Định dạng hộp Disclaimer nổi khối tràn viền e */
    .disclaimer-box {
-            /* ĐÃ SỬA: Màu nền xám rêu/xanh sage nhạt (Warm Sage) - tăng cả độ ấm và sắc xanh lá */
+            /* Màu nền xám rêu/xanh sage nhạt (Warm Sage) - tăng cả độ ấm và sắc xanh lá */
             background-color: #F1EFEA; 
             
             border: none;              /* Xóa bỏ hoàn toàn viền cứng để hết bẹt phẳng */
@@ -427,7 +427,7 @@
             transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
         }
 
-        /* Mẹo UI: Hiệu ứng nhích nhẹ nịnh mắt khi di chuột qua */
+        /* Hiệu ứng nhích nhẹ khi di chuột qua */
         .disclaimer-box:hover {
             transform: translateY(-1px);
             /* ĐÃ SỬA: Nền chuyển sang màu xám xanh lá đậm hơn, ấm áp khi hover */
@@ -649,12 +649,12 @@
                     let vi = item.vietnamese_name !== undefined ? String(item.vietnamese_name).trim() : "";
                     let en = item.english_name !== undefined ? String(item.english_name).trim() : "";
 
-                    // ĐÃ SỬA: CHỈ điền tràn đối với Mã INS và Tên phụ gia để phục vụ việc gom nhóm gộp dòng.
+                    // CHỈ điền tràn đối với Mã INS và Tên phụ gia để phục vụ việc gom nhóm gộp dòng.
                     if (ins !== "") lastIns = ins; else ins = lastIns;
                     if (vi !== "") lastVi = vi; else vi = lastVi;
                     if (en !== "") lastEn = en; else en = lastEn;
 
-                    // 🛠️ ĐÃ CẬP NHẬT: Đọc chính xác tuyệt đối theo các tên cột mới đối xứng của bạn
+                    // Đọc chính xác tuyệt đối theo các tên cột
                     return {
                         ins: ins,
                         vietnamese_name: vi,
@@ -742,7 +742,7 @@ if (insInput && suggestionsBox) {
             uniqueSuggestions.slice(0, 20).forEach(item => {
                 const li = document.createElement('li');
                 
-                // Khung HTML số đứng trước tên đứng sau của bạn giữ nguyên:
+                // Khung HTML số đứng trước tên đứng sau:
                 li.innerHTML = `<span style="display: flex; gap: 12px; align-items: center;"><span class="suggest-ins">${item.ins}</span><span>${item.name}</span></span>`;
                 
                 li.addEventListener('click', () => {
@@ -799,7 +799,7 @@ function performSearch() {
                enNameStr.startsWith(keyword);
     });
     
-    // KIỂM TRA RỖNG: Hiện thông báo "No results found." theo đúng ý bạn
+    // KIỂM TRA RỖNG: Hiện thông báo "No results found."
     if (filteredResults.length === 0) {
         const noResultMsg = window.currentLanguage === 'en' ? 
             "💬 No results found." : 
@@ -811,10 +811,10 @@ function performSearch() {
     
     let tableRows = "";
     filteredResults.forEach(item => {
-        // 🛠️ ĐÃ CẬP NHẬT: Tự động tráo đổi cột dữ liệu _vi và _en dựa trên ngôn ngữ đang chọn
+        // Tự động tráo đổi cột dữ liệu _vi và _en dựa trên ngôn ngữ đang chọn
         const displayFunc = window.currentLanguage === "en" ? (item.function_en || item.function_vi) : item.function_vi;
         const displayCatName = window.currentLanguage === "en" ? (item.cat_name_en || item.cat_name_vi) : item.cat_name_vi;
-        const displayExplanation = window.currentLanguage === "en" ? (item.note_text_en || item.note_text_vi) : item.note_text_vi;
+        const displayNoteText = window.currentLanguage === "en" ? (item.note_text_en || item.note_text_vi) : item.note_text_vi;
         const displaySource = window.currentLanguage === "en" ? (item.source_en || item.source_vi) : item.source_vi;
 
         tableRows += `<tr>
@@ -826,7 +826,7 @@ function performSearch() {
             <td class="col-catName">${displayCatName}</td>
             <td class="ml-highlight col-ml">${item.ml}</td>
             <td>${item.note}</td>
-            <td>${displayExplanation}</td>
+            <td>${displayNoteText}</td>
             <td><small style="color: #718096;">${displaySource}</small></td>
         </tr>`;
     });
@@ -1000,7 +1000,7 @@ function mergeTableCells() {
             const currentCatNo = item.cat_no;
             const currentCatName = window.currentLanguage === "en" ? (item.cat_name_en || item.cat_name_vi) : item.cat_name_vi;
             const currentMl = item.ml;
-            const currentExplanation = window.currentLanguage === "en" ? (item.note_text_en || item.note_text_vi) : item.note_text_vi;
+            const currentNoteText = window.currentLanguage === "en" ? (item.note_text_en || item.note_text_vi) : item.note_text_vi;
             const currentSource = window.currentLanguage === "en" ? (item.source_en || item.source_vi) : item.source_vi;
 
             // Bước B: Thiết lập giá trị hiển thị mặc định ban đầu
@@ -1044,7 +1044,7 @@ function mergeTableCells() {
                     "Food Category": displayCatName,
                     "ML (mg/kg)": displayMl, 
                     "Notes": item.note,
-                    "Note Text": currentExplanation,
+                    "Note Text": currentNoteText,
                     "Source": currentSource
                 };
             } else {
@@ -1057,7 +1057,7 @@ function mergeTableCells() {
                     "Nhóm thực phẩm": displayCatName,
                     "ML (mg/kg)": displayMl,
                     "Ghi chú": item.note,
-                    "Giải thích ghi chú": currentExplanation,
+                    "Giải thích ghi chú": currentNoteText,
                     "Nguồn": currentSource
                 };
             }
@@ -1135,7 +1135,7 @@ if (spanVi && spanEn) {
 
     // 2. Khi người dùng click quay lại chữ Tiếng Việt
     spanVi.addEventListener('click', function() {
-        // 🛠️ ĐÃ SỬA: Thêm dòng này để báo cho hệ thống biết đã chuyển về Tiếng Việt thành công
+        // Thêm dòng này để báo cho hệ thống biết đã chuyển về Tiếng Việt thành công
         window.currentLanguage = "vi"; 
 
         spanEn.style.fontWeight = '400';
