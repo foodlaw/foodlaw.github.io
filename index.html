@@ -326,7 +326,7 @@
 .site-footer {
     background-color: #F8FAFC; 
     color: #4A5568;
-    /* 🛠️ ĐÃ SỬA: Đổi padding lề trái/phải về 0 để ép nội dung sát mép biên, thẳng hàng với hộp trên */
+    /* Đổi padding lề trái/phải về 0 để phần khung con tự quản lý khoảng đệm */
     padding: 40px 0px; 
     margin-top: 60px;
     border-top: 1px solid #E2E8F0; 
@@ -352,13 +352,10 @@
     display: block;
 }
 
-/* 🛠️ TÌM VÀ THAY THẾ ĐOẠN CSS .footer-container THÀNH THẾ NÀY: */
+/* ĐÃ TỐI ƯU CÂN ĐỐI TRỤC: Khớp tăm tắp lề chữ của disclaimer-box */
 .footer-container {
     width: 100%; /* Ép khung chiếm trọn vẹn chiều rộng có sẵn */
-    
-    /* ĐÃ SỬA: Xóa bỏ margin: 0 auto (nguyên nhân gây đẩy chữ vào giữa) */
     margin: 0; 
-    
     display: flex;
     justify-content: flex-start;
     align-items: flex-start;
@@ -367,10 +364,21 @@
     position: relative;
     z-index: 2; 
     
-    /* Khóa chết lề trái/phải về 0 để ăn khớp tuyệt đối theo trục dọc của thẻ body */
+    /* 🛠️ ĐÃ SỬA CHUẨN: Chỉ giữ lại padding-left 20px (bằng khít thụt lề chữ hộp trên), xóa bỏ margin-left gây lệch hàng */
     padding-left: 20px !important;
-    margin-left: 20px !important;
+    padding-right: 20px !important;
+    margin-left: 0px !important;
     box-sizing: border-box;
+}
+
+/* Ép khối lề trái của footer không tự sinh khoảng đệm riêng làm hỏng trục dọc */
+.footer-left {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+    padding-left: 0 !important;
+    margin-left: 0 !important;
 }
 
 .footer-brand { font-size: 16px; font-weight: 700; color: #1A202C; }
@@ -392,9 +400,9 @@
 .footer-links a:hover { color: #CE4A7E; text-decoration: underline; }
 
 @media (max-width: 768px) {
-    /* 🛠️ ĐÃ SỬA: Khi xem trên điện thoại thì tự động căn giữa đều lại cho cân đối */
+    /* Khi xem trên điện thoại thì tự động căn giữa đều lại cho cân đối */
     .site-footer { padding: 40px 16px; }
-    .footer-container { flex-direction: column; align-items: center; text-align: center; }
+    .footer-container { flex-direction: column; align-items: center; text-align: center; padding-left: 16px !important; }
     .footer-left { align-items: center; }
     .footer-right { align-items: center; }
     .footer-lotus-watermark { right: 50%; transform: translateX(50%); bottom: 10px; }
